@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>অর্থনীতি কুইজ</title>
+
   <style>
     body {
       font-family: "Kalpurush", "Noto Sans Bengali", sans-serif;
@@ -84,6 +85,7 @@
       font-size: 16px;
     }
   </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 
@@ -135,6 +137,7 @@
       <label><input type="radio" name="q3" value="d"> d) এটি উৎপাদনের পরিমাণ নির্দেশ করে না</label>
     </div>
 
+    <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>
     <button type="submit" class="submit-btn">জমা দিন</button>
   </form>
 </div>
@@ -179,44 +182,66 @@
   }
 
   form.addEventListener("submit", function(e) {
-    e.preventDefault();
-    clearInterval(countdown);
+  e.preventDefault();
+  clearInterval(countdown);
 
-    const username = document.getElementById("username").value.trim();
-    const email = document.getElementById("email").value.trim();
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
 
-    if (!username || !email) {
-      alert("অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।");
-      return;
+  // Get reCAPTCHA response
+  const recaptchaResponse = grecaptcha.getResponse();
+
+  if (!username || !email) {
+    alert("অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।");
+    return;
+  }
+
+  // **ADD THIS CHECK:**
+  if (recaptchaResponse.length === 0) {
+    alert("অনুগ্রহ করে নিশ্চিত করুন যে আপনি রোবট নন (reCAPTCHA সম্পূর্ণ করুন)!");
+    return;
+  }
+  // **END ADDITION**
+
+  let score = 0;
+  let total = Object.keys(answers).length;
+
+  for (let q in answers) {
+    const selected = form[q].value;
+    if (selected === answers[q]) score++;
+  }
+
+  alert(username + ", আপনার স্কোর: " + score + " / " + total);
+
+  // Send to Google Sheets via proxy
+  fetch("http://localhost/3ducation/assets/php/submit_quiz.php", { // Use your correct proxy URL
+    method: "POST",
+    body: JSON.stringify({
+      name: username,
+      email: email,
+      score: score,
+      // **ADD THIS LINE:**
+      recaptchaResponse: recaptchaResponse // Send reCAPTCHA token to proxy
+    }),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.result === 'success') {
+      alert("ডেটা সফলভাবে জমা হয়েছে!");
+      form.reset(); // Optionally reset the form
+      grecaptcha.reset(); // Reset reCAPTCHA after successful submission
+    } else {
+      alert("ডেটা জমা দিতে সমস্যা হয়েছে: " + data.message);
+      grecaptcha.reset(); // Reset reCAPTCHA on error
     }
-
-    let score = 0;
-    let total = Object.keys(answers).length;
-
-    for (let q in answers) {
-      const selected = form[q].value;
-      if (selected === answers[q]) score++;
-    }
-
-    alert(username + ", আপনার স্কোর: " + score + " / " + total);
-
-    // Send to Google Sheets
-
-    fetch("http://localhost/3ducation/assets/php/submit_quiz.php", {
-      method: "POST",
-      body: JSON.stringify({
-        name: username,
-        email: email,
-        score: score
-      }),
-      headers: { "Content-Type": "application/json" }
-    });
-
-    // Block repeated attempt
-    localStorage.setItem("quizDone", "true");
-    quizArea.style.display = "none";
-    thankYou.style.display = "block";
+  })
+  .catch(error => {
+    console.error("Fetch error:", error);
+    alert("নেটওয়ার্ক ত্রুটি বা সার্ভারের সমস্যা।");
+    grecaptcha.reset(); // Reset reCAPTCHA on network error
   });
+});
 </script>
 
 </body>
