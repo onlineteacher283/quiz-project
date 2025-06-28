@@ -314,7 +314,7 @@
   let timeLeft = 60;
   let countdown;
   const form = document.getElementById("quizForm");
-  //const timerDisplay = document.getElementById("timer");
+  const timerDisplay = document.getElementById("timer");
   const quizArea = document.getElementById("quizArea");
   const thankYou = document.getElementById("thankYou");
   const progressBar = document.getElementById("progressBar");
@@ -325,7 +325,7 @@
     thankYou.style.display = "block";
   } else {
     quizArea.style.display = "block";
-    startTimer();
+    //startTimer();
   }
 
 //    if (localStorage.getItem("quizDone")) {
