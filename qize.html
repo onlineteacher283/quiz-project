@@ -279,16 +279,6 @@
     let studentEmail = "";
     let currentQuizSection = 'mcqSection';
 
-    // Check if quiz is done on page load
-    //if (localStorage.getItem("quizDone")) {
-      //  document.getElementById("loginSection").style.display = "none";
-        //document.getElementById("quizArea").style.display = "none";
-        //document.getElementById("thankYou").style.display = "block";
-        // Optionally, load and display the last known score if you stored it in localStorage too
-        // For simplicity, we are not storing the score in localStorage, only the quizDone status.
-        // If you want to show the score on refresh, you'd also save finalScore and totalQuestions to localStorage.
-    //}
-
     function checkLogin(event) {
       event.preventDefault();
       studentName = document.getElementById("studentName").value.trim();
@@ -320,18 +310,31 @@
         q6_fill: "গ্রস ডোমেস্টিক প্রোডাক্ট"
     };
 
-    const form = document.getElementById("quizForm");
-    const progressBar = document.getElementById("progressBar");
-    let timeLeft = 60;
-    let countdown;
+  const timeLimit = 60; // seconds
+  let timeLeft = timeLimit;
+  let countdown;
+  const form = document.getElementById("quizForm");
+  const timerDisplay = document.getElementById("timer");
+  const quizArea = document.getElementById("quizArea");
+  const thankYou = document.getElementById("thankYou");
+  const progressBar = document.getElementById("progressBar");
 
-    //if (localStorage.getItem("quizDone")) {
-      //document.getElementById("loginSection").style.display = "none";
-      //document.getElementById("quizArea").style.display = "none";
-      //document.getElementById("thankYou").style.display = "block";
-    //}
 
-    
+    // If user has already completed quiz
+  if (localStorage.getItem("quizDone")) {
+    thankYou.style.display = "block";
+  } else {
+    quizArea.style.display = "block";
+    startTimer();
+  }
+
+//    if (localStorage.getItem("quizDone")) {
+//      document.getElementById("loginSection").style.display = "none";
+//    document.getElementById("quizArea").style.display = "none";
+//      document.getElementById("thankYou").style.display = "block";
+//    }
+
+
     function startTimer() {
       countdown = setInterval(() => {
         timeLeft--;
@@ -428,11 +431,11 @@
           console.error('Error submitting quiz:', error);
       });
 
-      sendToGoogleSheet(studentName, studentEmail, totalScore);
-
-      localStorage.setItem("quizDone", "true");
-      document.getElementById("quizArea").style.display = "none";
-      document.getElementById("thankYou").style.display = "block"; // Ensure thank you section is shown
+    // Block repeated attempt
+    localStorage.setItem("quizDone", "true");
+    quizArea.style.display = "none";
+    thankYou.style.display = "block";
+    
     });
 
 
