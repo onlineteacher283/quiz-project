@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin-top: 10px;
+      margin-top: 50px;
       background: #f4f6f8;
       font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
     }
@@ -61,7 +61,9 @@
       margin-bottom: 8px;
     }
 
-    .form-group input {
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] { /* Added number for fill-in-the-gaps */
       width: 100%;
       padding: 12px;
       border: 1px solid #ccc;
@@ -69,7 +71,7 @@
       font-size: 16px;
     }
 
-    .submit-btn {
+    .submit-btn, .next-btn {
       background-color: #0066cc;
       color: #fff;
       border: none;
@@ -77,9 +79,10 @@
       font-size: 16px;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 20px; /* Added margin for buttons */
     }
 
-    .submit-btn:hover {
+    .submit-btn:hover, .next-btn:hover {
       background-color: #004a99;
     }
 
@@ -109,6 +112,13 @@
       display: block;
       margin: 5px 0;
       font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none; /* All sections hidden by default */
+    }
+    .quiz-section.active {
+        display: block; /* Active section will be shown */
     }
 
     #timer {
@@ -183,31 +193,48 @@
     </div>
 
     <form id="quizForm">
-      <div class="question">1. GNP-এর পরিমাপে নিচের কোনটি যুক্ত হয়?</div>
-      <div class="options">
-        <label><input type="radio" name="q1" value="a"> a) সরকারী খরচ</label>
-        <label><input type="radio" name="q1" value="b"> b) কর</label>
-        <label><input type="radio" name="q1" value="c"> c) বিদেশ থেকে প্রাপ্ত নিট আয়</label>
-        <label><input type="radio" name="q1" value="d"> d) অবচয়</label>
+      <div id="mcqSection" class="quiz-section active"> <div class="question">1. GNP-এর পরিমাপে নিচের কোনটি যুক্ত হয়?</div>
+        <div class="options">
+          <label><input type="radio" name="q1" value="a"> a) সরকারী খরচ</label>
+          <label><input type="radio" name="q1" value="b"> b) কর</label>
+          <label><input type="radio" name="q1" value="c"> c) বিদেশ থেকে প্রাপ্ত নিট আয়</label>
+          <label><input type="radio" name="q1" value="d"> d) অবচয়</label>
+        </div>
+
+        <div class="question">2. NNP নির্ণয়ের সূত্র কোনটি?</div>
+        <div class="options">
+          <label><input type="radio" name="q2" value="a"> a) GNP + Depreciation</label>
+          <label><input type="radio" name="q2" value="b"> b) GNP - Depreciation</label>
+          <label><input type="radio" name="q2" value="c"> c) GDP - Subsidy</label>
+          <label><input type="radio" name="q2" value="d"> d) GDP + Net income</label>
+        </div>
+
+        <div class="question">3. কোনটি Nominal GDP-এর বৈশিষ্ট্য?</div>
+        <div class="options">
+          <label><input type="radio" name="q3" value="a"> a) এটি বর্তমান মূল্যে হিসাব করা হয়</label>
+          <label><input type="radio" name="q3" value="b"> b) এটি নির্দিষ্ট মূল্যে হিসাব করা হয়</label>
+          <label><input type="radio" name="q3" value="c"> c) এটি প্রকৃত উৎপাদন নির্দেশ করে</label>
+          <label><input type="radio" name="q3" value="d"> d) এটি উৎপাদনের পরিমাণ নির্দেশ করে না</label>
+        </div>
+        <button type="button" class="next-btn" onclick="showNextSection('fillInTheBlanksSection')">পরবর্তী</button>
       </div>
 
-      <div class="question">2. NNP নির্ণয়ের সূত্র কোনটি?</div>
-      <div class="options">
-        <label><input type="radio" name="q2" value="a"> a) GNP + Depreciation</label>
-        <label><input type="radio" name="q2" value="b"> b) GNP - Depreciation</label>
-        <label><input type="radio" name="q2" value="c"> c) GDP - Subsidy</label>
-        <label><input type="radio" name="q2" value="d"> d) GDP + Net income</label>
-      </div>
+      <div id="fillInTheBlanksSection" class="quiz-section">
+        <div class="form-group">
+          <label for="q4_fill">4. বাংলাদেশের জাতীয় আয়ের প্রধান উৎস হলো ____।</label>
+          <input type="text" id="q4_fill" name="q4_fill" placeholder="উত্তর লিখুন" required>
+        </div>
 
-      <div class="question">3. কোনটি Nominal GDP-এর বৈশিষ্ট্য?</div>
-      <div class="options">
-        <label><input type="radio" name="q3" value="a"> a) এটি বর্তমান মূল্যে হিসাব করা হয়</label>
-        <label><input type="radio" name="q3" value="b"> b) এটি নির্দিষ্ট মূল্যে হিসাব করা হয়</label>
-        <label><input type="radio" name="q3" value="c"> c) এটি প্রকৃত উৎপাদন নির্দেশ করে</label>
-        <label><input type="radio" name="q3" value="d"> d) এটি উৎপাদনের পরিমাণ নির্দেশ করে না</label>
-      </div>
+        <div class="form-group">
+          <label for="q5_fill">5. অর্থনীতির জনক হিসেবে পরিচিত ____।</label>
+          <input type="text" id="q5_fill" name="q5_fill" placeholder="উত্তর লিখুন" required>
+        </div>
 
-      <button type="submit" class="submit-btn">জমা দিন</button>
+        <div class="form-group">
+          <label for="q6_fill">6. GDP-এর পূর্ণরূপ হলো ____।</label>
+          <input type="text" id="q6_fill" name="q6_fill" placeholder="উত্তর লিখুন" required>
+        </div>
+        <button type="submit" class="submit-btn">জমা দিন</button> </div>
     </form>
   </div>
 
@@ -218,6 +245,14 @@
   <script>
     let studentName = "";
     let studentEmail = "";
+    let currentQuizSection = 'mcqSection'; // Keep track of the current section
+
+    // Check if quiz is done on page load
+    if (localStorage.getItem("quizDone")) {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("quizArea").style.display = "none";
+        document.getElementById("thankYou").style.display = "block";
+    }
 
     function checkLogin(event) {
       event.preventDefault();
@@ -236,23 +271,25 @@
         return;
       }
 
-      // If reCAPTCHA is completed and fields are filled, proceed
       document.getElementById("loginSection").style.display = "none";
       document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active'); // Show the first section
       startTimer();
     }
 
     // === QUIZ LOGIC ===
-    const answers = { q1: "c", q2: "b", q3: "a" };
+    const mcqAnswers = { q1: "c", q2: "b", q3: "a" };
+    // Answers for fill-in-the-gaps (case-insensitive for comparison)
+    const fillInTheBlanksAnswers = {
+        q4_fill: "কৃষি",
+        q5_fill: "অ্যাডাম স্মিথ",
+        q6_fill: "গ্রস ডোমেস্টিক প্রোডাক্ট"
+    };
+
     const form = document.getElementById("quizForm");
     const progressBar = document.getElementById("progressBar");
     let timeLeft = 60;
     let countdown;
-
-    if (localStorage.getItem("quizDone")) {
-      document.getElementById("quizArea").style.display = "none";
-      document.getElementById("thankYou").style.display = "block";
-    }
 
     function startTimer() {
       countdown = setInterval(() => {
@@ -262,52 +299,109 @@
 
         if (timeLeft <= 0) {
           clearInterval(countdown);
-          form.requestSubmit();
+          form.requestSubmit(); // Submit the form if time runs out
         }
       }, 1000);
     }
 
+    // Function to show the next quiz section
+    function showNextSection(nextSectionId) {
+        // Validate current section before moving to next (optional but recommended)
+        const currentSectionElement = document.getElementById(currentQuizSection);
+        const inputsInCurrentSection = currentSectionElement.querySelectorAll('input[required]');
+        let allAnswered = true;
+        inputsInCurrentSection.forEach(input => {
+            if (input.type === 'radio') {
+                const radios = document.getElementsByName(input.name);
+                let radioAnswered = false;
+                for (let i = 0; i < radios.length; i++) {
+                    if (radios[i].checked) {
+                        radioAnswered = true;
+                        break;
+                    }
+                }
+                if (!radioAnswered) {
+                    allAnswered = false;
+                }
+            } else if (input.value.trim() === '') {
+                allAnswered = false;
+            }
+        });
+
+        if (!allAnswered) {
+            alert("অনুগ্রহ করে এই সেকশনের সব প্রশ্নের উত্তর দিন।");
+            return;
+        }
+
+
+        // Hide current section
+        document.getElementById(currentQuizSection).classList.remove('active');
+
+        // Show next section
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId; // Update current section tracker
+    }
+
+
     form.addEventListener("submit", function(e) {
       e.preventDefault();
-      clearInterval(countdown);
+      clearInterval(countdown); // Stop the timer
 
-      let score = 0;
-      for (let q in answers) {
+      let totalScore = 0;
+      let totalQuestions = 0;
+
+      // Calculate score for MCQ section
+      for (let q in mcqAnswers) {
         const selected = form[q].value;
-        if (selected === answers[q]) score++;
+        if (selected === mcqAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
       }
 
-      alert(studentName + ", আপনার স্কোর: " + score + " / " + Object.keys(answers).length);
+      // Calculate score for Fill-in-the-Blanks section
+      for (let q in fillInTheBlanksAnswers) {
+        const userAnswer = form[q].value.trim();
+        // Compare case-insensitively
+        if (userAnswer.toLowerCase() === fillInTheBlanksAnswers[q].toLowerCase()) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
 
-      // Assuming you want to send the recaptchaResponse from the login form to submit_quiz.php
-      // You'll need to store it globally or pass it. For simplicity, we'll get it again.
-      // In a real scenario, it's better to get the response once and use it.
-      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
+      alert(studentName + ", আপনার স্কোর: " + totalScore + " / " + totalQuestions);
+
+      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse(); // Get current recaptcha response
 
       fetch("http://localhost/3ducation/assets/php/submit_quiz.php", {
         method: "POST",
         body: JSON.stringify({
-          name: studentName, // Using the name from the login form
-          email: studentEmail, // Using the email from the login form
-          score: score,
-          recaptchaResponse: recaptchaResponseAtQuizSubmit // Sending the recaptcha response
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          recaptchaResponse: recaptchaResponseAtQuizSubmit
         }),
         headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.json()) // Assuming your PHP returns JSON
+      .then(data => {
+          console.log('Quiz submission response:', data);
+          // Handle response from PHP if needed
+      })
+      .catch(error => {
+          console.error('Error submitting quiz:', error);
       });
 
-      // You'll also need to send this data to your Google Sheet.
-      // This typically involves another server-side script or a direct Google Apps Script Web App.
-      // For demonstration, let's assume you'd make another fetch request here
-      // to a Google Apps Script Web App URL or another backend endpoint that handles Google Sheet integration.
-      //sendToGoogleSheet(studentName, studentEmail, score);
-
+      sendToGoogleSheet(studentName, studentEmail, totalScore);
 
       localStorage.setItem("quizDone", "true");
       document.getElementById("quizArea").style.display = "none";
       document.getElementById("thankYou").style.display = "block";
     });
 
-  </script>
+  
+</script>
 
 </body>
 </html>
