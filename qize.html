@@ -310,11 +310,11 @@
         q6_fill: "গ্রস ডোমেস্টিক প্রোডাক্ট"
     };
 
-  const timeLimit = 60; // seconds
-  let timeLeft = timeLimit;
+  //const timeLimit = 60; // seconds
+  let timeLeft = 60;
   let countdown;
   const form = document.getElementById("quizForm");
-  const timerDisplay = document.getElementById("timer");
+  //const timerDisplay = document.getElementById("timer");
   const quizArea = document.getElementById("quizArea");
   const thankYou = document.getElementById("thankYou");
   const progressBar = document.getElementById("progressBar");
@@ -431,7 +431,7 @@
           console.error('Error submitting quiz:', error);
       });
 
-      sendToGoogleSheet(studentName, studentEmail, totalScore);
+      //sendToGoogleSheet(studentName, studentEmail, totalScore);
 
       // Block repeated attempt
       localStorage.setItem("quizDone", "true");
