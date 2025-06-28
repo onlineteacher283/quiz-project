@@ -280,14 +280,14 @@
     let currentQuizSection = 'mcqSection';
 
     // Check if quiz is done on page load
-    if (localStorage.getItem("quizDone")) {
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("quizArea").style.display = "none";
-        document.getElementById("thankYou").style.display = "block";
+    //if (localStorage.getItem("quizDone")) {
+      //  document.getElementById("loginSection").style.display = "none";
+        //document.getElementById("quizArea").style.display = "none";
+        //document.getElementById("thankYou").style.display = "block";
         // Optionally, load and display the last known score if you stored it in localStorage too
         // For simplicity, we are not storing the score in localStorage, only the quizDone status.
         // If you want to show the score on refresh, you'd also save finalScore and totalQuestions to localStorage.
-    }
+    //}
 
     function checkLogin(event) {
       event.preventDefault();
@@ -325,6 +325,13 @@
     let timeLeft = 60;
     let countdown;
 
+    if (localStorage.getItem("quizDone")) {
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "none";
+      document.getElementById("thankYou").style.display = "block";
+    }
+
+    
     function startTimer() {
       countdown = setInterval(() => {
         timeLeft--;
