@@ -431,11 +431,13 @@
           console.error('Error submitting quiz:', error);
       });
 
-    // Block repeated attempt
-    localStorage.setItem("quizDone", "true");
-    quizArea.style.display = "none";
-    thankYou.style.display = "block";
-    
+      sendToGoogleSheet(studentName, studentEmail, totalScore);
+
+      // Block repeated attempt
+      localStorage.setItem("quizDone", "true");
+      quizArea.style.display = "none";
+      thankYou.style.display = "block";
+
     });
 
 
