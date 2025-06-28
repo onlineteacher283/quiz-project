@@ -167,10 +167,8 @@
     <label for="studentEmail">Email</label>
     <input type="email" id="studentEmail" name="studentEmail" required>
   </div>
-
-  <!-- 👇 Move reCAPTCHA here -->
+ 
   <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq" style="margin-bottom: 15px;"></div>
-
   <button type="submit" class="submit-btn">Submit</button>
 </form>
 
@@ -241,6 +239,7 @@
       const errorDiv = document.getElementById("error-message");
 
       const recaptchaResponse = grecaptcha.getResponse();
+      
       if (recaptchaResponse.length === 0) {
         errorDiv.textContent = "❌ Please complete the reCAPTCHA.";
         return;
@@ -289,15 +288,9 @@
 
       const username = document.getElementById("username").value.trim();
       const email = document.getElementById("email").value.trim();
-      const recaptchaResponse = grecaptcha.getResponse();
-
+      
       if (!username || !email) {
         alert("অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।");
-        return;
-      }
-
-      if (recaptchaResponse.length === 0) {
-        alert("reCAPTCHA সম্পন্ন করুন।");
         return;
       }
 
