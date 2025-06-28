@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin-top: 50px;
+      margin-top: 10px;
       background: #f4f6f8;
       font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
     }
@@ -164,23 +164,14 @@
           <label for="studentEmail">Email</label>
           <input type="email" id="studentEmail" name="studentEmail" required>
         </div>
-        <button type="submit" class="submit-btn">Submit</button>
+        <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>
+        <button type="submit" class="submit-btn" style="margin-top: 20px;">Submit</button>
       </form>
     </div>
   </div>
 
   <div id="quizArea">
     <h2 style="text-align:center;">অর্থনীতি কুইজ</h2>
-
-    <div class="form-group">
-      <label for="username">আপনার নাম:</label>
-      <input type="text" id="username" name="username" required>
-    </div>
-
-    <div class="form-group">
-      <label for="email">আপনার ইমেইল:</label>
-      <input type="email" id="email" name="email" required>
-    </div>
 
     <div id="timer">
       <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
@@ -216,7 +207,6 @@
         <label><input type="radio" name="q3" value="d"> d) এটি উৎপাদনের পরিমাণ নির্দেশ করে না</label>
       </div>
 
-      <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>
       <button type="submit" class="submit-btn">জমা দিন</button>
     </form>
   </div>
@@ -226,22 +216,30 @@
   </div>
 
   <script>
+    let studentName = "";
+    let studentEmail = "";
+
     function checkLogin(event) {
       event.preventDefault();
-      const name = document.getElementById("studentName").value.trim();
-      const email = document.getElementById("studentEmail").value.trim();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const recaptchaResponse = grecaptcha.getResponse();
       const errorDiv = document.getElementById("error-message");
 
-      if (name === "Shibu" && email === "sen@gmail.com") {
-        document.getElementById("loginSection").style.display = "none";
-        //document.querySelector(".banner").style.display = "none";
-        document.getElementById("quizArea").style.display = "block";
-        document.getElementById("username").value = name;
-        document.getElementById("email").value = email;
-        startTimer();
-      } else {
-        errorDiv.textContent = "❌ Invalid name or email. Please try again.";
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
       }
+
+      if (recaptchaResponse.length === 0) {
+        errorDiv.textContent = "reCAPTCHA সম্পন্ন করুন।";
+        return;
+      }
+
+      // If reCAPTCHA is completed and fields are filled, proceed
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      startTimer();
     }
 
     // === QUIZ LOGIC ===
@@ -273,43 +271,42 @@
       e.preventDefault();
       clearInterval(countdown);
 
-      const username = document.getElementById("username").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const recaptchaResponse = grecaptcha.getResponse();
-
-      if (!username || !email) {
-        alert("অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।");
-        return;
-      }
-
-      if (recaptchaResponse.length === 0) {
-        alert("reCAPTCHA সম্পন্ন করুন।");
-        return;
-      }
-
       let score = 0;
       for (let q in answers) {
         const selected = form[q].value;
         if (selected === answers[q]) score++;
       }
 
-      alert(username + ", আপনার স্কোর: " + score + " / " + Object.keys(answers).length);
+      alert(studentName + ", আপনার স্কোর: " + score + " / " + Object.keys(answers).length);
+
+      // Assuming you want to send the recaptchaResponse from the login form to submit_quiz.php
+      // You'll need to store it globally or pass it. For simplicity, we'll get it again.
+      // In a real scenario, it's better to get the response once and use it.
+      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
 
       fetch("http://localhost/3ducation/assets/php/submit_quiz.php", {
         method: "POST",
         body: JSON.stringify({
-          name: username,
-          email: email,
+          name: studentName, // Using the name from the login form
+          email: studentEmail, // Using the email from the login form
           score: score,
-          recaptchaResponse: recaptchaResponse
+          recaptchaResponse: recaptchaResponseAtQuizSubmit // Sending the recaptcha response
         }),
         headers: { "Content-Type": "application/json" }
       });
+
+      // You'll also need to send this data to your Google Sheet.
+      // This typically involves another server-side script or a direct Google Apps Script Web App.
+      // For demonstration, let's assume you'd make another fetch request here
+      // to a Google Apps Script Web App URL or another backend endpoint that handles Google Sheet integration.
+      //sendToGoogleSheet(studentName, studentEmail, score);
+
 
       localStorage.setItem("quizDone", "true");
       document.getElementById("quizArea").style.display = "none";
       document.getElementById("thankYou").style.display = "block";
     });
+
   </script>
 
 </body>
