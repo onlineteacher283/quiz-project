@@ -7,7 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
+      margin-top: 20px;
+      //background: #000000;
       background: #f4f6f8;
       font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
     }
@@ -146,8 +147,6 @@
 </head>
 <body>
 
-  <div class="banner"></div>
-
   <div class="container" id="loginSection">
     <div class="left">
       <h1>Welcome to InfoTech.com</h1>
@@ -157,17 +156,24 @@
     <div class="right">
       <h2>Student Login</h2>
       <form onsubmit="return checkLogin(event)">
-        <div id="error-message"></div>
-        <div class="form-group">
-          <label for="studentName">Student Name</label>
-          <input type="text" id="studentName" name="studentName" required>
-        </div>
-        <div class="form-group">
-          <label for="studentEmail">Email</label>
-          <input type="email" id="studentEmail" name="studentEmail" required>
-        </div>
-        <button type="submit" class="submit-btn">Submit</button>
-      </form>
+  <div id="error-message"></div>
+
+  <div class="form-group">
+    <label for="studentName">Student Name</label>
+    <input type="text" id="studentName" name="studentName" required>
+  </div>
+
+  <div class="form-group">
+    <label for="studentEmail">Email</label>
+    <input type="email" id="studentEmail" name="studentEmail" required>
+  </div>
+
+  <!-- 👇 Move reCAPTCHA here -->
+  <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq" style="margin-bottom: 15px;"></div>
+
+  <button type="submit" class="submit-btn">Submit</button>
+</form>
+
     </div>
   </div>
 
@@ -218,7 +224,7 @@
         <label><input type="radio" name="q3" value="d"> d) এটি উৎপাদনের পরিমাণ নির্দেশ করে না</label>
       </div>
 
-      <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>
+      
       <button type="submit" class="submit-btn">জমা দিন</button>
     </form>
   </div>
@@ -233,6 +239,13 @@
       const name = document.getElementById("studentName").value.trim();
       const email = document.getElementById("studentEmail").value.trim();
       const errorDiv = document.getElementById("error-message");
+
+      const recaptchaResponse = grecaptcha.getResponse();
+      if (recaptchaResponse.length === 0) {
+        errorDiv.textContent = "❌ Please complete the reCAPTCHA.";
+        return;
+      }
+
 
       if (name === "Shibu" && email === "sen@gmail.com") {
         document.getElementById("loginSection").style.display = "none";
