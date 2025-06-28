@@ -63,7 +63,7 @@
 
     .form-group input[type="text"],
     .form-group input[type="email"],
-    .form-group input[type="number"] { /* Added number for fill-in-the-gaps */
+    .form-group input[type="number"] {
       width: 100%;
       padding: 12px;
       border: 1px solid #ccc;
@@ -79,7 +79,7 @@
       font-size: 16px;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 20px; /* Added margin for buttons */
+      margin-top: 20px;
     }
 
     .submit-btn:hover, .next-btn:hover {
@@ -115,10 +115,10 @@
     }
 
     .quiz-section {
-        display: none; /* All sections hidden by default */
+        display: none;
     }
     .quiz-section.active {
-        display: block; /* Active section will be shown */
+        display: block;
     }
 
     #timer {
@@ -150,6 +150,32 @@
       margin-top: 50px;
       font-size: 20px;
       color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
   </style>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -193,7 +219,8 @@
     </div>
 
     <form id="quizForm">
-      <div id="mcqSection" class="quiz-section active"> <div class="question">1. GNP-এর পরিমাপে নিচের কোনটি যুক্ত হয়?</div>
+      <div id="mcqSection" class="quiz-section active">
+        <div class="question">1. GNP-এর পরিমাপে নিচের কোনটি যুক্ত হয়?</div>
         <div class="options">
           <label><input type="radio" name="q1" value="a"> a) সরকারী খরচ</label>
           <label><input type="radio" name="q1" value="b"> b) কর</label>
@@ -234,24 +261,32 @@
           <label for="q6_fill">6. GDP-এর পূর্ণরূপ হলো ____।</label>
           <input type="text" id="q6_fill" name="q6_fill" placeholder="উত্তর লিখুন" required>
         </div>
-        <button type="submit" class="submit-btn">জমা দিন</button> </div>
+        <button type="submit" class="submit-btn">জমা দিন</button>
+      </div>
     </form>
   </div>
 
   <div id="thankYou">
-    <h2>ধন্যবাদ! আপনি ইতিমধ্যেই কুইজটি সম্পন্ন করেছেন।</h2>
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    <p>আশা করি আপনার অভিজ্ঞতা ভালো লেগেছে।</p>
   </div>
 
   <script>
     let studentName = "";
     let studentEmail = "";
-    let currentQuizSection = 'mcqSection'; // Keep track of the current section
+    let currentQuizSection = 'mcqSection';
 
     // Check if quiz is done on page load
     if (localStorage.getItem("quizDone")) {
         document.getElementById("loginSection").style.display = "none";
         document.getElementById("quizArea").style.display = "none";
         document.getElementById("thankYou").style.display = "block";
+        // Optionally, load and display the last known score if you stored it in localStorage too
+        // For simplicity, we are not storing the score in localStorage, only the quizDone status.
+        // If you want to show the score on refresh, you'd also save finalScore and totalQuestions to localStorage.
     }
 
     function checkLogin(event) {
@@ -273,13 +308,12 @@
 
       document.getElementById("loginSection").style.display = "none";
       document.getElementById("quizArea").style.display = "block";
-      document.getElementById(currentQuizSection).classList.add('active'); // Show the first section
+      document.getElementById(currentQuizSection).classList.add('active');
       startTimer();
     }
 
     // === QUIZ LOGIC ===
     const mcqAnswers = { q1: "c", q2: "b", q3: "a" };
-    // Answers for fill-in-the-gaps (case-insensitive for comparison)
     const fillInTheBlanksAnswers = {
         q4_fill: "কৃষি",
         q5_fill: "অ্যাডাম স্মিথ",
@@ -299,14 +333,12 @@
 
         if (timeLeft <= 0) {
           clearInterval(countdown);
-          form.requestSubmit(); // Submit the form if time runs out
+          form.requestSubmit();
         }
       }, 1000);
     }
 
-    // Function to show the next quiz section
     function showNextSection(nextSectionId) {
-        // Validate current section before moving to next (optional but recommended)
         const currentSectionElement = document.getElementById(currentQuizSection);
         const inputsInCurrentSection = currentSectionElement.querySelectorAll('input[required]');
         let allAnswered = true;
@@ -333,20 +365,15 @@
             return;
         }
 
-
-        // Hide current section
         document.getElementById(currentQuizSection).classList.remove('active');
-
-        // Show next section
         const nextSectionElement = document.getElementById(nextSectionId);
         nextSectionElement.classList.add('active');
-        currentQuizSection = nextSectionId; // Update current section tracker
+        currentQuizSection = nextSectionId;
     }
-
 
     form.addEventListener("submit", function(e) {
       e.preventDefault();
-      clearInterval(countdown); // Stop the timer
+      clearInterval(countdown);
 
       let totalScore = 0;
       let totalQuestions = 0;
@@ -363,16 +390,18 @@
       // Calculate score for Fill-in-the-Blanks section
       for (let q in fillInTheBlanksAnswers) {
         const userAnswer = form[q].value.trim();
-        // Compare case-insensitively
         if (userAnswer.toLowerCase() === fillInTheBlanksAnswers[q].toLowerCase()) {
             totalScore++;
         }
         totalQuestions++;
       }
 
-      alert(studentName + ", আপনার স্কোর: " + totalScore + " / " + totalQuestions);
+      // --- Display score on page instead of alert ---
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+      // --- End Display score ---
 
-      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse(); // Get current recaptcha response
+      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
 
       fetch("http://localhost/3ducation/assets/php/submit_quiz.php", {
         method: "POST",
@@ -384,10 +413,9 @@
         }),
         headers: { "Content-Type": "application/json" }
       })
-      .then(response => response.json()) // Assuming your PHP returns JSON
+      .then(response => response.json())
       .then(data => {
           console.log('Quiz submission response:', data);
-          // Handle response from PHP if needed
       })
       .catch(error => {
           console.error('Error submitting quiz:', error);
@@ -397,10 +425,11 @@
 
       localStorage.setItem("quizDone", "true");
       document.getElementById("quizArea").style.display = "none";
-      document.getElementById("thankYou").style.display = "block";
+      document.getElementById("thankYou").style.display = "block"; // Ensure thank you section is shown
     });
 
-  
+
+
 </script>
 
 </body>
