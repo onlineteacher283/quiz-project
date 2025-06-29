@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InfoTech Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 26px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+
+    }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 40px;
+
+    }
+
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h3>Welcome to <u>InfoTech.com</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+      <h2>Taxation Test-1</h2>
+    </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        <button type="submit" class="submit-btn" style="margin-top: 20px;">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">Online Education Center</h1>
+    <h3 style="text-align:center;">Subject: Taxation 1    Full marks: 40    Time: 30mnts     Class: XII (SEM- III)</h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+<form id="quizForm">
+  <!-- Section 1: Questions 1-10 -->
+  <div id="quizSection1" class="quiz-section active">
+    <div class="question">1. ব্যবসার জন্য ব্যবহৃত গাড়ি কোন শ্রেণির সম্পত্তি?</div>
+    <div class="options">
+      <label><input type="radio" name="q1" value="a"> a) মুনাফার সম্পত্তি</label>
+      <label><input type="radio" name="q1" value="b"> b) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q1" value="c"> c) সঞ্চয় সম্পত্তি</label>
+      <label><input type="radio" name="q1" value="d"> d) মূলধনী সম্পত্তি</label>
+    </div>
+
+    <div class="question">2. পুরস্কারের জন্য প্রাপ্ত রৌপ্যমুদ্রা কোন ধরণের সম্পত্তির অন্তর্গত?</div>
+    <div class="options">
+      <label><input type="radio" name="q2" value="a"> a) মুনাফার সম্পত্তি</label>
+      <label><input type="radio" name="q2" value="b"> b) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q2" value="c"> c) মূলধনী সম্পত্তি</label>
+      <label><input type="radio" name="q2" value="d"> d) সঞ্চয় সম্পত্তি</label>
+    </div>
+
+    <div class="question">3. ব্যবসার উৎপাদনের জন্য প্রয়োজনীয় উপকরণ (Raw materials) কোন ধরণের সম্পত্তি?</div>
+    <div class="options">
+      <label><input type="radio" name="q3" value="a"> a) মূলধনী সম্পত্তি</label>
+      <label><input type="radio" name="q3" value="b"> b) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q3" value="c"> c) মুনাফার সম্পত্তি</label>
+      <label><input type="radio" name="q3" value="d"> d) চলতি সম্পত্তি</label>
+    </div>
+
+    <div class="question">4. ব্যবসার প্রতিপত্তির সুনাম কী ধরনের সম্পত্তি?</div>
+    <div class="options">
+      <label><input type="radio" name="q4" value="a"> a) নির্দিষ্ট সম্পত্তি</label>
+      <label><input type="radio" name="q4" value="b"> b) অমূর্ত সম্পত্তি</label>
+      <label><input type="radio" name="q4" value="c"> c) চলতি সম্পত্তি</label>
+      <label><input type="radio" name="q4" value="d"> d) শেয়ার সম্পত্তি</label>
+    </div>
+
+    <div class="question">5. নিজের ব্যবহারের গৃহসজ্জার সামগ্রী কোন সম্পত্তির শ্রেণিভুক্ত?</div>
+    <div class="options">
+      <label><input type="radio" name="q5" value="a"> a) চলমান সম্পত্তি (Movable)</label>
+      <label><input type="radio" name="q5" value="b"> b) মূলধনী সম্পত্তি</label>
+      <label><input type="radio" name="q5" value="c"> c) অচল সম্পত্তি</label>
+      <label><input type="radio" name="q5" value="d"> d) ব্যক্তিগত সম্পত্তি</label>
+    </div>
+
+    <div class="question">6. সরকারের দ্বারা বিতরণকৃত স্বর্ণপত্র প্রকল্প কোন ধরণের সম্পত্তি নয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q6" value="a"> a) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q6" value="b"> b) মুনাফার সম্পত্তি</label>
+      <label><input type="radio" name="q6" value="c"> c) মূলধনী সম্পত্তি</label>
+      <label><input type="radio" name="q6" value="d"> d) অস্থায়ী সম্পত্তি</label>
+    </div>
+
+    <div class="question">7. নিজের ব্যবহারের গহনা কোন শ্রেণির সম্পত্তি?</div>
+    <div class="options">
+      <label><input type="radio" name="q7" value="a"> a) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q7" value="b"> b) অমূল্য সম্পত্তি</label>
+      <label><input type="radio" name="q7" value="c"> c) মূলধনী সম্পত্তি</label>
+      <label><input type="radio" name="q7" value="d"> d) সঞ্চয় সম্পত্তি</label>
+    </div>
+
+    <div class="question">8. ব্যবসার উৎপাদনযোগ্য সামগ্রী (Stock-in-trade) কোন ধরণের সম্পত্তি?</div>
+    <div class="options">
+      <label><input type="radio" name="q8" value="a"> a) মুনাফার সম্পত্তি</label>
+      <label><input type="radio" name="q8" value="b"> b) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q8" value="c"> c) মূলধনী সম্পত্তি</label>
+      <label><input type="radio" name="q8" value="d"> d) শেয়ার সম্পত্তি</label>
+    </div>
+
+    <div class="question">9. ব্যক্তিগত ব্যবহারের মোটর সাইকেল সাধারণত কোন সম্পত্তির শ্রেণিতে পড়ে না?</div>
+    <div class="options">
+      <label><input type="radio" name="q9" value="a"> a) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q9" value="b"> b) মুনাফার সম্পত্তি</label>
+      <label><input type="radio" name="q9" value="c"> c) মূলধনী সম্পত্তি</label>
+      <label><input type="radio" name="q9" value="d"> d) সঞ্চয় সম্পত্তি</label>
+    </div>
+
+    <div class="question">10. মুনাফা অর্জনের জন্য মূলধনী সম্পত্তি স্থানান্তরের উপর কর আরোপ করা হয় কোন ধারা অনুসারে?</div>
+    <div class="options">
+      <label><input type="radio" name="q10" value="a"> a) ধারা 54</label>
+      <label><input type="radio" name="q10" value="b"> b) ধারা 45(1)</label>
+      <label><input type="radio" name="q10" value="c"> c) ধারা 24(b)</label>
+      <label><input type="radio" name="q10" value="d"> d) ধারা 80C</label>
+    </div>
+    <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পরবর্তী</button>
+  </div>
+
+  <!-- Section 2: Questions 11-20 -->
+  <div id="quizSection2" class="quiz-section">
+    <div class="question">11. Section 2(14) অনুযায়ী কোন একটি মূলধনী সম্পত্তির সংজ্ঞার অন্তর্ভুক্ত?</div>
+    <div class="options">
+      <label><input type="radio" name="q11" value="a"> a) ব্যক্তিগত ব্যবহারের জুতা</label>
+      <label><input type="radio" name="q11" value="b"> b) কোম্পানির স্টক</label>
+      <label><input type="radio" name="q11" value="c"> c) বিনিয়োগযোগ্য শেয়ার</label>
+      <label><input type="radio" name="q11" value="d"> d) খাদ্য সামগ্রী</label>
+    </div>
+
+    <div class="question">12. ব্যবসায়িক উদ্দেশ্যে ব্যবহৃত গাড়ি কোন শ্রেণির সম্পত্তি?</div>
+    <div class="options">
+      <label><input type="radio" name="q12" value="a"> a) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q12" value="b"> b) মূলধনী সম্পত্তি</label>
+      <label><input type="radio" name="q12" value="c"> c) স্টক-ইন-ট্রেড</label>
+      <label><input type="radio" name="q12" value="d"> d) চলতি সম্পত্তি</label>
+    </div>
+
+    <div class="question">13. নিম্নের কোনটি "ব্যক্তিগত ব্যবহার" এর আওতাভুক্ত হওয়া সত্ত্বেও মূলধনী সম্পত্তি বলে গণ্য হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q13" value="a"> a) বাইসাইকেল</label>
+      <label><input type="radio" name="q13" value="b"> b) গহনা</label>
+      <label><input type="radio" name="q13" value="c"> c) ক্রীড়া সামগ্রী</label>
+      <label><input type="radio" name="q13" value="d"> d) আসবাবপত্র</label>
+    </div>
+
+    <div class="question">14. Section 45(1) অনুযায়ী, মূলধনী লাভ কখন করযোগ্য হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q14" value="a"> a) সম্পত্তি ক্রয়ের সময়</label>
+      <label><input type="radio" name="q14" value="b"> b) সম্পত্তি ব্যবহারের সময়</label>
+      <label><input type="radio" name="q14" value="c"> c) সম্পত্তি হস্তান্তরের সময়</label>
+      <label><input type="radio" name="q14" value="d"> d) সম্পত্তি মূল্যায়নের সময়</label>
+    </div>
+
+    <div class="question">15. স্বল্পমেয়াদি মূলধনী সম্পত্তি সম্পর্কিত ধারা কোনটি?</div>
+    <div class="options">
+      <label><input type="radio" name="q15" value="a"> a) 2(14)</label>
+      <label><input type="radio" name="q15" value="b"> b) 45(1)</label>
+      <label><input type="radio" name="q15" value="c"> c) 2(42A)</label>
+      <label><input type="radio" name="q15" value="d"> d) 2(29A)</label>
+    </div>
+
+    <div class="question">16. তালিকাভুক্ত শেয়ার যদি 12 মাস বা তার কম সময় ধারণ করা হয়, তাহলে তা কোন শ্রেণির সম্পত্তি হবে?</div>
+    <div class="options">
+      <label><input type="radio" name="q16" value="a"> a) দীর্ঘমেয়াদি সম্পত্তি</label>
+      <label><input type="radio" name="q16" value="b"> b) স্বল্পমেয়াদি সম্পত্তি</label>
+      <label><input type="radio" name="q16" value="c"> c) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q16" value="d"> d) স্থায়ী সম্পত্তি</label>
+    </div>
+
+    <div class="question">17. Section 2(29A) অনুযায়ী কোন সম্পত্তিকে দীর্ঘমেয়াদি মূলধনী সম্পত্তি বলা হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q17" value="a"> a) যেটি 24 মাসের কম সময় ধরা হয়</label>
+      <label><input type="radio" name="q17" value="b"> b) যেটি 36 মাসের বেশি সময় ধরা হয়</label>
+      <label><input type="radio" name="q17" value="c"> c) যেটি বিক্রির ১ মাসের মধ্যে ব্যবহার করা হয়</label>
+      <label><input type="radio" name="q17" value="d"> d) যেটি সম্পূর্ণ অব্যবহৃত থাকে</label>
+    </div>
+
+    <div class="question">18. কোন সম্পত্তি 31 আগস্ট, 2023 এর পূর্বে ক্রয় করা হলে তা দীর্ঘমেয়াদি হিসেবে গণ্য হবে যদি---</div>
+    <div class="options">
+      <label><input type="radio" name="q18" value="a"> a) 12 মাস বা কম সময় ধারণ করা হয়</label>
+      <label><input type="radio" name="q18" value="b"> b) 24 মাস বা কম সময় ধারণ করা হয়</label>
+      <label><input type="radio" name="q18" value="c"> c) 24 মাসের বেশি সময় ধারণ করা হয়</label>
+      <label><input type="radio" name="q18" value="d"> d) 36 মাসের কম সময় ধারণ করা হয়</label>
+    </div>
+
+    <div class="question">19. 1 জানুয়ারি, 2024 তারিখে 10,000 টাকায় কেনা শেয়ার যদি 25 ডিসেম্বর, 2024 তারিখে 15,000 টাকায় বিক্রি করা হয়, তবে সেটি হবে ---</div>
+    <div class="options">
+      <label><input type="radio" name="q19" value="a"> a) দীর্ঘমেয়াদি সম্পত্তি</label>
+      <label><input type="radio" name="q19" value="b"> b) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q19" value="c"> c) স্থায়ী সম্পত্তি</label>
+      <label><input type="radio" name="q19" value="d"> d) স্বল্পমেয়াদি মূলধনী সম্পত্তি</label>
+    </div>
+
+    <div class="question">20. একজন ব্যক্তি 1 জানুয়ারি, 2024 তারিখে 10,000 টাকায় শেয়ার কিনে 25 জুলাই, 2024 তারিখে বিক্রি করেন। এটি কোন শ্রেণির সম্পত্তি?</div>
+    <div class="options">
+      <label><input type="radio" name="q20" value="a"> a) অচল সম্পত্তি</label>
+      <label><input type="radio" name="q20" value="b"> b) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q20" value="c"> c) স্বল্পমেয়াদি মূলধনী সম্পত্তি</label>
+      <label><input type="radio" name="q20" value="d"> d) দীর্ঘমেয়াদি মূলধনী সম্পত্তি</label>
+    </div>
+    <button type="button" class="next-btn" onclick="showNextSection('quizSection1')">পূর্ববর্তী</button>
+    <button type="button" class="next-btn1" onclick="showNextSection('quizSection3')">পরবর্তী</button>
+  </div>
+
+  <!-- Section 3: Questions 21-30 -->
+  <div id="quizSection3" class="quiz-section">
+    <div class="question">21. 26 জুলাই 2023 তারিখে শেয়ার ক্রয় করে, 25 জুলাই 2025 তারিখে বিক্রি করা হলে সেটি কোন শ্রেণির সম্পত্তি হবে?</div>
+    <div class="options">
+      <label><input type="radio" name="q21" value="a"> a) স্বল্পমেয়াদি সম্পত্তি</label>
+      <label><input type="radio" name="q21" value="b"> b) চলমান সম্পত্তি</label>
+      <label><input type="radio" name="q21" value="c"> c) মুনাফার সম্পত্তি</label>
+      <label><input type="radio" name="q21" value="d"> d) দীর্ঘমেয়াদি সম্পত্তি</label>
+    </div>
+
+    <div class="question">22. যে মূলধনী সম্পত্তি ১২ মাস বা ২৪ মাসের কম সময় অধিকারভুক্ত থাকে, তাকে কী বলা হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q22" value="a"> a) ব্যক্তিগত সম্পত্তি</label>
+      <label><input type="radio" name="q22" value="b"> b) স্থায়ী সম্পত্তি</label>
+      <label><input type="radio" name="q22" value="c"> c) স্বল্পমেয়াদি মূলধনী সম্পত্তি</label>
+      <label><input type="radio" name="q22" value="d"> d) দীর্ঘমেয়াদি মূলধনী সম্পত্তি</label>
+    </div>
+
+    <div class="question">23. দীর্ঘমেয়াদি মূলধনী সম্পত্তি বিক্রি করে যে লাভ হয়, তাকে কী বলা হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q23" value="a"> a) স্থায়ী মুনাফা</label>
+      <label><input type="radio" name="q23" value="b"> b) দীর্ঘমেয়াদি মূলধনী লাভ</label>
+      <label><input type="radio" name="q23" value="c"> c) ব্যক্তিগত লাভ</label>
+      <label><input type="radio" name="q23" value="d"> d) সঞ্চয় লাভ</label>
+    </div>
+
+    <div class="question">24. স্বল্পমেয়াদি মূলধনী লাভের উপর সাধারণত কত শতাংশ হারে কর আরোপ করা হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q24" value="a"> a) 5%</label>
+      <label><input type="radio" name="q24" value="b"> b) 10%</label>
+      <label><input type="radio" name="q24" value="c"> c) 15%</label>
+      <label><input type="radio" name="q24" value="d"> d) 20%</label>
+    </div>
+
+    <div class="question">25. দীর্ঘমেয়াদি মূলধনী লাভের উপর সাধারণত কত শতাংশ কর আরোপ করা হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q25" value="a"> a) 10%</label>
+      <label><input type="radio" name="q25" value="b"> b) 15%</label>
+      <label><input type="radio" name="q25" value="c"> c) 25%</label>
+      <label><input type="radio" name="q25" value="d"> d) 20%</label>
+    </div>
+
+    <div class="question">26. দীর্ঘমেয়াদি মূলধনী ক্ষতির সমন্বয় সাধারণত কাদের সঙ্গে করা যায়?</div>
+    <div class="options">
+      <label><input type="radio" name="q26" value="a"> a) জমি বিক্রির ক্ষতির সঙ্গে</label>
+      <label><input type="radio" name="q26" value="b"> b) ব্যবসায়িক লাভের সঙ্গে</label>
+      <label><input type="radio" name="q26" value="c"> c) স্বল্পমেয়াদি মূলধনী লাভের সঙ্গে</label>
+      <label><input type="radio" name="q26" value="d"> d) সুদের আয়ের সঙ্গে</label>
+    </div>
+
+    <div class="question">27. মূলধনী সম্পত্তি হস্তান্তরের সংজ্ঞা কোন ধারায় দেওয়া হয়েছে?</div>
+    <div class="options">
+      <label><input type="radio" name="q27" value="a"> a) 2(14)</label>
+      <label><input type="radio" name="q27" value="b"> b) 2(47)</label>
+      <label><input type="radio" name="q27" value="c"> c) 45(1)</label>
+      <label><input type="radio" name="q27" value="d"> d) 54</label>
+    </div>
+
+    <div class="question">28. সম্পত্তির হস্তান্তরের মধ্যে 'Relinquishment' শব্দের অর্থ কী?</div>
+    <div class="options">
+      <label><input type="radio" name="q28" value="a"> a) বন্ধক রাখা</label>
+      <label><input type="radio" name="q28" value="b"> b) হস্তান্তর গ্রহণ</label>
+      <label><input type="radio" name="q28" value="c"> c) পরিত্যাগ করা</label>
+      <label><input type="radio" name="q28" value="d"> d) নির্মাণ করা</label>
+    </div>
+
+    <div class="question">29. সাধারণত 'Lease' (ভাড়ার ভিত্তিতে হস্তান্তর) কি সম্পত্তি হস্তান্তর বলে গণ্য হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q29" value="a"> a) হ্যাঁ</label>
+      <label><input type="radio" name="q29" value="b"> b) না</label>
+      <label><input type="radio" name="q29" value="c"> c) কিছু ক্ষেত্রে</label>
+      <label><input type="radio" name="q29" value="d"> d) আদালতের অনুমতির পরে</label>
+    </div>
+
+    <div class="question">30. কোনো কোম্পানি যদি ভেঙে যায় এবং শেয়ারহোল্ডারদের সম্পত্তি দেয়, তাহলে তা কী গণ্য হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q30" value="a"> a) বিনিয়োগ</label>
+      <label><input type="radio" name="q30" value="b"> b) দান</label>
+      <label><input type="radio" name="q30" value="c"> c) হস্তান্তর</label>
+      <label><input type="radio" name="q30" value="d"> d) রপ্তানি</label>
+    </div>
+    <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পূর্ববর্তী</button>
+    <button type="button" class="next-btn1" onclick="showNextSection('quizSection4')">পরবর্তী</button>
+  </div>
+
+  <!-- Section 4: Questions 31-40 -->
+  <div id="quizSection4" class="quiz-section">
+    <div class="question">31. সেকশন 53A অনুসারে মালিকানা হস্তান্তরের জন্য কোন আইনের অধীনে কার্যক্রম সম্পন্ন হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q31" value="a"> a) দণ্ডবিধি আইন</label>
+      <label><input type="radio" name="q31" value="b"> b) কোম্পানি আইন</label>
+      <label><input type="radio" name="q31" value="c"> c) Indian Contract Act</label>
+      <label><input type="radio" name="q31" value="d"> d) Transfer of Property Act, 1882</label>
+    </div>
+
+    <div class="question">32. মূলধনী সম্পত্তির ক্ষতিপূরণের ফলে প্রাপ্ত বীমা কোন ধারার অন্তর্গত?</div>
+    <div class="options">
+      <label><input type="radio" name="q32" value="a"> a) 45(1)</label>
+      <label><input type="radio" name="q32" value="b"> b) 45(2)</label>
+      <label><input type="radio" name="q32" value="c"> c) 45(1A)</label>
+      <label><input type="radio" name="q32" value="d"> d) 46(2)</label>
+    </div>
+
+    <div class="question">33. কোনো কোম্পানির অবসানের ফলে শেয়ারহোল্ডার কর্তৃক প্রাপ্ত সম্পত্তি কোন ধারায় উল্লেখ আছে?</div>
+    <div class="options">
+      <label><input type="radio" name="q33" value="a"> a) 54</label>
+      <label><input type="radio" name="q33" value="b"> b) 50C</label>
+      <label><input type="radio" name="q33" value="c"> c) 45(1A)</label>
+      <label><input type="radio" name="q33" value="d"> d) 46(2)</label>
+    </div>
+
+    <div class="question">34. জমি হস্তান্তরের ক্ষেত্রে যদি স্ট্যাম্প মুল্য নির্ধারিত মূল্যের চেয়ে বেশি হয়, তাহলে কোন মূল্য বিবেচনায় নেওয়া হবে?</div>
+    <div class="options">
+      <label><input type="radio" name="q34" value="a"> a) বাজার মূল্য</label>
+      <label><input type="radio" name="q34" value="b"> b) মূল চুক্তির মূল্য</label>
+      <label><input type="radio" name="q34" value="c"> c) স্ট্যাম্প কর্তৃপক্ষের নির্ধারিত মূল্য</label>
+      <label><input type="radio" name="q34" value="d"> d) ন্যূনতম মূল্য</label>
+    </div>
+
+    <div class="question">35. ধারা 50C অনুযায়ী নির্ধারিত মূল্যের চেয়ে স্ট্যাম্প ভ্যালু বেশি হলে কোনটি প্রযোজ্য?</div>
+    <div class="options">
+      <label><input type="radio" name="q35" value="a"> a) কম মূল্য</label>
+      <label><input type="radio" name="q35" value="b"> b) ক্রেতার মূল্য</label>
+      <label><input type="radio" name="q35" value="c"> c) স্ট্যাম্প কর্তৃপক্ষের নির্ধারিত মূল্য</label>
+      <label><input type="radio" name="q35" value="d"> d) দরকষাকষির মূল্য</label>
+    </div>
+
+    <div class="question">36. জমির স্ট্যাম্প মূল্যের উপর কর প্রযোজ্য হয় যদি ---</div>
+    <div class="options">
+      <label><input type="radio" name="q36" value="a"> a) জমি বিক্রি হয় সরকারকে</label>
+      <label><input type="radio" name="q36" value="b"> b) দলিলের মূল্যের চেয়ে স্ট্যাম্প মূল্য বেশি হয়</label>
+      <label><input type="radio" name="q36" value="c"> c) জমি বন্ধক রাখা হয়</label>
+      <label><input type="radio" name="q36" value="d"> d) জমি উত্তরাধিকারসূত্রে প্রাপ্ত হয়</label>
+    </div>
+
+    <div class="question">37. কর আইনের অধীনে জমির একটি স্বল্পমেয়াদি মূলধনী সম্পত্তি হয়, যখন নির্ধারিত অধিকারকাল থাকে ---</div>
+    <div class="options">
+      <label><input type="radio" name="q37" value="a"> a) 12 মাসের কম সময়</label>
+      <label><input type="radio" name="q37" value="b"> b) 12 মাস বা তার কম সময়</label>
+      <label><input type="radio" name="q37" value="c"> c) 24 মাসের কম সময়</label>
+      <label><input type="radio" name="q37" value="d"> d) 36 মাসের কম সময়</label>
+    </div>
+
+    <div class="question">38. আয়কর আইনে, 1961 অনুযায়ী, মূলধনী সম্পত্তির হস্তান্তরের অন্তর্ভুক্ত নয় ---</div>
+    <div class="options">
+      <label><input type="radio" name="q38" value="a"> a) বিক্রয়</label>
+      <label><input type="radio" name="q38" value="b"> b) বিনিময়</label>
+      <label><input type="radio" name="q38" value="c"> c) উত্তরাধিকারের মাধ্যমে স্থানান্তর</label>
+      <label><input type="radio" name="q38" value="d"> d) রিলিনকুইশমেন্ট</label>
+    </div>
+
+    <div class="question">39. আয়কর আইনে, 1961 অনুযায়ী কোনটি মূলধনী সম্পত্তির অন্তর্ভুক্ত নয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q39" value="a"> a) গহনা</label>
+      <label><input type="radio" name="q39" value="b"> b) বাড়ি</label>
+      <label><input type="radio" name="q39" value="c"> c) রুট পারমিট</label>
+      <label><input type="radio" name="q39" value="d"> d) ব্যবসার সুনাম</label>
+    </div>
+
+    <div class="question">40. Mr. X, 1.1.24 তারিখে 100 শেয়ার কিনে, 31.12.24 তারিখে বিক্রি করলেন, এই শেয়ারগুলি কত মাস ধরে রেখেছিলেন?</div>
+    <div class="options">
+      <label><input type="radio" name="q40" value="a"> a) 11 মাস</label>
+      <label><input type="radio" name="q40" value="b"> b) 12 মাস</label>
+      <label><input type="radio" name="q40" value="c"> c) 13 মাস</label>
+      <label><input type="radio" name="q40" value="d"> d) নির্ধারণ করা যায় না</label>
+    </div>
+    <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পূর্ববর্তী</button>
+    <button type="submit" class="submit-btn">জমা দিন</button>
+  </div>
+</form>
+
+  </div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    <p>আশা করি আপনার অভিজ্ঞতা ভালো লেগেছে।</p>
+  </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; // Start with the first section
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const recaptchaResponse = grecaptcha.getResponse();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      if (recaptchaResponse.length === 0) {
+        errorDiv.textContent = "reCAPTCHA সম্পন্ন করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    // === QUIZ LOGIC ===
+    const quizAnswers = {
+      q1: "d", q2: "c", q3: "c", q4: "b", q5: "a",
+      q6: "c", q7: "c", q8: "a", q9: "b", q10: "b",
+      q11: "c", q12: "c", q13: "b", q14: "c", q15: "c",
+      q16: "b", q17: "b", q18: "c", q19: "d", q20: "c",
+      q21: "d", q22: "c", q23: "b", q24: "c", q25: "d",
+      q26: "c", q27: "b", q28: "c", q29: "b", q30: "c",
+      q31: "d", q32: "c", q33: "d", q34: "c", q35: "c",
+      q36: "b", q37: "c", q38: "c", q39: "c", q40: "b"
+    };
+
+    let timeLeft = 30 * 60; // 30 minutes in seconds
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const timerDisplay = document.getElementById("timer");
+    const quizArea = document.getElementById("quizArea");
+    const thankYou = document.getElementById("thankYou");
+    const progressBar = document.getElementById("progressBar");
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        const currentSectionElement = document.getElementById(currentQuizSection);
+        const inputsInCurrentSection = currentSectionElement.querySelectorAll('input[type="radio"][required]');
+        let allAnswered = true;
+        
+        // Check if all radio buttons in the current section have a selection
+        const questionNames = new Set();
+        inputsInCurrentSection.forEach(input => questionNames.add(input.name));
+
+        questionNames.forEach(name => {
+            const radios = document.getElementsByName(name);
+            let radioAnswered = false;
+            for (let i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    radioAnswered = true;
+                    break;
+                }
+            }
+            if (!radioAnswered) {
+                allAnswered = false;
+            }
+        });
+
+        if (!allAnswered) {
+            alert("অনুগ্রহ করে এই সেকশনের সব প্রশ্নের উত্তর দিন।");
+            return;
+        }
+
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+
+      // Calculate score for all questions
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : undefined; // Check if the radio group exists
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // --- Display score on page instead of alert ---
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+      // --- End Display score ---
+
+      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
+
+      fetch("http://localhost/3ducation/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          recaptchaResponse: recaptchaResponseAtQuizSubmit
+        }),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Quiz submission response:', data);
+      })
+      .catch(error => {
+          console.error('Error submitting quiz:', error);
+      });
+
+      // Block repeated attempt
+      localStorage.setItem("quizDone", "true");
+      quizArea.style.display = "none";
+      thankYou.style.display = "block";
+
+    });
+  </script>
+
+</body>
+</html>
