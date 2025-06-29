@@ -652,12 +652,13 @@
     const thankYou = document.getElementById("thankYou");
     const progressBar = document.getElementById("progressBar");
 
+//this part is not insert the data but user attemp one time
     // If user has already completed quiz
-    if (localStorage.getItem("quizDone")) {
-      document.getElementById("loginSection").style.display = "none";
-      document.getElementById("quizArea").style.display = "none";
-      thankYou.style.display = "block";
-    }
+    //if (localStorage.getItem("quizDone")) {
+      //document.getElementById("loginSection").style.display = "none";
+      //document.getElementById("quizArea").style.display = "none";
+      //thankYou.style.display = "block";
+    //}
 
     function startTimer() {
       countdown = setInterval(() => {
