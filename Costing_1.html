@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InfoTech Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin-top: 50px;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 36px;
+      color: #0066cc;
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h1>Welcome to InfoTech.com</h1>
+      <p style="margin-top: 20px;">We are excited to have you here! Login below to take your quiz.</p>
+    </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>
+        <button type="submit" class="submit-btn" style="margin-top: 20px;">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">Online Education Center</h1>
+    <h3 style="text-align:center;">Subject: Costing 1    Full marks: 40    Time: 30mnts     Class: XII (SEM- III)</h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+    <form id="quizForm">
+      <div id="quizSection1" class="quiz-section active">
+        <div class="question">1. শ্রমের প্রয়োজনীয় historique সময় নির্ধারণের প্রক্রিয়াটিকে বলে —</div>
+        <div class="options">
+          <label><input type="radio" name="q1" value="a"> a) সময় বিশ্লেষণ</label>
+          <label><input type="radio" name="q1" value="b"> b) সময় নিয়ন্ত্রণ</label>
+          <label><input type="radio" name="q1" value="c"> c) সময় সংকলন</label>
+          <label><input type="radio" name="q1" value="d"> d) এসবের কোনোটিই নয়</label>
+        </div>
+
+        <div class="question">2. বিশ্লেষণ কাজটি দুই ভাগে ভাগ করা যায় —</div>
+        <div class="options">
+          <label><input type="radio" name="q2" value="a"> a) এক ভাবে</label>
+          <label><input type="radio" name="q2" value="b"> b) দুই ভাবে</label>
+          <label><input type="radio" name="q2" value="c"> c) তিন ভাবে</label>
+          <label><input type="radio" name="q2" value="d"> d) চার ভাবে</label>
+        </div>
+
+        <div class="question">3. সময় নির্ধারণ প্রধান কাজ হল —</div>
+        <div class="options">
+          <label><input type="radio" name="q3" value="a"> a) গতি নির্ধারণ শ্রেণীভুক্তি</label>
+          <label><input type="radio" name="q3" value="b"> b) সময় নির্ধারিত ব্যবহার</label>
+          <label><input type="radio" name="q3" value="c"> c) মানবশক্তির প্রয়োগযোগ্যতা</label>
+          <label><input type="radio" name="q3" value="d"> d) সময় সংকলনের পরিমাপ</label>
+        </div>
+
+        <div class="question">4. গতি নির্ধারণের প্রক্রিয়া সম্পন্ন করতে হয় —</div>
+        <div class="options">
+          <label><input type="radio" name="q4" value="a"> a) দৃষ্টিভঙ্গি</label>
+          <label><input type="radio" name="q4" value="b"> b) বিশ্লেষণ</label>
+          <label><input type="radio" name="q4" value="c"> c) প্রযুক্তি সময়</label>
+          <label><input type="radio" name="q4" value="d"> d) সময় সংকলন</label>
+        </div>
+
+        <div class="question">5. অর্থনৈতিক কার্যকলাপে সময় নির্ধারণের প্রধান কারণ —</div>
+        <div class="options">
+          <label><input type="radio" name="q5" value="a"> a) উৎপাদন বৃদ্ধি</label>
+          <label><input type="radio" name="q5" value="b"> b) মান নিয়ন্ত্রণ</label>
+          <label><input type="radio" name="q5" value="c"> c) প্রশাসনিক ব্যয় হ্রাস</label>
+          <label><input type="radio" name="q5" value="d"> d) সঠিক নিরীক্ষণ</label>
+        </div>
+
+        <div class="question">6. সময় নির্ধারণ কোন শ্রেণীর অন্তর্গত —</div>
+        <div class="options">
+          <label><input type="radio" name="q6" value="a"> a) শ্রমিক</label>
+          <label><input type="radio" name="q6" value="b"> b) প্রশাসনিক</label>
+          <label><input type="radio" name="q6" value="c"> c) পরিবহন</label>
+          <label><input type="radio" name="q6" value="d"> d) প্রযুক্তিগত</label>
+        </div>
+
+        <div class="question">7. সময় নির্ধারণ প্রধানত কোন কোন উপায়ে নির্ধারিত হয়?</div>
+        <div class="options">
+          <label><input type="radio" name="q7" value="a"> a) গতি নির্ধারণ</label>
+          <label><input type="radio" name="q7" value="b"> b) সময় অধ্যয়ন</label>
+          <label><input type="radio" name="q7" value="c"> c) সময় সংকলন</label>
+          <label><input type="radio" name="q7" value="d"> d) উপরোক্ত সবগুলি</label>
+        </div>
+
+        <div class="question">8. সময় অধ্যয়নের প্রধান উদ্দেশ্য কী?</div>
+        <div class="options">
+          <label><input type="radio" name="q8" value="a"> a) উৎপাদনের হার নির্ধারণ</label>
+          <label><input type="radio" name="q8" value="b"> b) পরিকল্পনার সহায়তা</label>
+          <label><input type="radio" name="q8" value="c"> c) মান নিয়ন্ত্রণ</label>
+          <label><input type="radio" name="q8" value="d"> d) শ্রমিকদের বিশ্রাম</label>
+        </div>
+
+        <div class="question">9. শ্রমিক যখন কোনো কাজ নির্দিষ্ট গতিতে সম্পাদন করে, তখন যে সময় লাগে তাকে বলে —</div>
+        <div class="options">
+          <label><input type="radio" name="q9" value="a"> a) প্রাকৃতিক সময়</label>
+          <label><input type="radio" name="q9" value="b"> b) মূল্যায়িত সময়</label>
+          <label><input type="radio" name="q9" value="c"> c) উৎপাদন সময়</label>
+          <label><input type="radio" name="q9" value="d"> d) এসবের কোনোটিই নয়</label>
+        </div>
+
+        <div class="question">10. নিয়মতান্ত্রিক ভিডিও সময় অধ্যয়ন কয়ভাবে করা যায়?</div>
+        <div class="options">
+          <label><input type="radio" name="q10" value="a"> a) এক ভাবে</label>
+          <label><input type="radio" name="q10" value="b"> b) দুই ভাবে</label>
+          <label><input type="radio" name="q10" value="c"> c) তিন ভাবে</label>
+          <label><input type="radio" name="q10" value="d"> d) চার ভাবে</label>
+        </div>
+        <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পরবর্তী</button>
+      </div>
+
+      <div id="quizSection2" class="quiz-section">
+        <div class="question">11. প্রকৃত চিত্রায়ণ সময় অধ্যয়নে উৎপাদন বের করার জন্য অতিরিক্ত সময় সৃষ্টি হয়, সেটি হল —</div>
+        <div class="options">
+          <label><input type="radio" name="q11" value="a"> a) প্রশাসনিক কারণ</label>
+          <label><input type="radio" name="q11" value="b"> b) উৎপাদন কারণ</label>
+          <label><input type="radio" name="q11" value="c"> c) অর্থনৈতিক কারণ</label>
+          <label><input type="radio" name="q11" value="d"> d) প্রকৌশল কারণ</label>
+        </div>
+
+        <div class="question">12. বিশ্লেষণ প্রক্রিয়ায় গতি নির্ধারণ সময় বিশ্লেষণের প্রধান ভিত্তি হল —</div>
+        <div class="options">
+          <label><input type="radio" name="q12" value="a"> a) সময় নিয়ন্ত্রণ</label>
+          <label><input type="radio" name="q12" value="b"> b) সময় সংকলন</label>
+          <label><input type="radio" name="q12" value="c"> c) সময় বিশ্লেষণ</label>
+          <label><input type="radio" name="q12" value="d"> d) সময় সংরক্ষণ</label>
+        </div>
+
+        <div class="question">13. গতি নির্ধারণ প্রক্রিয়াতে যে বিভিন্ন পদ্ধতি থাকে, তা হল —</div>
+        <div class="options">
+          <label><input type="radio" name="q13" value="a"> a) গতির পর্যবেক্ষণ পদ্ধতি</label>
+          <label><input type="radio" name="q13" value="b"> b) বিশ্লেষণ পদ্ধতি</label>
+          <label><input type="radio" name="q13" value="c"> c) প্রাকৃতিক গতি পদ্ধতি</label>
+          <label><input type="radio" name="q13" value="d"> d) উপরোক্ত সবগুলি</label>
+        </div>
+
+        <div class="question">14. সময় সংকলন মূলত কোন দুটি উপায়ে করা হয়?</div>
+        <div class="options">
+          <label><input type="radio" name="q14" value="a"> a) চার্ট ও ফরম</label>
+          <label><input type="radio" name="q14" value="b"> b) টেবিল ও চিত্র</label>
+          <label><input type="radio" name="q14" value="c"> c) পর্যবেক্ষণ ও পর্যালোচনা</label>
+          <label><input type="radio" name="q14" value="d"> d) গতি ও সময়</label>
+        </div>
+
+        <div class="question">15. কার্যসম্পাদনে পর্যবেক্ষণের প্রধান উদ্দেশ্য কী?</div>
+        <div class="options">
+          <label><input type="radio" name="q15" value="a"> a) উপযুক্ত গতি নির্ধারণ</label>
+          <label><input type="radio" name="q15" value="b"> b) শ্রমিককে মূল্যায়ন</label>
+          <label><input type="radio" name="q15" value="c"> c) কাঁচামাল সংরক্ষণ</label>
+          <label><input type="radio" name="q15" value="d"> d) উৎপাদন বন্ধ করা</label>
+        </div>
+
+        <div class="question">16. যে নিয়মিত সাধারিত কাজের জন্য সময় নির্ধারণ করা যায়, সেটি হল —</div>
+        <div class="options">
+          <label><input type="radio" name="q16" value="a"> a) সময় নিয়ন্ত্রণ</label>
+          <label><input type="radio" name="q16" value="b"> b) গতি নির্ধারণ</label>
+          <label><input type="radio" name="q16" value="c"> c) পরিকল্পিত বিশ্লেষণ</label>
+          <label><input type="radio" name="q16" value="d"> d) কর্মদক্ষতা নিরীক্ষণ</label>
+        </div>
+
+        <div class="question">17. সময় নির্ধারণ কাজ করেন —</div>
+        <div class="options">
+          <label><input type="radio" name="q17" value="a"> a) মানবসম্পদ বিভাগের কর্মী</label>
+          <label><input type="radio" name="q17" value="b"> b) শ্রমিক</label>
+          <label><input type="radio" name="q17" value="c"> c) পরিসংখ্যানবিদ</label>
+          <label><input type="radio" name="q17" value="d"> d) প্রকৌশলী</label>
+        </div>
+
+        <div class="question">18. শ্রমিকদের দক্ষতার ভিত্তিতে যদি সময় সুনির্ধারিত করা হয়, তবে সেটি কোন সময়?</div>
+        <div class="options">
+          <label><input type="radio" name="q18" value="a"> a) উৎপাদন সময়</label>
+          <label><input type="radio" name="q18" value="b"> b) প্রশাসনিক সময়</label>
+          <label><input type="radio" name="q18" value="c"> c) মূল্যায়িত সময়</label>
+          <label><input type="radio" name="q18" value="d"> d) মান নিয়ন্ত্রিত সময়</label>
+        </div>
+
+        <div class="question">19. যন্ত্রপাতি দ্বারা কার্যসম্পাদনের সময় নির্ধারণকে বলা হয় —</div>
+        <div class="options">
+          <label><input type="radio" name="q19" value="a"> a) অর্থনৈতিক</label>
+          <label><input type="radio" name="q19" value="b"> b) উৎপাদন</label>
+          <label><input type="radio" name="q19" value="c"> c) প্রযুক্তিগত</label>
+          <label><input type="radio" name="q19" value="d"> d) প্রশাসনিক</label>
+        </div>
+
+        <div class="question">20. সময় অধ্যয়নে ব্যবহৃত প্রধান ফরম, সেটি হল —</div>
+        <div class="options">
+          <label><input type="radio" name="q20" value="a"> a) বিশ্লেষণ ফরম</label>
+          <label><input type="radio" name="q20" value="b"> b) সময় নির্ধারণ ফরম</label>
+          <label><input type="radio" name="q20" value="c"> c) গতি সংকলন ফরম</label>
+          <label><input type="radio" name="q20" value="d"> d) এসবের কোনোটিই নয়</label>
+        </div>
+        <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পরবর্তী</button>
+      </div>
+
+      <div id="quizSection3" class="quiz-section">
+        <div class="question">21. সময় নির্ধারণে কোন একক ব্যবহৃত হয়?</div>
+        <div class="options">
+          <label><input type="radio" name="q21" value="a"> a) মিনিট</label>
+          <label><input type="radio" name="q21" value="b"> b) সেকেন্ড</label>
+          <label><input type="radio" name="q21" value="c"> c) ঘণ্টা</label>
+          <label><input type="radio" name="q21" value="d"> d) দিন</label>
+        </div>
+
+        <div class="question">22. গতি নির্ধারণে 'observed time' বলতে কী বোঝায়?</div>
+        <div class="options">
+          <label><input type="radio" name="q22" value="a"> a) বিশ্রাম সময়</label>
+          <label><input type="radio" name="q22" value="b"> b) নিয়মিত সময়</label>
+          <label><input type="radio" name="q22" value="c"> c) পর্যবেক্ষিত সময়</label>
+          <label><input type="radio" name="q22" value="d"> d) আদর্শ সময়</label>
+        </div>
+
+        <div class="question">23. মৌলিক সময়ের সঙ্গে allowance যোগ করলে যা হয় —</div>
+        <div class="options">
+          <label><input type="radio" name="q23" value="a"> a) পর্যবেক্ষণ সময়</label>
+          <label><input type="radio" name="q23" value="b"> b) উৎপাদন সময়</label>
+          <label><input type="radio" name="q23" value="c"> c) নির্ধারিত সময়</label>
+          <label><input type="radio" name="q23" value="d"> d) বাস্তব সময়</label>
+        </div>
+
+        <div class="question">24. সময় নির্ধারণ পদ্ধতির অন্যতম উদ্দেশ্য —</div>
+        <div class="options">
+          <label><input type="radio" name="q24" value="a"> a) খরচ বাড়ানো</label>
+          <label><input type="radio" name="q24" value="b"> b) উৎপাদন কমানো</label>
+          <label><input type="radio" name="q24" value="c"> c) কাজের বিশ্লেষণ</label>
+          <label><input type="radio" name="q24" value="d"> d) শ্রমিকদের ছুটি</label>
+        </div>
+
+        <div class="question">25. allowance নির্ধারণে কোনটি বিবেচনা করা হয় না?</div>
+        <div class="options">
+          <label><input type="radio" name="q25" value="a"> a) ব্যক্তিগত সময়</label>
+          <label><input type="radio" name="q25" value="b"> b) ক্লান্তি</label>
+          <label><input type="radio" name="q25" value="c"> c) যন্ত্রের গতি</label>
+          <label><input type="radio" name="q25" value="d"> d) বিলম্ব</label>
+        </div>
+
+        <div class="question">26. শ্রমিকের ক্লান্তির জন্য যে অতিরিক্ত সময় দেওয়া হয় তা হলো —</div>
+        <div class="options">
+          <label><input type="radio" name="q26" value="a"> a) personal allowance</label>
+          <label><input type="radio" name="q26" value="b"> b) fatigue allowance</label>
+          <label><input type="radio" name="q26" value="c"> c) delay allowance</label>
+          <label><input type="radio" name="q26" value="d"> d) rest allowance</label>
+        </div>
+
+        <div class="question">27. স্টপওয়াচ দিয়ে সময় অধ্যয়ন কাদের উপর করা হয়?</div>
+        <div class="options">
+          <label><input type="radio" name="q27" value="a"> a) বস্তু</label>
+          <label><input type="radio" name="q27" value="b"> b) যন্ত্র</label>
+          <label><input type="radio" name="q27" value="c"> c) শ্রমিক</label>
+          <label><input type="radio" name="q27" value="d"> d) কাজ</label>
+        </div>
+
+        <div class="question">28. কাজের সময় নির্ধারণের জন্য প্রয়োজন —</div>
+        <div class="options">
+          <label><input type="radio" name="q28" value="a"> a) শিক্ষিত শ্রমিক</label>
+          <label><input type="radio" name="q28" value="b"> b) অভিজ্ঞ শিক্ষক</label>
+          <label><input type="radio" name="q28" value="c"> c) উপযুক্ত পর্যবেক্ষণ</label>
+          <label><input type="radio" name="q28" value="d"> d) উন্নত প্রযুক্তি</label>
+        </div>
+
+        <div class="question">29. গতি নির্ধারণ পদ্ধতিতে 'normal time' কিভাবে পাওয়া যায়?</div>
+        <div class="options">
+          <label><input type="radio" name="q29" value="a"> a) basic × allowance</label>
+          <label><input type="radio" name="q29" value="b"> b) observed × rating</label>
+          <label><input type="radio" name="q29" value="c"> c) observed ÷ rating</label>
+          <label><input type="radio" name="q29" value="d"> d) rating ÷ observed</label>
+        </div>
+
+        <div class="question">30. কাজের সময় নির্ধারণ করা হয় —</div>
+        <div class="options">
+          <label><input type="radio" name="q30" value="a"> a) অপ্রয়োজনীয়</label>
+          <label><input type="radio" name="q30" value="b"> b) অপ্রাসঙ্গিক</label>
+          <label><input type="radio" name="q30" value="c"> c) প্রয়োজনীয়</label>
+          <label><input type="radio" name="q30" value="d"> d) ঐচ্ছিক</label>
+        </div>
+        <button type="button" class="next-btn" onclick="showNextSection('quizSection4')">পরবর্তী</button>
+      </div>
+
+      <div id="quizSection4" class="quiz-section">
+        <div class="question">31. সময় অধ্যয়নের একটি বড় সীমাবদ্ধতা হল —</div>
+        <div class="options">
+          <label><input type="radio" name="q31" value="a"> a) ব্যয়বহুল</label>
+          <label><input type="radio" name="q31" value="b"> b) সাশ্রয়ী</label>
+          <label><input type="radio" name="q31" value="c"> c) দ্রুত</label>
+          <label><input type="radio" name="q31" value="d"> d) সহজলভ্য</label>
+        </div>
+
+        <div class="question">32. stopwatch time study মূলত কোন কাজের জন্য উপযুক্ত?</div>
+        <div class="options">
+          <label><input type="radio" name="q32" value="a"> a) পরিবর্তনশীল</label>
+          <label><input type="radio" name="q32" value="b"> b) নিয়মিত</label>
+          <label><input type="radio" name="q32" value="c"> c) সৃজনশীল</label>
+          <label><input type="radio" name="q32" value="d"> d) গবেষণামূলক</label>
+        </div>
+
+        <div class="question">33. সময় নির্ধারণের মাধ্যমে কোনটি নিয়ন্ত্রিত হয় না?</div>
+        <div class="options">
+          <label><input type="radio" name="q33" value="a"> a) কর্মক্ষমতা</label>
+          <label><input type="radio" name="q33" value="b"> b) কাজের ধরণ</label>
+          <label><input type="radio" name="q33" value="c"> c) বেতন</label>
+          <label><input type="radio" name="q33" value="d"> d) ছুটি</label>
+        </div>
+
+        <div class="question">34. একজন শ্রমিক কাজ করেন ৮ ঘণ্টা, তাতে সে উৎপাদন করে ৮০ ইউনিট। productivity কত?</div>
+        <div class="options">
+          <label><input type="radio" name="q34" value="a"> a) 10</label>
+          <label><input type="radio" name="q34" value="b"> b) 20</label>
+          <label><input type="radio" name="q34" value="c"> c) 8</label>
+          <label><input type="radio" name="q34" value="d"> d) 100</label>
+        </div>
+
+        <div class="question">35. সময় অধ্যয়ন সাধারণত পরিচালনা করেন —</div>
+        <div class="options">
+          <label><input type="radio" name="q35" value="a"> a) সুপারভাইজার</label>
+          <label><input type="radio" name="q35" value="b"> b) কাজের মালিক</label>
+          <label><input type="radio" name="q35" value="c"> c) সময় অধ্যয়নকারী</label>
+          <label><input type="radio" name="q35" value="d"> d) যন্ত্রচালক</label>
+        </div>
+
+        <div class="question">36. শ্রমিকের কাজের দক্ষতা নির্ণয় করতে ব্যবহৃত হয় —</div>
+        <div class="options">
+          <label><input type="radio" name="q36" value="a"> a) stopwatch</label>
+          <label><input type="radio" name="q36" value="b"> b) allowance sheet</label>
+          <label><input type="radio" name="q36" value="c"> c) merit card</label>
+          <label><input type="radio" name="q36" value="d"> d) rating scale</label>
+        </div>
+
+        <div class="question">37. সময় নির্ধারণের মাধ্যমে একটি প্রতিষ্ঠানে কী উন্নয়ন হয়?</div>
+        <div class="options">
+          <label><input type="radio" name="q37" value="a"> a) উৎপাদন ক্ষমতা</label>
+          <label><input type="radio" name="q37" value="b"> b) বিশ্রাম সময়</label>
+          <label><input type="radio" name="q37" value="c"> c) শ্রমিক সংখ্যা</label>
+          <label><input type="radio" name="q37" value="d"> d) যন্ত্রের সংখ্যা</label>
+        </div>
+
+        <div class="question">38. মৌলিক সময় (basic time) কিসের উপর নির্ভর করে?</div>
+        <div class="options">
+          <label><input type="radio" name="q38" value="a"> a) observed time</label>
+          <label><input type="radio" name="q38" value="b"> b) normal time</label>
+          <label><input type="radio" name="q38" value="c"> c) allowance</label>
+          <label><input type="radio" name="q38" value="d"> d) total time</label>
+        </div>
+
+        <div class="question">39. শ্রমিক যদি কাজের গতি বাড়ায়, তখন তার সময় —</div>
+        <div class="options">
+          <label><input type="radio" name="q39" value="a"> a) বাড়ে</label>
+          <label><input type="radio" name="q39" value="b"> b) কমে</label>
+          <label><input type="radio" name="q39" value="c"> c) একই থাকে</label>
+          <label><input type="radio" name="q39" value="d"> d) অনিয়মিত হয়</label>
+        </div>
+
+        <div class="question">40. গতি নির্ধারণের সময় যে স্কেল ব্যবহার হয় —</div>
+        <div class="options">
+          <label><input type="radio" name="q40" value="a"> a) টাইম স্কেল</label>
+          <label><input type="radio" name="q40" value="b"> b) রেটিং স্কেল</label>
+          <label><input type="radio" name="q40" value="c"> c) গতি স্কেল</label>
+          <label><input type="radio" name="q40" value="d"> d) মূল্য স্কেল</label>
+        </div>
+        <button type="submit" class="submit-btn">জমা দিন</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    <p>আশা করি আপনার অভিজ্ঞতা ভালো লেগেছে।</p>
+  </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; // Start with the first section
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const recaptchaResponse = grecaptcha.getResponse();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      if (recaptchaResponse.length === 0) {
+        errorDiv.textContent = "reCAPTCHA সম্পন্ন করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    // === QUIZ LOGIC ===
+    const quizAnswers = {
+      q1: "a", q2: "b", q3: "a", q4: "b", q5: "a",
+      q6: "b", q7: "d", q8: "a", q9: "b", q10: "b",
+      q11: "a", q12: "c", q13: "d", q14: "a", q15: "a",
+      q16: "b", q17: "a", q18: "c", q19: "b", q20: "b",
+      q21: "b", q22: "c", q23: "c", q24: "c", q25: "c",
+      q26: "b", q27: "c", q28: "c", q29: "b", q30: "c",
+      q31: "a", q32: "b", q33: "d", q34: "a", q35: "c",
+      q36: "d", q37: "a", q38: "a", q39: "b", q40: "b"
+    };
+
+    let timeLeft = 30 * 60; // 30 minutes in seconds
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const timerDisplay = document.getElementById("timer");
+    const quizArea = document.getElementById("quizArea");
+    const thankYou = document.getElementById("thankYou");
+    const progressBar = document.getElementById("progressBar");
+
+    // If user has already completed quiz
+    if (localStorage.getItem("quizDone")) {
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "none";
+      thankYou.style.display = "block";
+    }
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        const currentSectionElement = document.getElementById(currentQuizSection);
+        const inputsInCurrentSection = currentSectionElement.querySelectorAll('input[type="radio"][required]');
+        let allAnswered = true;
+        
+        // Check if all radio buttons in the current section have a selection
+        const questionNames = new Set();
+        inputsInCurrentSection.forEach(input => questionNames.add(input.name));
+
+        questionNames.forEach(name => {
+            const radios = document.getElementsByName(name);
+            let radioAnswered = false;
+            for (let i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    radioAnswered = true;
+                    break;
+                }
+            }
+            if (!radioAnswered) {
+                allAnswered = false;
+            }
+        });
+
+        if (!allAnswered) {
+            alert("অনুগ্রহ করে এই সেকশনের সব প্রশ্নের উত্তর দিন।");
+            return;
+        }
+
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+
+      // Calculate score for all questions
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : undefined; // Check if the radio group exists
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // --- Display score on page instead of alert ---
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+      // --- End Display score ---
+
+      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
+
+      fetch("http://localhost/3ducation/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          recaptchaResponse: recaptchaResponseAtQuizSubmit
+        }),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Quiz submission response:', data);
+      })
+      .catch(error => {
+          console.error('Error submitting quiz:', error);
+      });
+
+      // Block repeated attempt
+      localStorage.setItem("quizDone", "true");
+      quizArea.style.display = "none";
+      thankYou.style.display = "block";
+
+    });
+  </script>
+
+</body>
+</html>
