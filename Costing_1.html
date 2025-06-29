@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
-      margin-top: 50px;
+      margin: 0;
       background: #f4f6f8;
       font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
     }
@@ -42,8 +42,23 @@
     }
 
     .left h1 {
-      font-size: 36px;
+      font-size: 26px;
       color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
     }
 
     .right h2 {
@@ -80,11 +95,30 @@
       border-radius: 8px;
       cursor: pointer;
       margin-top: 20px;
+
     }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 40px;
+
+    }
+
 
     .submit-btn:hover, .next-btn:hover {
       background-color: #004a99;
     }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
 
     #error-message {
       color: red;
@@ -184,8 +218,11 @@
 
   <div class="container" id="loginSection">
     <div class="left">
-      <h1>Welcome to InfoTech.com</h1>
-      <p style="margin-top: 20px;">We are excited to have you here! Login below to take your quiz.</p>
+      <h3>Welcome to <u>InfoTech.com</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+      <h2>Costing Test-1</h2>
     </div>
 
     <div class="right">
@@ -200,7 +237,7 @@
           <label for="studentEmail">Email</label>
           <input type="email" id="studentEmail" name="studentEmail" required>
         </div>
-        <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>
+        <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
         <button type="submit" class="submit-btn" style="margin-top: 20px;">Submit</button>
       </form>
     </div>
@@ -383,7 +420,9 @@
           <label><input type="radio" name="q20" value="c"> c) গতি সংকলন ফরম</label>
           <label><input type="radio" name="q20" value="d"> d) এসবের কোনোটিই নয়</label>
         </div>
-        <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পরবর্তী</button>
+        <button type="button" class="next-btn" onclick="showNextSection('quizSection1')">পূর্ববর্তী</button>
+        <button type="button" class="next-btn1" onclick="showNextSection('quizSection3')">পরবর্তী</button>
+        
       </div>
 
       <div id="quizSection3" class="quiz-section">
@@ -466,7 +505,9 @@
           <label><input type="radio" name="q30" value="c"> c) প্রয়োজনীয়</label>
           <label><input type="radio" name="q30" value="d"> d) ঐচ্ছিক</label>
         </div>
-        <button type="button" class="next-btn" onclick="showNextSection('quizSection4')">পরবর্তী</button>
+        <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পূর্ববর্তী</button>
+        <button type="button" class="next-btn1" onclick="showNextSection('quizSection4')">পরবর্তী</button>
+        
       </div>
 
       <div id="quizSection4" class="quiz-section">
@@ -549,6 +590,7 @@
           <label><input type="radio" name="q40" value="c"> c) গতি স্কেল</label>
           <label><input type="radio" name="q40" value="d"> d) মূল্য স্কেল</label>
         </div>
+        <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পূর্ববর্তী</button>
         <button type="submit" class="submit-btn">জমা দিন</button>
       </div>
     </form>
