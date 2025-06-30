@@ -237,9 +237,12 @@
           <label for="studentEmail">Email</label>
           <input type="email" id="studentEmail" name="studentEmail" required>
         </div>
-        <div class="g-recaptcha" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
-        <button type="submit" class="submit-btn" style="margin-top: 20px;">Submit</button>
+        <div class="g-recaptcha" id="captchaDiv" style="display: none;" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        
+        <button type="submit" class="submit-btn" id="goQuiz" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center; display: none;">Confirm</button>
       </form>
+      <button class="submit-btn" id="checkEmailBtn" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center;">Verify</button>
+      <p id="message" style="display: none; color: green; margin-top: 10px;"></p>
     </div>
   </div>
 
@@ -751,6 +754,36 @@
       thankYou.style.display = "block";
 
     });
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const validEmail = urlParams.get('email'); // Replace this with the correct value
+
+  document.getElementById("checkEmailBtn").addEventListener("click", function () {
+  const emailInput = document.getElementById("studentEmail").value.trim();
+  const message = document.getElementById("message");
+  
+  
+  //const captchaContainer = document.getElementById("captchaContainer");
+  //const hiddenEmailField = document.getElementById("hiddenEmail");
+
+  if (emailInput === validEmail) {
+    captchaDiv.style.display = "block";  // Show the CAPTCHA
+    //hiddenEmailField.value = emailInput; // Pass email with form
+    document.getElementById("checkEmailBtn").style.display = "none";
+    message.style.display = "none";
+    document.getElementById("goQuiz").style.display = "inline-block";
+    
+  } else {
+    message.style.display = "block";
+    message.textContent = "Oops! That email doesn't match our records.";
+    message.style.color = "green";
+    captchaDiv.style.display = "none";
+    //document.getElementById("myButton").style.display = "inline-block";
+  }
+});
+
+   // STEP 3: Clean up the URL (remove ?email=... from address bar)
+    window.history.replaceState({}, document.title, window.location.pathname);
   </script>
 
 </body>
