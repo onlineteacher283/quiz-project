@@ -222,8 +222,10 @@
       <h1>Examination Portal</h1>
       <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
       <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
-      <h2>Taxation Test-1</h2>
-    </div>
+
+      <h2 id="subject">Taxation</h2>
+      <h1>Test-1</h1>
+      </div>
 
     <div class="right">
       <h2>Student Login</h2>
@@ -614,6 +616,7 @@
     let studentName = "";
     let studentEmail = "";
     let currentQuizSection = 'quizSection1'; // Start with the first section
+    var subject = document.getElementById("subject").innerText;
 
     function checkLogin(event) {
       event.preventDefault();
@@ -736,6 +739,8 @@
           name: studentName,
           email: studentEmail,
           score: totalScore,
+          total: totalQuestions,
+          subject: subject,
           recaptchaResponse: recaptchaResponseAtQuizSubmit
         }),
         headers: { "Content-Type": "application/json" }
@@ -784,6 +789,7 @@
 
    // STEP 3: Clean up the URL (remove ?email=... from address bar)
     window.history.replaceState({}, document.title, window.location.pathname);
+
   </script>
 
 </body>
