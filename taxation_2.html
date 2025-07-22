@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InfoTech Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 26px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+
+    }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 40px;
+
+    }
+
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h3>Welcome to <u>InfoTech.com</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+
+      <h2 id="subject">Taxation</h2>
+      <h1>Test-2</h1>
+      </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" id="captchaDiv" style="display: none;" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        
+        <button type="submit" class="submit-btn" id="goQuiz" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center; display: none;">Confirm</button>
+      </form>
+      <button class="submit-btn" id="checkEmailBtn" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center;">Verify</button>
+      <p id="message" style="display: none; color: green; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">Online Education Center</h1>
+    <h3 style="text-align:center;">Subject: Costing & Taxation    Full marks: 40    Time: 30mnts     Class: XII (SEM- III)</h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+<form id="quizForm">
+  <!-- Section 1: Questions 1-10 -->
+
+<div id="quizSection1" class="quiz-section active">
+  <div class="question">1. যদি আদর্শ সময় ২৫ ঘন্টা , কাজের সময় ২০ ঘন্টা এবং ঘন্টা প্রতি মজুরির হার ৫ টাকা হয়ে থাকে, তবে কাজের পরিমানের উপর ভিত্তি করে মজুরি প্রদানের পদ্ধতি অনুসারে শ্রমিকের মোট মজুরি হবে -</div>
+  <div class="options">
+    <label><input type="radio" name="q1" value="a"> ৭৫ টাকা</label>
+    <label><input type="radio" name="q1" value="b"> ১০০ টাকা</label>
+    <label><input type="radio" name="q1" value="c"> ১২৫ টাকা</label>
+    <label><input type="radio" name="q1" value="d"> ১৭৫ টাকা</label>
+  </div>
+  <div class="question">2. বিজ্ঞান ভিত্তিক ব্যাবস্থাপনার জনক হলেন -</div>
+  <div class="options">
+    <label><input type="radio" name="q2" value="a"> ফেওল</label>
+    <label><input type="radio" name="q2" value="b"> মেরিক</label>
+    <label><input type="radio" name="q2" value="c"> টেলর</label>
+    <label><input type="radio" name="q2" value="d"> গিলব্রিথ</label>
+  </div>
+  <div class="question">3. মেরিকের গুণিতক মজুরির হার পদ্ধতিতে কয়টি মজুরির হারের উল্লেখ আছে?</div>
+  <div class="options">
+    <label><input type="radio" name="q3" value="a"> ২টি</label>
+    <label><input type="radio" name="q3" value="b"> ৩টি</label>
+    <label><input type="radio" name="q3" value="c"> ৪টি</label>
+    <label><input type="radio" name="q3" value="d"> কোন উল্লেখ নেই</label>
+  </div>
+  <div class="question">4. মূর্তি তৈরি করার কাজে কোন মজুরির পদ্ধতি গ্রহণ করা উপযুক্ত?</div>
+  <div class="options">
+    <label><input type="radio" name="q4" value="a"> সময় ভিত্তিক পদ্ধতি</label>
+    <label><input type="radio" name="q4" value="b"> কাজের পরিমান ভিত্তিক পদ্ধতি</label>
+    <label><input type="radio" name="q4" value="c"> A অথবা B পদ্ধতি</label>
+    <label><input type="radio" name="q4" value="d"> সব কয়টি পদ্ধতি</label>
+  </div>
+  <div class="question">5. টেলরের পৃথকীকৃত মজুরির হার পদ্ধতিতে কয় ধরণের মজুরির হারের কথা বলা হয়েছে?</div>
+  <div class="options">
+    <label><input type="radio" name="q5" value="a"> ২ ধরণের</label>
+    <label><input type="radio" name="q5" value="b"> ৩ ধরণের</label>
+    <label><input type="radio" name="q5" value="c"> ৪ ধরণের</label>
+    <label><input type="radio" name="q5" value="d"> কোনটি নয়</label>
+  </div>
+  <div class="question">6. আয়কর আইন ১৯৬১ -এর কোন ধারায় স্বল্পমেয়াদি মূলধনী সম্পত্তির সংজ্ঞা দেওয়া হয়েছে?</div>
+  <div class="options">
+    <label><input type="radio" name="q6" value="a"> ধারা ২(২৯এ)</label>
+    <label><input type="radio" name="q6" value="b"> ধারা ২(২৯বা)</label>
+    <label><input type="radio" name="q6" value="c"> ধারা ২(৪২এ)</label>
+    <label><input type="radio" name="q6" value="d"> ধারা ২(৪৭)</label>
+  </div>
+  <div class="question">7. ব্যবসা ও পেশার জন্য রক্ষিত বাণিজ্যিক সম্ভার হলো -</div>
+  <div class="options">
+    <label><input type="radio" name="q7" value="a"> মূলধনী সম্পত্তি</label>
+    <label><input type="radio" name="q7" value="b"> চলতি সম্পত্তি</label>
+    <label><input type="radio" name="q7" value="c"> অলীক সম্পত্তি</label>
+    <label><input type="radio" name="q7" value="d"> স্পর্শযোগ্য</label>
+  </div>
+  <div class="question">8. আয়কর আইন, ১৯৬১ -এর ধারা ২(৪৭) অনুযায়ী নিচের কোনটি ‘হস্তান্তর’ বলে ধরা হবে না?</div>
+  <div class="options">
+    <label><input type="radio" name="q8" value="a"> বিক্রয়</label>
+    <label><input type="radio" name="q8" value="b"> বিনিময়</label>
+    <label><input type="radio" name="q8" value="c"> ত্যাগ</label>
+    <label><input type="radio" name="q8" value="d"> উপহার</label>
+  </div>
+  <div class="question">9. আলোক ঘোষ কলকাতায় অবস্থিত একটি জমি ১৬.৬.২১ তারিখে কিনে নিচের কোন তারিখে বিক্রয় করলে , জমিটি স্বল্পমেয়াদি মূলধনী সম্পত্তি বলে বিবেচিত হবে?</div>
+  <div class="options">
+    <label><input type="radio" name="q9" value="a"> ১.৪.২৩</label>
+    <label><input type="radio" name="q9" value="b"> ১.১.২৪</label>
+    <label><input type="radio" name="q9" value="c"> ১.৭.২৪</label>
+    <label><input type="radio" name="q9" value="d"> ৩১.১.২৫</label>
+  </div>
+  <div class="question">10. কোনো পূর্ববর্তী বছরে নির্ধারি তার বন্ধুর কাছ থেকে ৫০,০০০ টাকা দেন পেয়েছে। করযোগ্য দানের পরিমান-</div>
+  <div class="options">
+    <label><input type="radio" name="q10" value="a"> ৫,০০০ টাকা</label>
+    <label><input type="radio" name="q10" value="b"> ১০,০০০ টাকা</label>
+    <label><input type="radio" name="q10" value="c"> ২৫,০০০ টাকা</label>
+    <label><input type="radio" name="q10" value="d"> ৫০,০০০ টাকা</label>
+  </div>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পরবর্তী</button>
+</div>
+
+  <!-- Section 2: Questions 11-20 -->
+<div id="quizSection2" class="quiz-section">
+  <div class="question">11. যখন সময়ের ভিত্তিতে পারিশ্রমিক প্রদান করা হয়, তখন —------- বিচার করা হয় না।</div>
+  <div class="options">
+    <label><input type="radio" name="q11" value="a"> কাজের পরিমান</label>
+    <label><input type="radio" name="q11" value="b"> কাজের জটিলতা</label>
+    <label><input type="radio" name="q11" value="c"> কাজের মূল্য</label>
+    <label><input type="radio" name="q11" value="d"> কাজের সময়</label>
+  </div>
+  <div class="question">12. মজুরি প্রদানের যে পদ্ধতিতে শ্রমিকদের উৎপাদনের কাজে নিযুক্ত হয়ে সময়ের ভিত্তিতে মজুরি প্রদান করা হয়, তাকে —------------ মজুরি হার পদ্ধতি বলে।</div>
+  <div class="options">
+    <label><input type="radio" name="q12" value="a"> সাধারণ সময়ভিত্তিক</label>
+    <label><input type="radio" name="q12" value="b"> ব্যবধানিক সময়ভিত্তিক</label>
+    <label><input type="radio" name="q12" value="c"> সরল পরিমাণভিত্তিক</label>
+    <label><input type="radio" name="q12" value="d"> পৃথকীকৃত পরিমান পদ্ধতি</label>
+  </div>
+  <div class="question">13. -------------- অধক্ষ শ্রমিকদের তাদের ন্যায্য পাওনা থেকে বঞ্চিত করলেও —--------- করেননি।</div>
+  <div class="options">
+    <label><input type="radio" name="q13" value="a"> টেলর, মেরিক</label>
+    <label><input type="radio" name="q13" value="b"> মেরিক, টেলর</label>
+    <label><input type="radio" name="q13" value="c"> টেলর, ফেয়ল</label>
+    <label><input type="radio" name="q13" value="d"> ফেয়ল, মেরিক</label>
+  </div>
+  <div class="question">14. একক প্রতি মজুরির হার ৫ টাকা, আদর্শ উৎপাদন দৈনিক ৮ ঘন্টায় ৪০০ একক এবং শ্রমিক C উৎপাদন করেছে ৪২০ একক। এক্ষেত্রে মেরিকের গুণিতক মজুরির হার অনুযায়ী শ্রমিক C -এর মজুরি —-------------------- হবে।</div>
+  <div class="options">
+    <label><input type="radio" name="q14" value="a"> ২০০০ টাকা</label>
+    <label><input type="radio" name="q14" value="b"> ২১০০ টাকা</label>
+    <label><input type="radio" name="q14" value="c"> ২৩১০ টাকা</label>
+    <label><input type="radio" name="q14" value="d"> ২৫২০ টাকা</label>
+  </div>
+  <div class="question">15. সময় লিখন অনুযায়ী সময় ৪৮ ঘন্টা। সময় আরক্ষন অনুযায়ী সময় ৪৪ ঘন্টা। ঘন্টা প্রতি মজুরির হার ৫০ টাকা হলে, অলস সময়ের জন্য মজুরির পরিমান হবে —-------------</div>
+  <div class="options">
+    <label><input type="radio" name="q15" value="a"> ২০০ টাকা</label>
+    <label><input type="radio" name="q15" value="b"> ২৪০ টাকা</label>
+    <label><input type="radio" name="q15" value="c"> ২২০০ টাকা</label>
+    <label><input type="radio" name="q15" value="d"> ২৪০০ টাকা</label>
+  </div>
+  <div class="question">16. স্বল্পমেয়াদি মূলধনী সম্পত্তি হলে নির্ধারিকে সম্পত্তিটি হস্তান্তরের অব্যবহিত পূর্বে —----- মাস কিংবা তার কম সময় নিজের অধিকারে রাখতে হয়।</div>
+  <div class="options">
+    <label><input type="radio" name="q16" value="a"> ৩৬</label>
+    <label><input type="radio" name="q16" value="b"> ৪০</label>
+    <label><input type="radio" name="q16" value="c"> ৪৫</label>
+    <label><input type="radio" name="q16" value="d"> ৪৮</label>
+  </div>
+  <div class="question">17. দীর্ঘমেয়াদি মূলধনী ক্ষতি কেবলমাত্র —--------- লেভার সঙ্গে সমন্বয় করা যায়।</div>
+  <div class="options">
+    <label><input type="radio" name="q17" value="a"> স্বল্পমেয়াদি মূলধনী</label>
+    <label><input type="radio" name="q17" value="b"> দীর্ঘমেয়াদি মূলধনী</label>
+    <label><input type="radio" name="q17" value="c"> বাড়ি থেকে আয়</label>
+    <label><input type="radio" name="q17" value="d"> নিট</label>
+  </div>
+  <div class="question">18. অরুন রায় লটারি কিনে জয়ী হয়ে প্ৰাইজ মূল্য হিসাবে নিট ৭০,০০০ টাকা পেয়েছেন। প্রাইজের মোট মূল্য হবে —-------</div>
+  <div class="options">
+    <label><input type="radio" name="q18" value="a"> ২১,০০০ টাকা</label>
+    <label><input type="radio" name="q18" value="b"> ৯১,০০০ টাকা</label>
+    <label><input type="radio" name="q18" value="c"> ১,০০,০০০ টাকা</label>
+    <label><input type="radio" name="q18" value="d"> ১,২১,০০০ টাকা</label>
+  </div>
+  <div class="question">19. অন্যান্য উৎস থেকে আয় খাতে করযোগ্য যায় হলো —---------</div>
+  <div class="options">
+    <label><input type="radio" name="q19" value="a"> বেতন</label>
+    <label><input type="radio" name="q19" value="b"> সাংসদ হিসাবে প্রাপ্ত বেতন</label>
+    <label><input type="radio" name="q19" value="c"> গৃহসম্পত্তি থেকে আয়</label>
+    <label><input type="radio" name="q19" value="d"> কারবার থেকে আয়</label>
+  </div>
+  <div class="question">20. ঘোড়দৌড় থেকে আয় —------------ আয় হিসাবে বিবেচিত হয়।</div>
+  <div class="options">
+    <label><input type="radio" name="q20" value="a"> স্থিতিশীল</label>
+    <label><input type="radio" name="q20" value="b"> পরিবর্তনশীল</label>
+    <label><input type="radio" name="q20" value="c"> আকস্মিক</label>
+    <label><input type="radio" name="q20" value="d"> আংশিক পরিবর্তনশীল</label>
+  </div>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection1')">পূর্ববর্তী</button>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পরবর্তী</button>
+</div>
+
+  <!-- Section 3: Questions 21-30 -->
+<div id="quizSection3" class="quiz-section">
+  <div class="question">21. (i) মজুরি হল উৎপাদন ব্যয়ের একটি গুরুত্বপূর্ণ উপাদান।<br>
+    (ii) মোট উৎপাদন ব্যয়ের একটি বড় অংশ মজুরির জন্য হয়ে থাকে।<br>
+    (iii) মজুরি ব্যয়ের নিজস্ব কিছু বৈশিষ্ট্য আছে , যা উৎপাদনের সঙ্গে কোনো উপাদানে নেই।<br>
+    (iv) শ্রমিকের দক্ষতা বৃদ্ধিতে মজুরি এক বিশেষ ভূমিকা গ্রহণ করে।</div>
+  <div class="options">
+    <label><input type="radio" name="q21" value="a"> A) (i), (ii) — সত্য ; (iii), (iv) — মিথ্যা</label>
+    <label><input type="radio" name="q21" value="b"> B) (i), (ii), (iii) — সত্য ; (iv) — মিথ্যা</label>
+    <label><input type="radio" name="q21" value="c"> C) (i), (iii) — সত্য ; (ii), (iv) — মিথ্যা</label>
+    <label><input type="radio" name="q21" value="d"> D) (i), (ii), (iii), (iv) — সবকটাই সত্য</label>
+  </div>
+  <div class="question">22. (i) মজুরি হলো উৎপাদন ব্যয়ের একটি গুরুত্বপূর্ণ উপাদান।<br>
+    (ii) মজুরি সংক্রান্ত ব্যয় মূলত কাঁচামাল ক্রয় সংক্রান্ত।<br>
+    (iii) কম মজুরি পাওয়া শ্রমিকদের মধ্যে অসন্তোষ থাকে।<br>
+    (iv) সন্তুষ্ট শ্রমিকরা প্রতিষ্ঠানের শ্রীবৃদ্ধিতে কোনো ভূমিকা গ্রহণ করে না।</div>
+  <div class="options">
+    <label><input type="radio" name="q22" value="a"> I, ii - সত্য ; iii, iv - মিথ্যা</label>
+    <label><input type="radio" name="q22" value="b"> ii, iii - সত্য ; i, iv - মিথ্যা</label>
+    <label><input type="radio" name="q22" value="c"> i, iii - সত্য ; ii, iv - মিথ্যা</label>
+    <label><input type="radio" name="q22" value="d"> ii, iv - সত্য ; i, iii - মিথ্যা</label>
+  </div>
+  <div class="question">23. অন্যান্য উৎস থেকে আয় খাতে করযোগ্য হতে হলে নিচের শর্তগুলি পূরণ করতে হবে –<br>
+    (i) এটি অবশ্যই আয় হবে।<br>
+    (ii) এই আয় করমুক্ত নয়।<br>
+    (iii) এই আয় প্রথম চারটি খাতে ধার্য করা হয়নি।<br>
+    (iv) এই আয়ের সৃষ্টি ভারতেই হতে হবে।</div>
+  <div class="options">
+    <label><input type="radio" name="q23" value="a"> (i), (ii) সত্য ; (iii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q23" value="b"> (i), (ii), (iii) সত্য ; (iv) মিথ্যা</label>
+    <label><input type="radio" name="q23" value="c"> (i), (ii) সত্য ; (iii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q23" value="d"> (iv) সত্য ; (i), (ii), (iii) মিথ্যা</label>
+  </div>
+  <div class="question">24. ১ অক্টোবর , ২০০৯ - এর পর চেক বা ড্রাফটের মাধ্যমে দেন গ্রহণ করলে তা অন্যান্য উৎস থেকে আয় খাতে করযোগ্য বলে বিবেচিত হবে –<br>
+    (i) কোনো প্রতিদান ছাড়া এইরূপ অর্থ গ্রহণ করা হলে।<br>
+    (ii) পিতার কাছ হেকে এইরূপ অর্থ গ্রহণ করলে।<br>
+    (iii) বন্ধুর কাছ থেকে এইরূপ দেন গ্রহণ করলে।<br>
+    (iv) ভগ্নির কাছ থেকে এইরূপ দেন গ্রহণ করলে।</div>
+  <div class="options">
+    <label><input type="radio" name="q24" value="a"> (i), (ii) সত্য ; (iii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q24" value="b"> (i), (ii), (iii) সত্য ; (iv) মিথ্যা</label>
+    <label><input type="radio" name="q24" value="c"> (i) সত্য ; (ii), (iii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q24" value="d"> (i), (ii) সত্য ; (iii), (iv) মিথ্যা</label>
+  </div>
+  <div class="question">25. আত্মীয় বলতে বোঝায় –<br>
+    (i) কোনো ব্যাক্তির স্বামী - স্ত্রী<br>
+    (ii) বন্ধুবান্ধব<br>
+    (iii) পিতামহের বড়ো ভাই।<br>
+    (iv) ভাইবোন</div>
+  <div class="options">
+    <label><input type="radio" name="q25" value="a"> (i), (ii), (iii) সত্য ; (iv) মিথ্যা</label>
+    <label><input type="radio" name="q25" value="b"> (i), (ii) সত্য ; (iii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q25" value="c"> (i), (iv) সত্য ; (ii), (iii) মিথ্যা</label>
+    <label><input type="radio" name="q25" value="d"> (iii), (iv) সত্য ; (i), (ii) মিথ্যা</label>
+  </div>
+  <div class="question">26. যে যে সম্পত্তিগুলো মূলধনী সম্পত্তি হিসাবে গণ্য হয় –<br>
+    (i) নিজ বসবাসের গৃহসম্পত্তি<br>
+    (ii) বাড়ির ব্যবহার্য আসবাবপত্র<br>
+    (iii) অলংকার<br>
+    (iv) ব্যক্তিগত ব্যবহারের গাড়ি</div>
+  <div class="options">
+    <label><input type="radio" name="q26" value="a"> (i), (iii) সত্য ; (ii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q26" value="b"> (i), (ii) সত্য ; (iii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q26" value="c"> (i), (ii), (iii) সত্য ; (iv) মিথ্যা</label>
+    <label><input type="radio" name="q26" value="d"> (i) সত্য ; (ii), (iii), (iv) মিথ্যা</label>
+  </div>
+  <div class="question">27. যে যে সম্পত্তিগুলি মূলধনী সম্পত্তি নয় –<br>
+    (i) ইজারাসত্ত্ব<br>
+    (ii) ব্যাবসা প্রতিষ্ঠানের সুনাম<br>
+    (iii) বাণিজ্যিক সম্ভার<br>
+    (iv) ব্যাক্তিগত ব্যবহার্য মোটর সাইকেল</div>
+  <div class="options">
+    <label><input type="radio" name="q27" value="a"> (i), (iii) সত্য ; (ii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q27" value="b"> (iii), (iv) সত্য ; (i), (ii) মিথ্যা</label>
+    <label><input type="radio" name="q27" value="c"> (i), (iv) সত্য ; (ii), (iii) মিথ্যা</label>
+    <label><input type="radio" name="q27" value="d"> (ii), (iii) সত্য ; (i), (iv) মিথ্যা</label>
+  </div>
+  <div class="question">28. যে সমস্ত সম্পত্তি মূলধনী সম্পত্তি হিসাবে বিবেচিত হয় না –<br>
+    (i) কারবারের কাজকর্মের জন্য ব্যবহৃত গাড়ি<br>
+    (ii) যদি নির্ধারি গাড়ির ব্যাবসায় নিযুক্ত থাকে এবং ব্যাবসার উদ্দেশে যে সমস্ত গাড়ি গচ্ছিত সম্ভার হিসাবে থাকে।<br>
+    (iii) ব্যাবসায়িক প্রতিষ্ঠানের সুনাম।<br>
+    (iv) কেন্দ্রীয় সরকার দ্বারা বিজ্ঞাপিত স্বর্ণজমা প্রকল্প।</div>
+  <div class="options">
+    <label><input type="radio" name="q28" value="a"> (i), (ii) সত্য ; (iii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q28" value="b"> (ii), (iv) সত্য ; (i), (iii) মিথ্যা</label>
+    <label><input type="radio" name="q28" value="c"> (i), (iii) সত্য ; (ii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q28" value="d"> (i), (iv) সত্য ; (ii), (iii) মিথ্যা</label>
+  </div>
+  <div class="question">29. (i) সঠিক পণ্যের উৎপাদন ব্যয় নির্ণয় করতে মজুরিকে প্রতক্ষ ও পরোক্ষ এই দুই ভাগে ভাগ করা প্রয়োজন।<br>
+    (ii) সরাসরি উপাদনের কাজে যুক্ত এমন সব শ্রমিকদের যে মজুরি প্রদান করা হয়, তাকে পরোক্ষ মজুরি বলে।<br>
+    (iii) শ্রমিকদের কর্মদক্ষতা সরাসরি মজুরিকে প্রভাবিত করে থাকে।<br>
+    (iv) পরোক্ষ মজুরি নির্ধারণে বেশ কয়েকটি গ্রহণযোগ্য পদ্ধতি রয়েছে।</div>
+  <div class="options">
+    <label><input type="radio" name="q29" value="a"> (i), (ii) সত্য ; (iii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q29" value="b"> (i), (iii) সত্য ; (ii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q29" value="c"> (i), (ii), (iii) সত্য ; (iv) মিথ্যা</label>
+    <label><input type="radio" name="q29" value="d"> (i) সত্য ; (ii), (iii), (iv) মিথ্যা</label>
+  </div>
+  <div class="question">30. (i) প্রতক্ষ মজুরি হলো উৎপাদনের মুখ ব্যয়<br>
+    (ii) পরোক্ষ মজুরি হলো উৎপাদনের গৌণ ব্যয়<br>
+    (iii) প্রতক্ষ মজুরির উপর কোনোরূপ নিয়ন্ত্রণ করার প্রয়োজন নেই।<br>
+    (iv) পরোক্ষ মজুরির উপর নিয়ন্ত্রণ করা প্রয়োজন।</div>
+  <div class="options">
+    <label><input type="radio" name="q30" value="a"> (i), (ii) সত্য ; (iii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q30" value="b"> (i), (iii) সত্য ; (ii), (iv) মিথ্যা</label>
+    <label><input type="radio" name="q30" value="c"> (i), (iv) সত্য ; (ii), (iii) মিথ্যা</label>
+    <label><input type="radio" name="q30" value="d"> (i), (ii), (iii), (iv) সবই সত্য</label>
+  </div>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পূর্ববর্তী</button>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection4')">পরবর্তী</button>
+</div>
+
+
+  <!-- Section 4: Questions 31-40 -->
+<div id="quizSection4" class="quiz-section">
+  <div class="question">31. বিবৃতি : বাড়ির ব্যবহার্য আসবাবপত্র মূলধনী সম্পত্তি।<br>কারণ: আসবাবপত্র স্থাবর সম্পত্তি।</div>
+  <div class="options">
+    <label><input type="radio" name="q31" value="a"> বিবৃতি ও কারণ উভয়ই সত্য</label>
+    <label><input type="radio" name="q31" value="b"> বিবৃতি ও কারণ উভয়ই মিথ্যা</label>
+    <label><input type="radio" name="q31" value="c"> বিবৃতি সত্য, কারণ মিথ্যা</label>
+    <label><input type="radio" name="q31" value="d"> বিবৃতি মিথ্যা, কারণ সত্য</label>
+  </div>
+  <div class="question">32. বিবৃতি: ডেভিড লটারির প্রথম পুরস্কার হিসাবে ৪,০০,০০০ টাকা জিতেছেন। কিন্তু প্রকৃত অর্থ হাতে পেয়েছেন ৩.০০.০০০ টাকা।<br>কারণ: ১১৫বব ধারা অনুসারে লটারির আয়ের উপর কর ধার্য করা হয় ২৫%</div>
+  <div class="options">
+    <label><input type="radio" name="q32" value="a"> বিবৃতি ও কারণ উভয়ই সত্য</label>
+    <label><input type="radio" name="q32" value="b"> বিবৃতি ও কারণ উভয়ই মিথ্যা</label>
+    <label><input type="radio" name="q32" value="c"> বিবৃতি সত্য, কারণ মিথ্যা</label>
+    <label><input type="radio" name="q32" value="d"> বিবৃতি মিথ্যা, কারণ সত্য</label>
+  </div>
+  <div class="question">33. বিবৃতি: সময় লিখন পদ্ধতিতে শ্রমিকদের কারখানায় আসা এবং যাওয়ার সময় হাজিরার বইতে লিপিবদ্ধ করতে হয়।<br>কারণ : কারখানায় শৃঙ্খলারক্ষার জন্য এই ধরণের সময় ধরে কাজ করার প্রয়োজনীয়তা রয়েছে।</div>
+  <div class="options">
+    <label><input type="radio" name="q33" value="a"> বিবৃতি ও কারণ উভয়ই সত্য</label>
+    <label><input type="radio" name="q33" value="b"> বিবৃতি ও কারণ উভয়ই মিথ্যা</label>
+    <label><input type="radio" name="q33" value="c"> বিবৃতি সত্য, কারণ মিথ্যা</label>
+    <label><input type="radio" name="q33" value="d"> বিবৃতি মিথ্যা, কারণ সত্য</label>
+  </div>
+  <div class="question">34. বিবৃতি: আদর্শ মজুরি প্রদান ব্যাবস্থার অন্যতম প্রধান বৈশিষ্ট হলো তার নমনীয়তা।<br>কারণ: পরিবেশ ও পরিস্থিতির পরিবর্তনের সঙ্গে সঙ্গে মজুরি প্রদান ব্যাবস্থায় পরিবর্তন আনা সম্ভব নয়।</div>
+  <div class="options">
+    <label><input type="radio" name="q34" value="a"> বিবৃতি ও কারণ উভয়ই সত্য</label>
+    <label><input type="radio" name="q34" value="b"> বিবৃতি ও কারণ উভয়ই মিথ্যা</label>
+    <label><input type="radio" name="q34" value="c"> বিবৃতি সত্য, কারণ মিথ্যা</label>
+    <label><input type="radio" name="q34" value="d"> বিবৃতি মিথ্যা, কারণ সত্য</label>
+  </div>
+  <div class="question">35. (A) বিবৃতি: হাজিরার কাজে নিযুক্ত কর্মচারী সময় লিখনের কাজ করেন।<br>(B) বিবৃতি: কারখানার পরিদর্শকের বেতন হলো পরোক্ষ মজুরির উদাহরণ।</div>
+  <div class="options">
+    <label><input type="radio" name="q35" value="a"> A এবং B বিবৃতি পরস্পর বিপরীতধর্মী</label>
+    <label><input type="radio" name="q35" value="b"> B বিবৃতি হলো A বিবৃতির কারণ</label>
+    <label><input type="radio" name="q35" value="c"> A বিবৃতি সত্য হলেও B বিবৃতিটি মিথ্যা</label>
+    <label><input type="radio" name="q35" value="d"> A এবং B বিবৃতি উভয়ই পৃথক স্বাধীন বাক্য</label>
+  </div>
+  <div class="question">36. (A) বিবৃতি: শ্রমিকদের যে পারিশ্রমিক দেওয়া হয়, তা ভিন্ন ভিন্ন শিল্পের ক্ষেত্রে ভিন্ন ভিন্ন হতে পারে।<br>(B) বিবৃতি: পারিশ্রমিক নির্ধারণের ক্ষেত্রে অঞ্চলভিত্তিক বৈসম্মের বিষয়টিকে প্রাধান্য দেওয়ার কোনো প্রয়োজন নেই।</div>
+  <div class="options">
+    <label><input type="radio" name="q36" value="a"> A এবং B বিবৃতি পরস্পর বিপরীতধর্মী</label>
+    <label><input type="radio" name="q36" value="b"> B বিবৃতি হলো A বিবৃতির কারণ</label>
+    <label><input type="radio" name="q36" value="c"> A বিবৃতি সত্য হলেও B বিবৃতিটি মিথ্যা</label>
+    <label><input type="radio" name="q36" value="d"> A এবং B বিবৃতি উভয়ই পৃথক স্বাধীন বাক্য</label>
+  </div>
+  <div class="question">37. (A) বিবৃতি: স্বল্পমেয়াদি মূলধনী ক্ষতি, স্বল্পমেয়াদি মূলধনী লাভ কিংবা দীর্ঘমেয়াদি মূলধনী লাভের সঙ্গে সমন্বয় সাধন করা যায়।<br>(B) বিবৃতি: দীর্ঘমেয়াদি মূলধনী ক্ষতি যে কোনো ‘আয়ের খাত‘ -এর সঙ্গে সমন্বয় সাধন করা যায়।</div>
+  <div class="options">
+    <label><input type="radio" name="q37" value="a"> A এবং B বিবৃতি পরস্পর বিপরীতধর্মী</label>
+    <label><input type="radio" name="q37" value="b"> B বিবৃতি হলো A বিবৃতির কারণ</label>
+    <label><input type="radio" name="q37" value="c"> A বিবৃতি সত্য হলেও B বিবৃতিটি মিথ্যা</label>
+    <label><input type="radio" name="q37" value="d"> A এবং B বিবৃতি উভয়ই পৃথক স্বাধীন বাক্য</label>
+  </div>
+  <div class="question">38. (A) বিবৃতি: বোনাস থেকে প্রাপ্ত আয় বেতন খাতে আয় হিসাবে গণ্য হয়।<br>(B) বিবৃতি: বোনাস সহ Keyman Insurance Policy থেকে প্রাপ্ত অর্থ যদি ‘ব্যবসা বা পেশা থেকে মুনাফা’ বা ‘বেতন’ খাতে করযোগ্য না হয় তাহলে তা ‘অন্যান্য উৎস থেকে আয়‘ খাতে করযোগ্য হবে।</div>
+  <div class="options">
+    <label><input type="radio" name="q38" value="a"> A এবং B বিবৃতি পরস্পর বিপরীতধর্মী</label>
+    <label><input type="radio" name="q38" value="b"> B বিবৃতি হলো A বিবৃতির কারণ</label>
+    <label><input type="radio" name="q38" value="c"> A বিবৃতি সত্য হলেও B বিবৃতিটি মিথ্যা</label>
+    <label><input type="radio" name="q38" value="d"> A এবং B বিবৃতি উভয়ই পৃথক স্বাধীন বাক্য</label>
+  </div>
+  <div class="question">39. (A) বিবৃতি: যে সমস্ত আয় প্রথম ৪ টি খাতে পরে না সেগুলি ‘অন্যান্য উৎস থেকে আয়‘ খাতে করযোগ্য।<br>(B) বিবৃতি: বেতন থেকে আয় বেতন খাতে করযোগ্য।</div>
+  <div class="options">
+    <label><input type="radio" name="q39" value="a"> A এবং B বিবৃতি পরস্পর বিপরীতধর্মী</label>
+    <label><input type="radio" name="q39" value="b"> B বিবৃতি হলো A বিবৃতির কারণ</label>
+    <label><input type="radio" name="q39" value="c"> A বিবৃতি সত্য হলেও B বিবৃতিটি মিথ্যা</label>
+    <label><input type="radio" name="q39" value="d"> A এবং B বিবৃতি উভয়ই পৃথক স্বাধীন বাক্য</label>
+  </div>
+  <div class="question">40. (A) বিবৃতি: আয়কর আইনের ১০(১৫) ধারা অনুসারে বেশ কিছু লগ্নীপত্র বা জমাপত্রের উপর প্রাপ্ত সুদ কর মুক্ত।<br>(B) বিবৃতি: ১২ বছর মেয়াদি জাতীয় সঞ্চয় বার্ষিক বৃত্তি জমাপত্র থেকে প্রাপ্ত সুদ কর মুক্ত।</div>
+  <div class="options">
+    <label><input type="radio" name="q40" value="a"> A এবং B বিবৃতি পরস্পর বিপরীতধর্মী</label>
+    <label><input type="radio" name="q40" value="b"> B বিবৃতি হলো A বিবৃতির কারণ</label>
+    <label><input type="radio" name="q40" value="c"> A বিবৃতি সত্য হলেও B বিবৃতিটি মিথ্যা</label>
+    <label><input type="radio" name="q40" value="d"> A এবং B বিবৃতি উভয়ই পৃথক স্বাধীন বাক্য</label>
+  </div>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পূর্ববর্তী</button>
+  <button type="submit" class="submit-btn">জমা দিন</button>
+</div>
+
+</form>
+
+  </div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    <p>আশা করি আপনার অভিজ্ঞতা ভালো লেগেছে।</p>
+  </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; // Start with the first section
+    var subject = document.getElementById("subject").innerText;
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const recaptchaResponse = grecaptcha.getResponse();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      if (recaptchaResponse.length === 0) {
+        errorDiv.textContent = "reCAPTCHA সম্পন্ন করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    // === QUIZ LOGIC ===
+    const quizAnswers = {
+      q1: "c", q2: "c", q3: "b", q4: "a", q5: "a",
+      q6: "c", q7: "b", q8: "d", q9: "a", q10: "d",
+      q11: "a", q12: "a", q13: "a", q14: "d", q15: "a",
+      q16: "a", q17: "b", q18: "c", q19: "b", q20: "c",
+      q21: "d", q22: "c", q23: "b", q24: "a", q25: "c",
+      q26: "a", q27: "b", q28: "b", q29: "b", q30: "a",
+      q31: "b", q32: "b", q33: "a", q34: "b", q35: "d",
+      q36: "c", q37: "c", q38: "a", q39: "d", q40: "b"
+    };
+
+    let timeLeft = 30 * 60; // 30 minutes in seconds
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const timerDisplay = document.getElementById("timer");
+    const quizArea = document.getElementById("quizArea");
+    const thankYou = document.getElementById("thankYou");
+    const progressBar = document.getElementById("progressBar");
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        const currentSectionElement = document.getElementById(currentQuizSection);
+        const inputsInCurrentSection = currentSectionElement.querySelectorAll('input[type="radio"][required]');
+        let allAnswered = true;
+        
+        // Check if all radio buttons in the current section have a selection
+        const questionNames = new Set();
+        inputsInCurrentSection.forEach(input => questionNames.add(input.name));
+
+        questionNames.forEach(name => {
+            const radios = document.getElementsByName(name);
+            let radioAnswered = false;
+            for (let i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    radioAnswered = true;
+                    break;
+                }
+            }
+            if (!radioAnswered) {
+                allAnswered = false;
+            }
+        });
+
+        if (!allAnswered) {
+            alert("অনুগ্রহ করে এই সেকশনের সব প্রশ্নের উত্তর দিন।");
+            return;
+        }
+
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+
+      // Calculate score for all questions
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : undefined; // Check if the radio group exists
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // --- Display score on page instead of alert ---
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+      // --- End Display score ---
+
+      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
+
+      fetch("http://localhost/3ducation/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          total: totalQuestions,
+          subject: subject,
+          recaptchaResponse: recaptchaResponseAtQuizSubmit
+        }),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Quiz submission response:', data);
+      })
+      .catch(error => {
+          console.error('Error submitting quiz:', error);
+      });
+
+      // Block repeated attempt
+      localStorage.setItem("quizDone", "true");
+      quizArea.style.display = "none";
+      thankYou.style.display = "block";
+
+    });
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const validEmail = urlParams.get('email'); // Replace this with the correct value
+
+  document.getElementById("checkEmailBtn").addEventListener("click", function () {
+  const emailInput = document.getElementById("studentEmail").value.trim();
+  const message = document.getElementById("message");
+  
+  
+  //const captchaContainer = document.getElementById("captchaContainer");
+  //const hiddenEmailField = document.getElementById("hiddenEmail");
+
+  if (emailInput === validEmail) {
+    captchaDiv.style.display = "block";  // Show the CAPTCHA
+    //hiddenEmailField.value = emailInput; // Pass email with form
+    document.getElementById("checkEmailBtn").style.display = "none";
+    message.style.display = "none";
+    document.getElementById("goQuiz").style.display = "inline-block";
+    
+  } else {
+    message.style.display = "block";
+    message.textContent = "Oops! That email doesn't match our records.";
+    message.style.color = "green";
+    captchaDiv.style.display = "none";
+    //document.getElementById("myButton").style.display = "inline-block";
+  }
+});
+
+   // STEP 3: Clean up the URL (remove ?email=... from address bar)
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+  </script>
+
+</body>
+</html>
