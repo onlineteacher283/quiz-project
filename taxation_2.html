@@ -751,17 +751,20 @@
           email: studentEmail,
           score: totalScore,
           total: totalQuestions,
-          subject: subject,
-          recaptchaResponse: recaptchaResponseAtQuizSubmit
-        }),
+          subject: document.getElementById("subject").innerText,
+           }),
         headers: { "Content-Type": "application/json" }
       })
       .then(response => response.json())
       .then(data => {
-          console.log('Quiz submission response:', data);
-      })
-      .catch(error => {
-          console.error('Error submitting quiz:', error);
+          if(data.status === "success") {
+        console.log("Success: Data saved to MySQL");
+    } else {
+        console.error("Database Error:", data.message);
+    }
+})
+.catch(error => {
+    console.error('Network Error:', error);
       });
 
       // Block repeated attempt
