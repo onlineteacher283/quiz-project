@@ -744,17 +744,18 @@
 
       const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
 
-      fetch("https://learnnova.whf.bz/assets/php/submit_quiz.php", {
-        method: "POST",
-        body: JSON.stringify({
-          name: studentName,
-          email: studentEmail,
-          score: totalScore,
-          total: totalQuestions,
-          subject: document.getElementById("subject").innerText,
-           }),
-        headers: { "Content-Type": "application/json" }
-      })
+     // Inside your HTML script tag
+fetch("learnnova.cfd/assets/php/submit_quiz.php", { // Update this URL when you go live
+  method: "POST",
+  body: JSON.stringify({
+    name: studentName,
+    email: studentEmail,
+    score: totalScore,
+    total: totalQuestions,
+    subject: subject // This picks 'Taxation' from your <h2>
+  }),
+  headers: { "Content-Type": "application/json" }
+})
       .then(response => response.json())
       .then(data => {
           if(data.status === "success") {
