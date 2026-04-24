@@ -680,60 +680,58 @@
         currentQuizSection = nextSectionId;
     }
 
-form.addEventListener("submit", function(e) {
-  e.preventDefault();
-  clearInterval(countdown);
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
 
-  let totalScore = 0;
-  let totalQuestions = 0;
+      let totalScore = 0;
+      let totalQuestions = 0;
 
-  // Calculate score for all questions
-  for (let q in quizAnswers) {
-    const selected = form[q] ? form[q].value : undefined;
-    if (selected === quizAnswers[q]) {
-        totalScore++;
-    }
-    totalQuestions++;
-  }
+      // Calculate score for all questions
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : undefined; // Check if the radio group exists
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
 
-  // --- PASTE THE NEW CODE STARTING HERE ---
+      // --- Display score on page instead of alert ---
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+      // --- End Display score ---
 
-  // 1. Get the Exam Code from the <h1> tag (which says "Test-1")
-const examCodeText = document.querySelector('.left h1:last-of-type').innerText;
-  // 2. Send the data to your PHP script
-fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
-  method: "POST",
-  body: JSON.stringify({
-    name: studentName,
-    email: studentEmail,
-    score: totalScore,
-    total: totalQuestions,
-    subject: document.getElementById("subject").innerText,
-    exam_code: examCodeText 
-  }),
-  headers: { "Content-Type": "application/json" }
-})
-.then(response => response.json())
-.then(data => {
-    if(data.status === "success") {
-        console.log("Database updated!");
+      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
+
+      fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          total: totalQuestions,
+          subject: document.getElementById("subject").innerText,
+           }),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.json())
+      .then(data => {
+          if(data.status === "success") {
+        console.log("Success: Data saved to MySQL");
     } else {
-        alert("Error: " + data.message); // This will pop up an error if it fails
+        console.error("Database Error:", data.message);
     }
-});
-  .catch(error => {
-      console.error('Network Error:', error);
-  });
+})
+.catch(error => {
+    console.error('Network Error:', error);
+      });
 
-  // --- END OF NEW CODE ---
+      // Block repeated attempt
+      localStorage.setItem("quizDone", "true");
+      quizArea.style.display = "none";
+      thankYou.style.display = "block";
 
-  // UI updates (Keep these lines as they are)
-  document.getElementById('finalStudentName').textContent = studentName;
-  document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
-  localStorage.setItem("quizDone", "true");
-  quizArea.style.display = "none";
-  thankYou.style.display = "block";
-});
+    });
 
   const urlParams = new URLSearchParams(window.location.search);
   const validEmail = urlParams.get('email'); // Replace this with the correct value
