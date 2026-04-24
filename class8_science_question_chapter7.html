@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InfoTech Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 26px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+
+    }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 40px;
+
+    }
+
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h3>Welcome to <u>InfoTech.com</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+
+      <h2 id="subject">Science</h2>
+      <h1>Test-1</h1>
+      </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" id="captchaDiv" style="display: none;" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        
+        <button type="submit" class="submit-btn" id="goQuiz" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center; display: none;">Confirm</button>
+      </form>
+      <button class="submit-btn" id="checkEmailBtn" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center;">Verify</button>
+      <p id="message" style="display: none; color: green; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">LearnNova Education Center</h1>
+    <h3 style="text-align:center;">Subject: Science    Full marks: 40    Time: 30mnts     Class: VIII </h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+<form id="quizForm">
+
+<!-- Section 1 -->
+<div id="quizSection1" class="quiz-section active">
+  <span> সঠিক বিকল্পটি নির্বাচন করো : (1x15=15)</span>
+
+  <!-- 1–15 -->
+  <div class="question">1. পৃথিবীতে অণুজীবরা কত বছর ধরে টিকে আছে?</div>
+  <div class="options">
+    <label><input type="radio" name="q1" value="a"> ২৫০ কোটি</label>
+    <label><input type="radio" name="q1" value="b"> ৩৫০ কোটি</label>
+    <label><input type="radio" name="q1" value="c"> ৪৫০ কোটি</label>
+    <label><input type="radio" name="q1" value="d"> ৫৫০ কোটি</label>
+  </div>
+
+  <div class="question">2. পৃথিবীর জীব-ভরের কত শতাংশ অণুজীব?</div>
+  <div class="options">
+    <label><input type="radio" name="q2" value="a"> ৫০%</label>
+    <label><input type="radio" name="q2" value="b"> ৬০%</label>
+    <label><input type="radio" name="q2" value="c"> ৭০%</label>
+    <label><input type="radio" name="q2" value="d"> ৮০%</label>
+  </div>
+
+  <div class="question">3. ১ গ্রাম মাটিতে অণুজীবের সংখ্যা প্রায় কত?</div>
+  <div class="options">
+    <label><input type="radio" name="q3" value="a"> ১০ কোটি</label>
+    <label><input type="radio" name="q3" value="b"> ৫০ কোটি</label>
+    <label><input type="radio" name="q3" value="c"> ১০০ কোটি</label>
+    <label><input type="radio" name="q3" value="d"> ৫০০ কোটি</label>
+  </div>
+
+  <div class="question">4. অণুজীবদের আদর্শ তাপমাত্রা—</div>
+  <div class="options">
+    <label><input type="radio" name="q4" value="a"> ০-১০°C</label>
+    <label><input type="radio" name="q4" value="b"> ১৫-২০°C</label>
+    <label><input type="radio" name="q4" value="c"> ২৫-৩৮°C</label>
+    <label><input type="radio" name="q4" value="d"> ৫০-৬০°C</label>
+  </div>
+
+  <div class="question">5. রঞ্জন পদ্ধতিকে বলা হয়—</div>
+  <div class="options">
+    <label><input type="radio" name="q5" value="a"> পেইন্টিং</label>
+    <label><input type="radio" name="q5" value="b"> স্টেনিং</label>
+    <label><input type="radio" name="q5" value="c"> পলিশিং</label>
+    <label><input type="radio" name="q5" value="d"> ওয়াশিং</label>
+  </div>
+
+  <div class="question">6. মনেরা রাজ্যের অণুজীব—</div>
+  <div class="options">
+    <label><input type="radio" name="q6" value="a"> ছত্রাক</label>
+    <label><input type="radio" name="q6" value="b"> ব্যাকটেরিয়া</label>
+    <label><input type="radio" name="q6" value="c"> শৈবাল</label>
+    <label><input type="radio" name="q6" value="d"> প্রটিস্টা</label>
+  </div>
+
+  <div class="question">7. অ্যামিবার চলন অঙ্গ—</div>
+  <div class="options">
+    <label><input type="radio" name="q7" value="a"> সিলিয়া</label>
+    <label><input type="radio" name="q7" value="b"> ফ্ল্যাজেলা</label>
+    <label><input type="radio" name="q7" value="c"> ক্ষণপদ</label>
+    <label><input type="radio" name="q7" value="d"> চাবুক</label>
+  </div>
+
+  <div class="question">8. পেনিসিলিয়াম—</div>
+  <div class="options">
+    <label><input type="radio" name="q8" value="a"> শৈবাল</label>
+    <label><input type="radio" name="q8" value="b"> ছত্রাক</label>
+    <label><input type="radio" name="q8" value="c"> ব্যাকটেরিয়া</label>
+    <label><input type="radio" name="q8" value="d"> প্রটিস্টা</label>
+  </div>
+
+  <div class="question">9. ভিটামিন B12 তৈরি করে—</div>
+  <div class="options">
+    <label><input type="radio" name="q9" value="a"> রাইজোবিয়াম</label>
+    <label><input type="radio" name="q9" value="b"> ই. কোলাই</label>
+    <label><input type="radio" name="q9" value="c"> ল্যাকটোব্যাসিলাস</label>
+    <label><input type="radio" name="q9" value="d"> নাইট্রোব্যাকটর</label>
+  </div>
+
+  <div class="question">10. পেনিসিলিন আবিষ্কার—</div>
+  <div class="options">
+    <label><input type="radio" name="q10" value="a"> ১৯১৮</label>
+    <label><input type="radio" name="q10" value="b"> ১৯২৮</label>
+    <label><input type="radio" name="q10" value="c"> ১৯৩৮</label>
+    <label><input type="radio" name="q10" value="d"> ১৯৪৮</label>
+  </div>
+
+  <div class="question">11. মিথেন উৎপাদন করে—</div>
+  <div class="options">
+    <label><input type="radio" name="q11" value="a"> রাইজোবিয়াম</label>
+    <label><input type="radio" name="q11" value="b"> মিথানোজেনিক</label>
+    <label><input type="radio" name="q11" value="c"> নাইট্রোব্যাকটর</label>
+    <label><input type="radio" name="q11" value="d"> ল্যাকটোব্যাসিলাস</label>
+  </div>
+
+  <div class="question">12. দই তৈরির তাপমাত্রা—</div>
+  <div class="options">
+    <label><input type="radio" name="q12" value="a"> ২৫°C</label>
+    <label><input type="radio" name="q12" value="b"> ৩৭°C</label>
+    <label><input type="radio" name="q12" value="c"> ৫০°C</label>
+    <label><input type="radio" name="q12" value="d"> ১০০°C</label>
+  </div>
+
+  <div class="question">13. ছত্রাকের সুতোর অংশ—</div>
+  <div class="options">
+    <label><input type="radio" name="q13" value="a"> মাইসেলিয়াম</label>
+    <label><input type="radio" name="q13" value="b"> হাইফি</label>
+    <label><input type="radio" name="q13" value="c"> ক্লোরোপ্লাস্ট</label>
+    <label><input type="radio" name="q13" value="d"> নিউক্লিয়াস</label>
+  </div>
+
+  <div class="question">14. স্বাধীনজীবী ব্যাকটেরিয়া—</div>
+  <div class="options">
+    <label><input type="radio" name="q14" value="a"> রাইজোবিয়াম</label>
+    <label><input type="radio" name="q14" value="b"> অ্যাজোটোব্যাকটর</label>
+    <label><input type="radio" name="q14" value="c"> ল্যাকটোব্যাসিলাস</label>
+    <label><input type="radio" name="q14" value="d"> ই. কোলাই</label>
+  </div>
+
+  <div class="question">15. মহাকাশে বাতাস পরিষ্কার রাখে—</div>
+  <div class="options">
+    <label><input type="radio" name="q15" value="a"> ব্যাকটেরিয়া</label>
+    <label><input type="radio" name="q15" value="b"> ছত্রাক</label>
+    <label><input type="radio" name="q15" value="c"> শৈবাল</label>
+    <label><input type="radio" name="q15" value="d"> ভাইরাস</label>
+  </div>
+
+  <button onclick="showNextSection('quizSection2')">পরবর্তী</button>
+</div>
+
+
+<!-- Section 2 -->
+<div id="quizSection2" class="quiz-section">
+  <span> শুন্যস্থান পূরণ করো :(1x15=15)</span>
+
+  <!-- 16–30 -->
+  <div class="question">16. ______ কোশপ্রাচীর ভিন্ন।</div>
+  <div class="options">
+    <label><input type="radio" name="q16" value="a"> ব্যাকটেরিয়া</label>
+    <label><input type="radio" name="q16" value="b"> ছত্রাক</label>
+    <label><input type="radio" name="q16" value="c"> শৈবাল</label>
+  </div>
+
+  <div class="question">17. সহাবস্থানকে ______ বলে।</div>
+  <div class="options">
+    <label><input type="radio" name="q17" value="a"> অর্বুদ</label>
+    <label><input type="radio" name="q17" value="b"> লাইকেন</label>
+    <label><input type="radio" name="q17" value="c"> মাইসেলিয়াম</label>
+  </div>
+
+  <div class="question">18. সূর্যের আলোতে অণুজীব ______ যায়।</div>
+  <div class="options">
+    <label><input type="radio" name="q18" value="a"> বেড়ে</label>
+    <label><input type="radio" name="q18" value="b"> মারা</label>
+    <label><input type="radio" name="q18" value="c"> পুষ্টি নেয়</label>
+  </div>
+
+  <div class="question">19. আদ্যাপ্রাণী এখন ______ রাজ্য।</div>
+  <div class="options">
+    <label><input type="radio" name="q19" value="a"> মনেরা</label>
+    <label><input type="radio" name="q19" value="b"> প্রটিস্টা</label>
+    <label><input type="radio" name="q19" value="c"> প্লান্টি</label>
+  </div>
+
+  <div class="question">20. স্পাইরোগাইরা ______ শৈবাল।</div>
+  <div class="options">
+    <label><input type="radio" name="q20" value="a"> এককোষী</label>
+    <label><input type="radio" name="q20" value="b"> বহুকোষী</label>
+    <label><input type="radio" name="q20" value="c"> কলোনি</label>
+  </div>
+
+  <div class="question">21. মটর গাছে ______ ব্যাকটেরিয়া।</div>
+  <div class="options">
+    <label><input type="radio" name="q21" value="a"> ক্লসট্রিডিয়াম</label>
+    <label><input type="radio" name="q21" value="b"> রাইজোবিয়াম</label>
+    <label><input type="radio" name="q21" value="c"> ই. কোলাই</label>
+  </div>
+
+  <div class="question">22. নাইট্রিফিকেশন হলো ______ রূপান্তর।</div>
+  <div class="options">
+    <label><input type="radio" name="q22" value="a"> অ্যামোনিয়া</label>
+    <label><input type="radio" name="q22" value="b"> নাইট্রেট</label>
+    <label><input type="radio" name="q22" value="c"> নাইট্রোজেন</label>
+  </div>
+
+  <div class="question">23. দই তৈরিতে ______ লাগে।</div>
+  <div class="options">
+    <label><input type="radio" name="q23" value="a"> ল্যাকটোব্যাসিলাস</label>
+    <label><input type="radio" name="q23" value="b"> নাইট্রোব্যাকটর</label>
+    <label><input type="radio" name="q23" value="c"> মিথানোজেনিক</label>
+  </div>
+
+  <div class="question">24. রুটি তৈরিতে ______ লাগে।</div>
+  <div class="options">
+    <label><input type="radio" name="q24" value="a"> রাইজোবিয়াম</label>
+    <label><input type="radio" name="q24" value="b"> শৈবাল</label>
+    <label><input type="radio" name="q24" value="c"> ইস্ট</label>
+  </div>
+
+  <div class="question">25. সংরক্ষণ পদ্ধতি ______।</div>
+  <div class="options">
+    <label><input type="radio" name="q25" value="a"> ক্যানিং</label>
+    <label><input type="radio" name="q25" value="b"> সল্টিং</label>
+    <label><input type="radio" name="q25" value="c"> পিকলিং</label>
+  </div>
+
+  <div class="question">26. পেনিসিলিন আসে ______ থেকে।</div>
+  <div class="options">
+    <label><input type="radio" name="q26" value="a"> ইস্ট</label>
+    <label><input type="radio" name="q26" value="b"> পেনিসিলিয়াম</label>
+    <label><input type="radio" name="q26" value="c"> মিউকর</label>
+  </div>
+
+  <div class="question">27. রোগ প্রতিরোধ ক্ষমতা ______।</div>
+  <div class="options">
+    <label><input type="radio" name="q27" value="a"> অ্যান্টিজেন</label>
+    <label><input type="radio" name="q27" value="b"> অনাক্রম্যতা</label>
+    <label><input type="radio" name="q27" value="c"> ইনফেকশন</label>
+  </div>
+
+  <div class="question">28. নাইট্রোজেন নেয় ______।</div>
+  <div class="options">
+    <label><input type="radio" name="q28" value="a"> সায়ানোব্যাকটেরিয়া</label>
+    <label><input type="radio" name="q28" value="b"> ছত্রাক</label>
+    <label><input type="radio" name="q28" value="c"> ভাইরাস</label>
+  </div>
+
+  <div class="question">29. দুধ জীবাণুমুক্তকরণ ______।</div>
+  <div class="options">
+    <label><input type="radio" name="q29" value="a"> রেফ্রিজারেশন</label>
+    <label><input type="radio" name="q29" value="b"> পাস্তুরাইজেশন</label>
+    <label><input type="radio" name="q29" value="c"> ড্রায়িং</label>
+  </div>
+
+  <div class="question">30. টিটেনাস ব্যাকটেরিয়া ______ অক্সিজেনে বাঁচে।</div>
+  <div class="options">
+    <label><input type="radio" name="q30" value="a"> বেশি</label>
+    <label><input type="radio" name="q30" value="b"> কম</label>
+    <label><input type="radio" name="q30" value="c"> স্বাভাবিক</label>
+  </div>
+
+  <button onclick="showNextSection('quizSection1')">পূর্ববর্তী</button>
+  <button onclick="showNextSection('quizSection3')">পরবর্তী</button>
+</div>
+
+
+<!-- Section 3 -->
+<div id="quizSection3" class="quiz-section">
+  <span> সত্য বা মিথ্যা :(1x10=10)</span>
+
+  <!-- 31–40 -->
+  <div class="question">31. ভাইরাস খালি চোখে দেখা যায় না।</div>
+  <div class="options">
+    <label><input type="radio" name="q31" value="a"> সত্য</label>
+    <label><input type="radio" name="q31" value="b"> মিথ্যা</label>
+  </div>
+
+  <div class="question">32. থার্মোফিলিক ব্যাকটেরিয়া ১০০°C এ বাঁচে।</div>
+  <div class="options">
+    <label><input type="radio" name="q32" value="a"> সত্য</label>
+    <label><input type="radio" name="q32" value="b"> মিথ্যা</label>
+  </div>
+
+  <div class="question">33. অ্যান্টিবায়োটিক ভাইরাসে কাজ করে।</div>
+  <div class="options">
+    <label><input type="radio" name="q33" value="a"> সত্য</label>
+    <label><input type="radio" name="q33" value="b"> মিথ্যা</label>
+  </div>
+
+  <div class="question">34. ছত্রাক খাদ্য তৈরি করে।</div>
+  <div class="options">
+    <label><input type="radio" name="q34" value="a"> সত্য</label>
+    <label><input type="radio" name="q34" value="b"> মিথ্যা</label>
+  </div>
+
+  <div class="question">35. ভলভক্স এককোষী।</div>
+  <div class="options">
+    <label><input type="radio" name="q35" value="a"> সত্য</label>
+    <label><input type="radio" name="q35" value="b"> মিথ্যা</label>
+  </div>
+
+  <div class="question">36. ই. কোলাই ক্ষতিকর।</div>
+  <div class="options">
+    <label><input type="radio" name="q36" value="a"> সত্য</label>
+    <label><input type="radio" name="q36" value="b"> মিথ্যা</label>
+  </div>
+
+  <div class="question">37. লাইকেন সহাবস্থান।</div>
+  <div class="options">
+    <label><input type="radio" name="q37" value="a"> সত্য</label>
+    <label><input type="radio" name="q37" value="b"> মিথ্যা</label>
+  </div>
+
+  <div class="question">38. মৃতজীবী দূষণ কমায়।</div>
+  <div class="options">
+    <label><input type="radio" name="q38" value="a"> সত্য</label>
+    <label><input type="radio" name="q38" value="b"> মিথ্যা</label>
+  </div>
+
+  <div class="question">39. ক্যানিং বায়ুশূন্য পদ্ধতি।</div>
+  <div class="options">
+    <label><input type="radio" name="q39" value="a"> সত্য</label>
+    <label><input type="radio" name="q39" value="b"> মিথ্যা</label>
+  </div>
+
+  <div class="question">40. পোলিও টিকা দিয়ে প্রতিরোধ সম্ভব।</div>
+  <div class="options">
+    <label><input type="radio" name="q40" value="a"> সত্য</label>
+    <label><input type="radio" name="q40" value="b"> মিথ্যা</label>
+  </div>
+
+  <button onclick="showNextSection('quizSection2')">পূর্ববর্তী</button>
+  <button type="submit">জমা দিন</button>
+</div>
+
+</form>
+
+  </div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    <p>আশা করি আপনার অভিজ্ঞতা ভালো লেগেছে।</p>
+  </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; // Start with the first section
+    var subject = document.getElementById("subject").innerText;
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const recaptchaResponse = grecaptcha.getResponse();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      if (recaptchaResponse.length === 0) {
+        errorDiv.textContent = "reCAPTCHA সম্পন্ন করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    // === QUIZ LOGIC ===
+const quizAnswers = {
+  q1:"b", q2:"b", q3:"c", q4:"c", q5:"b",
+  q6:"b", q7:"c", q8:"b", q9:"b", q10:"b",
+  q11:"b", q12:"b", q13:"b", q14:"b", q15:"c",
+  q16:"b", q17:"b", q18:"b", q19:"b", q20:"b",
+  q21:"b", q22:"b", q23:"a", q24:"c", q25:"b",
+  q26:"b", q27:"b", q28:"a", q29:"b", q30:"b",
+  q31:"a", q32:"a", q33:"b", q34:"b", q35:"a",
+  q36:"b", q37:"a", q38:"a", q39:"a", q40:"a"
+};
+
+    let timeLeft = 30 * 60; // 30 minutes in seconds
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const timerDisplay = document.getElementById("timer");
+    const quizArea = document.getElementById("quizArea");
+    const thankYou = document.getElementById("thankYou");
+    const progressBar = document.getElementById("progressBar");
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        const currentSectionElement = document.getElementById(currentQuizSection);
+        const inputsInCurrentSection = currentSectionElement.querySelectorAll('input[type="radio"][required]');
+        let allAnswered = true;
+        
+        // Check if all radio buttons in the current section have a selection
+        const questionNames = new Set();
+        inputsInCurrentSection.forEach(input => questionNames.add(input.name));
+
+        questionNames.forEach(name => {
+            const radios = document.getElementsByName(name);
+            let radioAnswered = false;
+            for (let i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    radioAnswered = true;
+                    break;
+                }
+            }
+            if (!radioAnswered) {
+                allAnswered = false;
+            }
+        });
+
+        if (!allAnswered) {
+            alert("অনুগ্রহ করে এই সেকশনের সব প্রশ্নের উত্তর দিন।");
+            return;
+        }
+
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+
+      // Calculate score for all questions
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : undefined; // Check if the radio group exists
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // --- Display score on page instead of alert ---
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+      // --- End Display score ---
+
+      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
+
+      fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          total: totalQuestions,
+          subject: document.getElementById("subject").innerText,
+           }),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => response.json())
+      .then(data => {
+          if(data.status === "success") {
+        console.log("Success: Data saved to MySQL");
+    } else {
+        console.error("Database Error:", data.message);
+    }
+})
+.catch(error => {
+    console.error('Network Error:', error);
+      });
+
+      // Block repeated attempt
+      localStorage.setItem("quizDone", "true");
+      quizArea.style.display = "none";
+      thankYou.style.display = "block";
+
+    });
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const validEmail = urlParams.get('email'); // Replace this with the correct value
+
+  document.getElementById("checkEmailBtn").addEventListener("click", function () {
+  const emailInput = document.getElementById("studentEmail").value.trim();
+  const message = document.getElementById("message");
+  
+  
+  //const captchaContainer = document.getElementById("captchaContainer");
+  //const hiddenEmailField = document.getElementById("hiddenEmail");
+
+  if (emailInput === validEmail) {
+    captchaDiv.style.display = "block";  // Show the CAPTCHA
+    //hiddenEmailField.value = emailInput; // Pass email with form
+    document.getElementById("checkEmailBtn").style.display = "none";
+    message.style.display = "none";
+    document.getElementById("goQuiz").style.display = "inline-block";
+    
+  } else {
+    message.style.display = "block";
+    message.textContent = "Oops! That email doesn't match our records.";
+    message.style.color = "green";
+    captchaDiv.style.display = "none";
+    //document.getElementById("myButton").style.display = "inline-block";
+  }
+});
+
+   // STEP 3: Clean up the URL (remove ?email=... from address bar)
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+  </script>
+
+</body>
+</html>
