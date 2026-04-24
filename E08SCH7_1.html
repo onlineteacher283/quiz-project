@@ -703,6 +703,9 @@
 
       const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
 
+      // Extract the exam code from the <h1> tag (Test-1)
+const examCodeText = document.querySelector('.left h1:last-of-type').innerText;
+
       fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
         method: "POST",
         body: JSON.stringify({
@@ -711,6 +714,7 @@
           score: totalScore,
           total: totalQuestions,
           subject: document.getElementById("subject").innerText,
+          exam_code: examCodeText // Added this line to pass "Test-1" dynamically
            }),
         headers: { "Content-Type": "application/json" }
       })
