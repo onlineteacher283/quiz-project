@@ -699,30 +699,28 @@ form.addEventListener("submit", function(e) {
   // --- PASTE THE NEW CODE STARTING HERE ---
 
   // 1. Get the Exam Code from the <h1> tag (which says "Test-1")
-  const examCodeElement = document.querySelector('.left h1:last-of-type');
-  const examCodeText = examCodeElement ? examCodeElement.innerText : "UNKNOWN";
-
+const examCodeText = document.querySelector('.left h1:last-of-type').innerText;
   // 2. Send the data to your PHP script
-  fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
-    method: "POST",
-    body: JSON.stringify({
-      name: studentName,
-      email: studentEmail,
-      score: totalScore,
-      total: totalQuestions,
-      subject: document.getElementById("subject").innerText,
-      exam_code: examCodeText 
-    }),
-    headers: { "Content-Type": "application/json" }
-  })
-  .then(response => response.json())
-  .then(data => {
-      if(data.status === "success") {
-          console.log("Success:", data.message);
-      } else {
-          console.error("Error from PHP:", data.message);
-      }
-  })
+fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
+  method: "POST",
+  body: JSON.stringify({
+    name: studentName,
+    email: studentEmail,
+    score: totalScore,
+    total: totalQuestions,
+    subject: document.getElementById("subject").innerText,
+    exam_code: examCodeText 
+  }),
+  headers: { "Content-Type": "application/json" }
+})
+.then(response => response.json())
+.then(data => {
+    if(data.status === "success") {
+        console.log("Database updated!");
+    } else {
+        alert("Error: " + data.message); // This will pop up an error if it fails
+    }
+});
   .catch(error => {
       console.error('Network Error:', error);
   });
