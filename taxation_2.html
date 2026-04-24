@@ -745,7 +745,7 @@
       const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
 
      // Inside your HTML script tag
-fetch("learnnova.cfd/assets/php/submit_quiz.php", { // Update this URL when you go live
+fetch("https://learnnova.cfd/assets/php/submit_quiz.php", { // Update this URL when you go live
   method: "POST",
   body: JSON.stringify({
     name: studentName,
