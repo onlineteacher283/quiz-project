@@ -681,61 +681,63 @@
     }
 
     form.addEventListener("submit", function(e) {
-      e.preventDefault();
-      clearInterval(countdown);
+  e.preventDefault();
+  clearInterval(countdown);
 
-      let totalScore = 0;
-      let totalQuestions = 0;
+  let totalScore = 0;
+  let totalQuestions = 0;
 
-      // Calculate score for all questions
-      for (let q in quizAnswers) {
-        const selected = form[q] ? form[q].value : undefined; // Check if the radio group exists
-        if (selected === quizAnswers[q]) {
-            totalScore++;
-        }
-        totalQuestions++;
-      }
-
-      // --- Display score on page instead of alert ---
-      document.getElementById('finalStudentName').textContent = studentName;
-      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
-      // --- End Display score ---
-
-      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
-
-      // Extract the exam code from the <h1> tag (Test-1)
-const examCodeText = document.querySelector('.left h1:last-of-type').innerText;
-
-      fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
-        method: "POST",
-        body: JSON.stringify({
-          name: studentName,
-          email: studentEmail,
-          score: totalScore,
-          total: totalQuestions,
-          subject: document.getElementById("subject").innerText,
-          exam_code: examCodeText // Added this line to pass "Test-1" dynamically
-           }),
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(response => response.json())
-      .then(data => {
-          if(data.status === "success") {
-        console.log("Success: Data saved to MySQL");
-    } else {
-        console.error("Database Error:", data.message);
+  // Calculate score
+  for (let q in quizAnswers) {
+    const selected = form[q] ? form[q].value : undefined;
+    if (selected === quizAnswers[q]) {
+        totalScore++;
     }
-})
-.catch(error => {
-    console.error('Network Error:', error);
-      });
+    totalQuestions++;
+  }
 
-      // Block repeated attempt
-      localStorage.setItem("quizDone", "true");
-      quizArea.style.display = "none";
-      thankYou.style.display = "block";
+  // 1. Get the Exam Code from the <h1> tag (which says "Test-1")
+  // We use querySelector to find the <h1> inside the .left div
+  const examCodeElement = document.querySelector('.left h1:last-of-type');
+  const examCodeText = examCodeElement ? examCodeElement.innerText : "UNKNOWN";
 
-    });
+  // 2. Prepare the data to send
+  const payload = {
+    name: studentName,
+    email: studentEmail,
+    score: totalScore,
+    total: totalQuestions,
+    subject: document.getElementById("subject").innerText,
+    exam_code: examCodeText // This matches the 'exam_code' check in your PHP
+  };
+
+  // 3. Send the data
+  fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(response => response.json())
+  .then(data => {
+      if(data.status === "success") {
+          console.log("Success:", data.message);
+      } else {
+          // If you see the "Incomplete data" error here, 
+          // it means the 'payload' above is missing a field.
+          console.error("Error from PHP:", data.message);
+      }
+  })
+  .catch(error => {
+      console.error('Network Error:', error);
+  });
+
+  // UI updates
+  document.getElementById('finalStudentName').textContent = studentName;
+  document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+  localStorage.setItem("quizDone", "true");
+  quizArea.style.display = "none";
+  thankYou.style.display = "block";
+});
 
   const urlParams = new URLSearchParams(window.location.search);
   const validEmail = urlParams.get('email'); // Replace this with the correct value
