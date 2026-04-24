@@ -224,7 +224,7 @@
       <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
 
       <h2 id="subject">Science</h2>
-      <h1 id="examCode">Test-1</h1>
+      <h1 id="examCode">E06SEVCH5_1</h1>
       </div>
 
     <div class="right">
@@ -590,6 +590,7 @@
     let studentEmail = "";
     let currentQuizSection = 'quizSection1'; // Start with the first section
     var subject = document.getElementById("subject").innerText;
+    var examCode = document.getElementById("examCode").innerText;
 
     function checkLogin(event) {
       event.preventDefault();
@@ -715,6 +716,7 @@ fetch("https://learnnova.cfd/assets/php/submit_quiz.php", { // Update this URL w
     score: totalScore,
     total: totalQuestions,
     subject: subject // This picks 'Taxation' from your <h2>
+    examCode: examCode // This picks 'Test-1' from your <h1>
   }),
   headers: { "Content-Type": "application/json" }
 })
