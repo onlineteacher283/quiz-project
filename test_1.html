@@ -711,6 +711,9 @@
      // Inside your HTML script tag
 fetch("https://learnnova.cfd/assets/php/submit_quiz.php", { // Update this URL when you go live
   method: "POST",
+  headers: {
+    "Content-Type": "application/json" // এই লাইনটি অত্যন্ত জরুরি
+  },
   body: JSON.stringify({
     name: studentName,
     email: studentEmail,
