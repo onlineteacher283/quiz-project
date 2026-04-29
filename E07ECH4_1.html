@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LearnNova Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 26px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+
+    }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 40px;
+
+    }
+
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h3>Welcome to <u>LearnNova.In</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+
+      <h2 id="subject">English</h2>
+      <h1>E07ECH4_1</h1>
+      </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" id="captchaDiv" style="display: none;" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        
+        <button type="submit" class="submit-btn" id="goQuiz" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center; display: none;">Confirm</button>
+      </form>
+      <button class="submit-btn" id="checkEmailBtn" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center;">Verify</button>
+      <p id="message" style="display: none; color: green; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">LearnNova Education Center</h1>
+    <h3 style="text-align:center;">Subject: English    Full marks: 40    Time: 30mnts     Class: VII</h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+<form id="quizForm">
+  <!-- Section 1: Questions 1-10 -->
+
+<div id="quizSection1" class="quiz-section active">
+  <span> Group - A: Choose the Correct Answer (Marks: 15) </span>
+
+    <div class="question">1. What kind of story is "The Beauty and the Beast"?</div>
+    <div class="options">
+      <label><input type="radio" name="q1" value="a"> (a) True story</label>
+      <label><input type="radio" name="q1" value="b"> (b) Imaginary fairy tale</label>
+      <label><input type="radio" name="q1" value="c"> (c) Biography</label>
+      <label><input type="radio" name="q1" value="d"> (d) Science fiction</label>
+    </div>
+
+    <div class="question">2. Where did the wealthy merchant live initially?</div>
+    <div class="options">
+      <label><input type="radio" name="q2" value="a"> (a) Small farmhouse</label>
+      <label><input type="radio" name="q2" value="b"> (b) Big mansion</label>
+      <label><input type="radio" name="q2" value="c"> (c) Forest cave</label>
+      <label><input type="radio" name="q2" value="d"> (d) City apartment</label>
+    </div>
+
+    <div class="question">3. Who was the youngest daughter of the merchant?</div>
+    <div class="options">
+      <label><input type="radio" name="q3" value="a"> (a) Cinderella</label>
+      <label><input type="radio" name="q3" value="b"> (b) Snow White</label>
+      <label><input type="radio" name="q3" value="c"> (c) Belle</label>
+      <label><input type="radio" name="q3" value="d"> (d) Aurora</label>
+    </div>
+
+    <div class="question">4. How did the merchant lose his wealth?</div>
+    <div class="options">
+      <label><input type="radio" name="q4" value="a"> (a) In a fire</label>
+      <label><input type="radio" name="q4" value="b"> (b) Through gambling</label>
+      <label><input type="radio" name="q4" value="c"> (c) In a tempest at sea</label>
+      <label><input type="radio" name="q4" value="d"> (d) He gave it away</label>
+    </div>
+
+    <div class="question">5. What did Belle ask her father to bring for her?</div>
+    <div class="options">
+      <label><input type="radio" name="q5" value="a"> (a) Jewels</label>
+      <label><input type="radio" name="q5" value="b"> (b) Fine dresses</label>
+      <label><input type="radio" name="q5" value="c"> (c) A rare rose</label>
+      <label><input type="radio" name="q5" value="d"> (d) A magic mirror</label>
+    </div>
+
+    <div class="question">6. What did the merchant find in the forest when he lost his way?</div>
+    <div class="options">
+      <label><input type="radio" name="q6" value="a"> (a) A small hut</label>
+      <label><input type="radio" name="q6" value="b"> (b) A dazzling palace</label>
+      <label><input type="radio" name="q6" value="c"> (c) A wild animal</label>
+      <label><input type="radio" name="q6" value="d"> (d) A hidden treasure</label>
+    </div>
+
+    <div class="question">7. Why did the Beast become angry with the merchant?</div>
+    <div class="options">
+      <label><input type="radio" name="q7" value="a"> (a) For stealing food</label>
+      <label><input type="radio" name="q7" value="b"> (b) For picking a rose</label>
+      <label><input type="radio" name="q7" value="c"> (c) For entering the palace</label>
+      <label><input type="radio" name="q7" value="d"> (d) For sleeping in his bed</label>
+    </div>
+
+    <div class="question">8. The Beast said Belle must come to the castle of her own:</div>
+    <div class="options">
+      <label><input type="radio" name="q8" value="a"> (a) Fear</label>
+      <label><input type="radio" name="q8" value="b"> (b) Greed</label>
+      <label><input type="radio" name="q8" value="c"> (c) Accord</label>
+      <label><input type="radio" name="q8" value="d"> (d) Misery</label>
+    </div>
+
+    <div class="question">9. Every night, what did the Beast ask Belle?</div>
+    <div class="options">
+      <label><input type="radio" name="q9" value="a"> (a) To cook for him</label>
+      <label><input type="radio" name="q9" value="b"> (b) To marry him</label>
+      <label><input type="radio" name="q9" value="c"> (c) To leave the castle</label>
+      <label><input type="radio" name="q9" value="d"> (d) To sing a song</label>
+    </div>
+
+    <div class="question">10. What did the magic mirror allow Belle to see?</div>
+    <div class="options">
+      <label><input type="radio" name="q10" value="a"> (a) Her future</label>
+      <label><input type="radio" name="q10" value="b"> (b) Her past</label>
+      <label><input type="radio" name="q10" value="c"> (c) What was going on at the castle</label>
+      <label><input type="radio" name="q10" value="d"> (d) The Beast's thoughts</label>
+    </div>
+
+    <div class="question">11. How long did Belle stay with her family before returning?</div>
+    <div class="options">
+      <label><input type="radio" name="q11" value="a"> (a) A month</label>
+      <label><input type="radio" name="q11" value="b"> (b) One day more than a week</label>
+      <label><input type="radio" name="q11" value="c"> (c) Forever</label>
+      <label><input type="radio" name="q11" value="d"> (d) Three days</label>
+    </div>
+
+    <div class="question">12. Why did Belle's sisters want her to stay longer?</div>
+    <div class="options">
+      <label><input type="radio" name="q12" value="a"> (a) They loved her</label>
+      <label><input type="radio" name="q12" value="b"> (b) They wanted her to be eaten by the Beast</label>
+      <label><input type="radio" name="q12" value="c"> (c) They needed her help</label>
+      <label><input type="radio" name="q12" value="d"> (d) They were lonely</label>
+    </div>
+
+    <div class="question">13. Where did Belle find the Beast when she returned?</div>
+    <div class="options">
+      <label><input type="radio" name="q13" value="a"> (a) In the dining room</label>
+      <label><input type="radio" name="q13" value="b"> (b) Near the rose bushes</label>
+      <label><input type="radio" name="q13" value="c"> (c) In the library</label>
+      <label><input type="radio" name="q13" value="d"> (d) In her room</label>
+    </div>
+
+    <div class="question">14. What transformed the Beast into a handsome prince?</div>
+    <div class="options">
+      <label><input type="radio" name="q14" value="a"> (a) A magic wand</label>
+      <label><input type="radio" name="q14" value="b"> (b) Belle's tears and love</label>
+      <label><input type="radio" name="q14" value="c"> (c) The magic ring</label>
+      <label><input type="radio" name="q14" value="d"> (d) A fairy's spell</label>
+    </div>
+
+    <div class="question">15. Why had the Prince been turned into a Beast?</div>
+    <div class="options">
+      <label><input type="radio" name="q15" value="a"> (a) He was wicked</label>
+      <label><input type="radio" name="q15" value="b"> (b) He refused shelter to a fairy</label>
+      <label><input type="radio" name="q15" value="c"> (c) He stole a rose</label>
+      <label><input type="radio" name="q15" value="d"> (d) He lost a bet</label>
+    </div>
+
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">NEXT</button>
+</div>
+
+  <!-- Section 2: Questions 11-20 -->
+<div id="quizSection2" class="quiz-section">
+  <span> Group - B: Fill in the Blanks (Marks: 15) </span>
+
+    <div class="question">16. The word 'tempest' means a ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q16" value="a"> (a) Calm sea</label>
+      <label><input type="radio" name="q16" value="b"> (b) Sea storm</label>
+      <label><input type="radio" name="q16" value="c"> (c) Sunny day</label>
+    </div>
+
+    <div class="question">17. Belle was known for being pure at ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q17" value="a"> (a) Soul</label>
+      <label><input type="radio" name="q17" value="b"> (b) Heart</label>
+      <label><input type="radio" name="q17" value="c"> (c) Mind</label>
+    </div>
+
+    <div class="question">18. The merchant’s ship’s cargo had been seized to pay his ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q18" value="a"> (a) Taxes</label>
+      <label><input type="radio" name="q18" value="b"> (b) Debts</label>
+      <label><input type="radio" name="q18" value="c"> (c) Rent</label>
+    </div>
+
+    <div class="question">19. The Beast gave the merchant jewels and fine ______ for his daughters.</div>
+    <div class="options">
+      <label><input type="radio" name="q19" value="a"> (a) Food</label>
+      <label><input type="radio" name="q19" value="b"> (b) Clothes</label>
+      <label><input type="radio" name="q19" value="c"> (c) Toys</label>
+    </div>
+
+    <div class="question">20. Belle discovered many ______ rooms in the castle.</div>
+    <div class="options">
+      <label><input type="radio" name="q20" value="a"> (a) Dark</label>
+      <label><input type="radio" name="q20" value="b"> (b) Enchanted</label>
+      <label><input type="radio" name="q20" value="c"> (c) Empty</label>
+    </div>
+
+    <div class="question">21. The magic ______ would return Belle to the castle in an instant.</div>
+    <div class="options">
+      <label><input type="radio" name="q21" value="a"> (a) Mirror</label>
+      <label><input type="radio" name="q21" value="b"> (b) Ring</label>
+      <label><input type="radio" name="q21" value="c"> (c) Carpet</label>
+    </div>
+
+    <div class="question">22. The sisters put ______ in their eyes to make it appear as though they were weeping.</div>
+    <div class="options">
+      <label><input type="radio" name="q22" value="a"> (a) Water</label>
+      <label><input type="radio" name="q22" value="b"> (b) Onion</label>
+      <label><input type="radio" name="q22" value="c"> (c) Salt</label>
+    </div>
+
+    <div class="question">23. Belle’s heart was moved by her sisters' ______ show of love.</div>
+    <div class="options">
+      <label><input type="radio" name="q23" value="a"> (a) True</label>
+      <label><input type="radio" name="q23" value="b"> (b) False</label>
+      <label><input type="radio" name="q23" value="c"> (c) Great</label>
+    </div>
+
+    <div class="question">24. In the sentence "He entered a dazzling palace," 'dazzling' is a ______ adjective.</div>
+    <div class="options">
+      <label><input type="radio" name="q24" value="a"> (a) Proper</label>
+      <label><input type="radio" name="q24" value="b"> (b) Participle</label>
+      <label><input type="radio" name="q24" value="c"> (c) Common</label>
+    </div>
+
+    <div class="question">25. "I am busy," he said. This is ______ speech.</div>
+    <div class="options">
+      <label><input type="radio" name="q25" value="a"> (a) Direct</label>
+      <label><input type="radio" name="q25" value="b"> (b) Indirect</label>
+      <label><input type="radio" name="q25" value="c"> (c) Reported</label>
+    </div>
+
+    <div class="question">26. Which word is the odd one out: Mansion, palace, flat, huge house?</div>
+    <div class="options">
+      <label><input type="radio" name="q26" value="a"> (a) Mansion</label>
+      <label><input type="radio" name="q26" value="b"> (b) Flat</label>
+      <label><input type="radio" name="q26" value="c"> (c) Palace</label>
+    </div>
+
+    <div class="question">27. Identifying meanings: 'Laden' means ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q27" value="a"> (a) Empty</label>
+      <label><input type="radio" name="q27" value="b"> (b) Loaded</label>
+      <label><input type="radio" name="q27" value="c"> (c) Small</label>
+    </div>
+
+    <div class="question">28. 'Hideous' is a synonym for ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q28" value="a"> (a) Beautiful</label>
+      <label><input type="radio" name="q28" value="b"> (b) Extremely ugly</label>
+      <label><input type="radio" name="q28" value="c"> (c) Very kind</label>
+    </div>
+
+    <div class="question">29. The opposite of 'refuse' is ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q29" value="a"> (a) Decline</label>
+      <label><input type="radio" name="q29" value="b"> (b) Accept</label>
+      <label><input type="radio" name="q29" value="c"> (c) Deny</label>
+    </div>
+
+    <div class="question">30. Changing "I am going" to "He said that he was going" is ______ speech.</div>
+    <div class="options">
+      <label><input type="radio" name="q30" value="a"> (a) Direct</label>
+      <label><input type="radio" name="q30" value="b"> (b) Indirect</label>
+      <label><input type="radio" name="q30" value="c"> (c) Broken</label>
+    </div>
+
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection1')">PREVIOUS</button>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">NEXT</button>
+</div>
+
+  <!-- Section 3: Questions 21-30 -->
+<div id="quizSection3" class="quiz-section">
+  <span> Group - C: State True or False (Marks: 10) </span>
+
+    <div class="question">31. The merchant had three daughters.</div>
+    <div class="options">
+      <label><input type="radio" name="q31" value="true"> True</label>
+      <label><input type="radio" name="q31" value="false"> False</label>
+    </div>
+
+    <div class="question">32. Belle’s sisters were kind and generous.</div>
+    <div class="options">
+      <label><input type="radio" name="q32" value="true"> True</label>
+      <label><input type="radio" name="q32" value="false"> False</label>
+    </div>
+
+    <div class="question">33. The merchant lost his way on his return journey.</div>
+    <div class="options">
+      <label><input type="radio" name="q33" value="true"> True</label>
+      <label><input type="radio" name="q33" value="false"> False</label>
+    </div>
+
+    <div class="question">34. Belle went to the castle against her will.</div>
+    <div class="options">
+      <label><input type="radio" name="q34" value="true"> True</label>
+      <label><input type="radio" name="q34" value="false"> False</label>
+    </div>
+
+    <div class="question">35. The Beast treated Belle with kindness and luxury.</div>
+    <div class="options">
+      <label><input type="radio" name="q35" value="true"> True</label>
+      <label><input type="radio" name="q35" value="false"> False</label>
+    </div>
+
+    <div class="question">36. Belle found a prince captive in the castle.</div>
+    <div class="options">
+      <label><input type="radio" name="q36" value="true"> True</label>
+      <label><input type="radio" name="q36" value="false"> False</label>
+    </div>
+
+    <div class="question">37. Belle returned home because she was homesick.</div>
+    <div class="options">
+      <label><input type="radio" name="q37" value="true"> True</label>
+      <label><input type="radio" name="q37" value="false"> False</label>
+    </div>
+
+    <div class="question">38. The Beast lay dying because of heartbreak.</div>
+    <div class="options">
+      <label><input type="radio" name="q38" value="true"> True</label>
+      <label><input type="radio" name="q38" value="false"> False</label>
+    </div>
+
+    <div class="question">39. The fairy turned the prince into a beast because he was handsome.</div>
+    <div class="options">
+      <label><input type="radio" name="q39" value="true"> True</label>
+      <label><input type="radio" name="q39" value="false"> False</label>
+    </div>
+
+    <div class="question">40. Belle and the Prince lived happily ever after.</div>
+    <div class="options">
+      <label><input type="radio" name="q40" value="true"> True</label>
+      <label><input type="radio" name="q40" value="false"> False</label>
+    </div>
+
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">PREVIOUS</button>
+  <button type="submit" class="submit-btn">SUBMIT</button>
+</div>
+
+</form>
+
+  </div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    <p>আশা করি আপনার অভিজ্ঞতা ভালো লেগেছে।</p>
+  </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; // Start with the first section
+    var subject = document.getElementById("subject").innerText;
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const recaptchaResponse = grecaptcha.getResponse();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      if (recaptchaResponse.length === 0) {
+        errorDiv.textContent = "reCAPTCHA সম্পন্ন করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    // === QUIZ LOGIC ===
+    const quizAnswers = {
+    q1: "b", q2: "b", q3: "c", q4: "c", q5: "c",
+    q6: "b", q7: "b", q8: "c", q9: "b", q10: "c",
+    q11: "b", q12: "b", q13: "b", q14: "b", q15: "b",
+    q16: "b", q17: "b", q18: "b", q19: "b", q20: "b",
+    q21: "b", q22: "b", q23: "b", q24: "b", q25: "a",
+    q26: "b", q27: "b", q28: "b", q29: "b", q30: "b",
+    q31: "true", q32: "false", q33: "true", q34: "false", q35: "true",
+    q36: "false", q37: "true", q38: "true", q39: "false", q40: "true"
+  };
+
+    let timeLeft = 30 * 60; // 30 minutes in seconds
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const timerDisplay = document.getElementById("timer");
+    const quizArea = document.getElementById("quizArea");
+    const thankYou = document.getElementById("thankYou");
+    const progressBar = document.getElementById("progressBar");
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        const currentSectionElement = document.getElementById(currentQuizSection);
+        const inputsInCurrentSection = currentSectionElement.querySelectorAll('input[type="radio"][required]');
+        let allAnswered = true;
+        
+        // Check if all radio buttons in the current section have a selection
+        const questionNames = new Set();
+        inputsInCurrentSection.forEach(input => questionNames.add(input.name));
+
+        questionNames.forEach(name => {
+            const radios = document.getElementsByName(name);
+            let radioAnswered = false;
+            for (let i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    radioAnswered = true;
+                    break;
+                }
+            }
+            if (!radioAnswered) {
+                allAnswered = false;
+            }
+        });
+
+        if (!allAnswered) {
+            alert("অনুগ্রহ করে এই সেকশনের সব প্রশ্নের উত্তর দিন।");
+            return;
+        }
+
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+
+      // Calculate score for all questions
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : undefined; // Check if the radio group exists
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // --- Display score on page instead of alert ---
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+      // --- End Display score ---
+
+      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
+
+     // Inside your HTML script tag
+fetch("https://learnnova.cfd/assets/php/submit_quiz.php", { // Update this URL when you go live
+  method: "POST",
+  body: JSON.stringify({
+    name: studentName,
+    email: studentEmail,
+    score: totalScore,
+    total: totalQuestions,
+    subject: subject // This picks 'Taxation' from your <h2>
+  }),
+  headers: { "Content-Type": "application/json" }
+})
+      .then(response => response.json())
+      .then(data => {
+          if(data.status === "success") {
+        console.log("Success: Data saved to MySQL");
+    } else {
+        console.error("Database Error:", data.message);
+    }
+})
+.catch(error => {
+    console.error('Network Error:', error);
+      });
+
+      // Block repeated attempt
+      localStorage.setItem("quizDone", "true");
+      quizArea.style.display = "none";
+      thankYou.style.display = "block";
+
+    });
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const validEmail = urlParams.get('email'); // Replace this with the correct value
+
+  document.getElementById("checkEmailBtn").addEventListener("click", function () {
+  const emailInput = document.getElementById("studentEmail").value.trim();
+  const message = document.getElementById("message");
+  
+  
+  //const captchaContainer = document.getElementById("captchaContainer");
+  //const hiddenEmailField = document.getElementById("hiddenEmail");
+
+  if (emailInput === validEmail) {
+    captchaDiv.style.display = "block";  // Show the CAPTCHA
+    //hiddenEmailField.value = emailInput; // Pass email with form
+    document.getElementById("checkEmailBtn").style.display = "none";
+    message.style.display = "none";
+    document.getElementById("goQuiz").style.display = "inline-block";
+    
+  } else {
+    message.style.display = "block";
+    message.textContent = "Oops! That email doesn't match our records.";
+    message.style.color = "green";
+    captchaDiv.style.display = "none";
+    //document.getElementById("myButton").style.display = "inline-block";
+  }
+});
+
+   // STEP 3: Clean up the URL (remove ?email=... from address bar)
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+  </script>
+
+</body>
+</html>
