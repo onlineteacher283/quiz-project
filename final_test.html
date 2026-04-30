@@ -597,7 +597,7 @@
       event.preventDefault();
       studentName = document.getElementById("studentName").value.trim();
       studentEmail = document.getElementById("studentEmail").value.trim();
-      //const recaptchaResponse = grecaptcha.getResponse();
+      const recaptchaResponse = grecaptcha.getResponse();
       const errorDiv = document.getElementById("error-message");
 
       if (!studentName || !studentEmail) {
@@ -605,10 +605,10 @@
         return;
       }
 
-      //if (recaptchaResponse.length === 0) {
-        //errorDiv.textContent = "reCAPTCHA সম্পন্ন করুন।";
-        //return;
-      //}
+      if (recaptchaResponse.length === 0) {
+        errorDiv.textContent = "reCAPTCHA সম্পন্ন করুন।";
+        return;
+      }
 
       document.getElementById("loginSection").style.display = "none";
       document.getElementById("quizArea").style.display = "block";
@@ -706,7 +706,7 @@
       document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
       // --- End Display score ---
 
-      // const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
+      const recaptchaResponseAtQuizSubmit = grecaptcha.getResponse();
 
      // Inside your HTML script tag
 fetch("https://learnnova.cfd/assets/php/submit_quiz.php", { // Update this URL when you go live
@@ -753,7 +753,7 @@ fetch("https://learnnova.cfd/assets/php/submit_quiz.php", { // Update this URL w
   //const hiddenEmailField = document.getElementById("hiddenEmail");
 
   if (emailInput === validEmail) {
-    //captchaDiv.style.display = "block";  // Show the CAPTCHA
+    captchaDiv.style.display = "block";  // Show the CAPTCHA
     //hiddenEmailField.value = emailInput; // Pass email with form
     document.getElementById("checkEmailBtn").style.display = "none";
     message.style.display = "none";
