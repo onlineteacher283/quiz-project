@@ -690,6 +690,9 @@
     // ডাইনামিক আনসার স্ক্রিপ্ট ডাউনলোড ফাংশন
     function downloadAnswerScript() {
         const questions = [];
+      // আপনার এইচটিএমএল থেকে সাবজেক্ট এবং এক্সাম কোড নেওয়া
+    const currentSubject = document.getElementById("subject").innerText;
+    const currentExamCode = document.getElementById("exam_code").innerText;
         document.querySelectorAll('.question').forEach((qEl, index) => {
             const qKey = "q" + (index + 1);
             const questionText = qEl.innerText;
@@ -719,12 +722,28 @@
         formExport.action = 'http://localhost/3ducation1/assets/php/generate_answer_script.php';
         formExport.target = '_blank';
 
+      // ১. কুইজ ডাটা পাঠানো  
         const input = document.createElement('input');
         input.type = 'hidden';
         input.name = 'full_data';
         input.value = JSON.stringify(questions);
+        formExport.appendChild(inputData);
+
+          // ২. সাবজেক্ট পাঠানো
+        const inputSubject = document.createElement('input');
+        inputSubject.type = 'hidden';
+        inputSubject.name = 'subject';
+        inputSubject.value = currentSubject;
+        formExport.appendChild(inputSubject);
+    
+        // ৩. এক্সাম কোড পাঠানো
+        const inputCode = document.createElement('input');
+        inputCode.type = 'hidden';
+        inputCode.name = 'exam_code';
+        inputCode.value = currentExamCode;
+        formExport.appendChild(inputCode);
         
-        formExport.appendChild(input);
+        
         document.body.appendChild(formExport);
         formExport.submit();
         document.body.removeChild(formExport);
