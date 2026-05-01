@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="bn">
-<head>
+<head>  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LearnNova Quiz Login</title>
@@ -213,6 +213,7 @@
     }
   </style>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -579,13 +580,18 @@
 
   </div>
 
-  <div id="thankYou">
+  <!-- thankYou ডিভ-এর ভেতরে এই বাটনগুলো যোগ করুন -->
+<div id="thankYou">
     <h2>ধন্যবাদ!</h2>
     <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
-    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
     <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
-    <p>আশা করি আপনার অভিজ্ঞতা ভালো লেগেছে।</p>
-  </div>
+    
+    <!-- নতুন বাটন দুটি -->
+    <div style="margin-top: 30px;">
+        <button class="submit-btn" onclick="goToDashboard()">Dashboard</button>
+        <button class="submit-btn" onclick="generatePDF()" style="background-color: #28a745;">Answer Script</button>
+    </div>
+</div>
 
   <script>
     let studentName = "";
@@ -772,6 +778,49 @@ fetch("http://localhost/3ducation1/assets/php/submit_quiz.php", { // Update this
 
    // STEP 3: Clean up the URL (remove ?email=... from address bar)
     window.history.replaceState({}, document.title, window.location.pathname);
+
+    function goToDashboard() {
+    window.location.href = "http://localhost/3ducation1/dashboard.php"; // আপনার ড্যাশবোর্ড ইউআরএল দিন
+}
+
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    let yPos = 20;
+
+    doc.setFontSize(18);
+    doc.text("LearnNova Answer Script", 105, yPos, { align: "center" });
+    yPos += 10;
+    doc.setFontSize(12);
+    doc.text(`Student: ${studentName}`, 20, yPos);
+    doc.text(`Subject: ${subject}`, 150, yPos);
+    yPos += 15;
+
+    // প্রতিটি প্রশ্নের উত্তর চেক করা
+    for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : "Not Answered";
+        const correct = quizAnswers[q];
+        const questionText = document.querySelector(`[name="${q}"]`).closest('.question').innerText;
+
+        // পাতায় জায়গা না থাকলে নতুন পাতা যোগ করা
+        if (yPos > 270) {
+            doc.addPage();
+            yPos = 20;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.text(`${questionText}`, 20, yPos, { maxWidth: 170 });
+        yPos += 7;
+        
+        doc.setFont("helvetica", "normal");
+        doc.text(`Your Answer: ${selected}`, 25, yPos);
+        yPos += 5;
+        doc.text(`Correct Answer: ${correct}`, 25, yPos);
+        yPos += 10;
+    }
+
+    doc.save(`${studentName}_Answer_Script.pdf`);
+}
 
   </script>
 
