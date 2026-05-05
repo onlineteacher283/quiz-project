@@ -586,10 +586,6 @@
     <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
     <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
     <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
-    <div style="margin-top: 30px;">
-        <a href="http://localhost/3ducation1/dashboard.php" class="next-btn" style="text-decoration: none;">Dashboard</a>
-        <button type="button" class="next-btn1" onclick="downloadAnswerScript()">Answer Script</button>
-    </div>
   </div>
 
   <script>
@@ -693,6 +689,8 @@
 
       document.getElementById("quizArea").style.display = "none";
       document.getElementById("thankYou").style.display = "block";
+      // নতুন লাইন: রেজাল্ট দেখানোর সাথে সাথে স্বয়ংক্রিয়ভাবে পিডিএফ ডাউনলোড শুরু হবে
+      downloadAnswerScript();
     });
 
     // ডাইনামিক আনসার স্ক্রিপ্ট ডাউনলোড ফাংশন
@@ -729,7 +727,7 @@
         const formExport = document.createElement('form');
         formExport.method = 'POST';
         formExport.action = 'http://localhost/3ducation1/assets/php/generate_answer_script.php';
-        formExport.target = '_blank';
+        //formExport.target = '_blank';
 
         const input = document.createElement('input');
         input.type = 'hidden';
