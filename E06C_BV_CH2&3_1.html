@@ -649,10 +649,7 @@
     <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
     <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
     <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
-    <div style="margin-top: 30px;">
-        <button type="button" class="next-btn1" onclick="downloadAnswerScript()">Answer Script</button>
     </div>
-  </div>
 
   <script>
     let studentName = "";
@@ -757,6 +754,7 @@
 
       document.getElementById("quizArea").style.display = "none";
       document.getElementById("thankYou").style.display = "block";
+      downloadAnswerScript();
     });
 
     // ডাইনামিক আনসার স্ক্রিপ্ট ডাউনলোড ফাংশন
