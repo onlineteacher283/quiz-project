@@ -792,10 +792,21 @@
         });
     });
 
-    // ২. ফর্ম তৈরি করা
-    const formExport = document.createElement('form');
-    formExport.method = 'POST';
-    formExport.action = 'https://learnnova.cfd/assets/php/generate_answer_script.php';
+    //২.  ফর্ম ডাটা তৈরি করা (যাতে ব্যাকগ্রাউন্ডে পাঠানো যায়)
+    const formData = new FormData();
+    formData.append('email', studentEmail);
+    formData.append('full_data', JSON.stringify(questions));
+    formData.append('subject', currentSubject);
+    formData.append('exam_code', currentExamCode);
+
+    // fetch ব্যবহার করে ব্যাকগ্রাউন্ডে ডাটা পাঠানো (কোনো নতুন পেজ খুলবে না)
+    fetch('https://learnnova.cfd/assets/php/generate_answer_script.php', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // ক্রস-অরিজিন ইস্যু এড়াতে
+    }).then(() => {
+        console.log("PDF generated and saved in background.");
+    }).catch(err => console.error("PDF generation failed:", err));
 
     // ৩. ডাটা ইনপুটগুলো যোগ করা
     
