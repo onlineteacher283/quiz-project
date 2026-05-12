@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LearnNova Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 26px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+
+    }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 10px;
+
+    }
+
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h3>Welcome to <u>LearnNova</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+
+      <h2 id="subject">Science</h2>
+      <h1 id="exam_code">E06S_EV_CH5_2</h1>
+      </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" id="captchaDiv" style="display: none;" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        
+        <button type="submit" class="submit-btn" id="goQuiz" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center; display: none;">Confirm</button>
+      </form>
+      <button class="submit-btn" id="checkEmailBtn" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center;">Verify</button>
+      <p id="message" style="display: none; color: green; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">LearnNova Education Center</h1>
+    <h3 style="text-align:center;">Subject: Science    Full marks: 50    Time: 30mnts     Class: VI</h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+<form id="quizForm">
+  <!-- Section 1: MCQ (Questions 1-20) -->
+
+  <div id="quizSection1" class="quiz-section active">
+    
+    <span>Section A: Multiple Choice Questions (Marks: 20)</span>
+
+    <div class="question">1. What is the SI unit of length?</div>
+    <div class="options">
+      <label><input type="radio" name="q1" value="a"> (a) Centimeter</label>
+      <label><input type="radio" name="q1" value="b"> (b) Meter</label>
+      <label><input type="radio" name="q1" value="c"> (c) Kilometer</label>
+      <label><input type="radio" name="q1" value="d"> (d) Foot</label>
+    </div>
+
+    <div class="question">2. Which of the following is a primary or fundamental physical quantity?</div>
+    <div class="options">
+      <label><input type="radio" name="q2" value="a"> (a) Area</label>
+      <label><input type="radio" name="q2" value="b"> (b) Volume</label>
+      <label><input type="radio" name="q2" value="c"> (c) Length</label>
+      <label><input type="radio" name="q2" value="d"> (d) Velocity</label>
+    </div>
+
+    <div class="question">3. The international standard meter is made of an alloy of which two metals?</div>
+    <div class="options">
+      <label><input type="radio" name="q3" value="a"> (a) Iron and Copper</label>
+      <label><input type="radio" name="q3" value="b"> (b) Gold and Silver</label>
+      <label><input type="radio" name="q3" value="c"> (c) Platinum and Iridium</label>
+      <label><input type="radio" name="q3" value="d"> (d) Zinc and Lead</label>
+    </div>
+
+    <div class="question">4. With what precision can a digital stopwatch measure time?</div>
+    <div class="options">
+      <label><input type="radio" name="q4" value="a"> (a) 1 second</label>
+      <label><input type="radio" name="q4" value="b"> (b) 0.1 second</label>
+      <label><input type="radio" name="q4" value="c"> (c) 0.01 second</label>
+      <label><input type="radio" name="q4" value="d"> (d) 0.0001 second</label>
+    </div>
+
+    <div class="question">5. Which instrument is used to measure the growth of plants?</div>
+    <div class="options">
+      <label><input type="radio" name="q5" value="a"> (a) Thermometer</label>
+      <label><input type="radio" name="q5" value="b"> (b) Barometer</label>
+      <label><input type="radio" name="q5" value="c"> (c) Arc Auxanometer</label>
+      <label><input type="radio" name="q5" value="d"> (d) Spring Balance</label>
+    </div>
+
+    <div class="question">6. What is the SI unit of force?</div>
+    <div class="options">
+      <label><input type="radio" name="q6" value="a"> (a) Dyne</label>
+      <label><input type="radio" name="q6" value="b"> (b) Newton</label>
+      <label><input type="radio" name="q6" value="c"> (c) Kilogram</label>
+      <label><input type="radio" name="q6" value="d"> (d) Meter</label>
+    </div>
+
+    <div class="question">7. Who proposed the 'Law of Ten Percent' regarding energy transfer?</div>
+    <div class="options">
+      <label><input type="radio" name="q7" value="a"> (a) Isaac Newton</label>
+      <label><input type="radio" name="q7" value="b"> (b) Raymond Lindeman</label>
+      <label><input type="radio" name="q7" value="c"> (c) Galileo</label>
+      <label><input type="radio" name="q7" value="d"> (d) Albert Einstein</label>
+    </div>
+
+    <div class="question">8. Dividing a solar day by 24 gives which unit of time?</div>
+    <div class="options">
+      <label><input type="radio" name="q8" value="a"> (a) 60 minutes</label>
+      <label><input type="radio" name="q8" value="b"> (b) 365 days</label>
+      <label><input type="radio" name="q8" value="c"> (c) 1 hour</label>
+      <label><input type="radio" name="q8" value="d"> (d) 30 days</label>
+    </div>
+
+    <div class="question">9. What is the approximate value of Pi (π) used in measuring surface area?</div>
+    <div class="options">
+      <label><input type="radio" name="q9" value="a"> (a) 2.14</label>
+      <label><input type="radio" name="q9" value="b"> (b) 3.14</label>
+      <label><input type="radio" name="q9" value="c"> (c) 4.14</label>
+      <label><input type="radio" name="q9" value="d"> (d) 5.14</label>
+    </div>
+
+    <div class="question">10. Which of the following is used to measure the volume of a liquid?</div>
+    <div class="options">
+      <label><input type="radio" name="q10" value="a"> (a) Scale</label>
+      <label><input type="radio" name="q10" value="b"> (b) Thermometer</label>
+      <label><input type="radio" name="q10" value="c"> (c) Measuring Cylinder</label>
+      <label><input type="radio" name="q10" value="d"> (d) Stopwatch</label>
+    </div>
+
+    <div class="question">11. The capacity to do work is called:</div>
+    <div class="options">
+      <label><input type="radio" name="q11" value="a"> (a) Force</label>
+      <label><input type="radio" name="q11" value="b"> (b) Energy</label>
+      <label><input type="radio" name="q11" value="c"> (c) Velocity</label>
+      <label><input type="radio" name="q11" value="d"> (d) Volume</label>
+    </div>
+
+    <div class="question">12. Which of the following is an example of a non-contact force?</div>
+    <div class="options">
+      <label><input type="radio" name="q12" value="a"> (a) Pushing</label>
+      <label><input type="radio" name="q12" value="b"> (b) Magnetic attraction</label>
+      <label><input type="radio" name="q12" value="c"> (c) Pulling</label>
+      <label><input type="radio" name="q12" value="d"> (d) Friction</label>
+    </div>
+
+    <div class="question">13. 1 liter is equal to how many cubic centimeters (cc)?</div>
+    <div class="options">
+      <label><input type="radio" name="q13" value="a"> (a) 100</label>
+      <label><input type="radio" name="q13" value="b"> (b) 10</label>
+      <label><input type="radio" name="q13" value="c"> (c) 1000</label>
+      <label><input type="radio" name="q13" value="d"> (d) 10000</label>
+    </div>
+
+    <div class="question">14. When an electric iron is turned on, electrical energy is converted into:</div>
+    <div class="options">
+      <label><input type="radio" name="q14" value="a"> (a) Sound energy</label>
+      <label><input type="radio" name="q14" value="b"> (b) Heat energy</label>
+      <label><input type="radio" name="q14" value="c"> (c) Light energy</label>
+      <label><input type="radio" name="q14" value="d"> (d) Mechanical energy</label>
+    </div>
+
+    <div class="question">15. Solar energy is stored in food by plants in which form?</div>
+    <div class="options">
+      <label><input type="radio" name="q15" value="a"> (a) Mechanical</label>
+      <label><input type="radio" name="q15" value="b"> (b) Sound</label>
+      <label><input type="radio" name="q15" value="c"> (c) Chemical or Potential energy</label>
+      <label><input type="radio" name="q15" value="d"> (d) Atomic</label>
+    </div>
+
+    <div class="question">16. 1 kilometer is equal to how many meters?</div>
+    <div class="options">
+      <label><input type="radio" name="q16" value="a"> (a) 10</label>
+      <label><input type="radio" name="q16" value="b"> (b) 100</label>
+      <label><input type="radio" name="q16" value="c"> (c) 1000</label>
+      <label><input type="radio" name="q16" value="d"> (d) 10000</label>
+    </div>
+
+    <div class="question">17. What is the formula for the area of a rectangle?</div>
+    <div class="options">
+      <label><input type="radio" name="q17" value="a"> (a) Length + Breadth</label>
+      <label><input type="radio" name="q17" value="b"> (b) Length × Breadth</label>
+      <label><input type="radio" name="q17" value="c"> (c) Length ÷ Breadth</label>
+      <label><input type="radio" name="q17" value="d"> (d) Length × Volume</label>
+    </div>
+
+    <div class="question">18. In the SI system, weight is measured in:</div>
+    <div class="options">
+      <label><input type="radio" name="q18" value="a"> (a) Kilograms</label>
+      <label><input type="radio" name="q18" value="b"> (b) Grams</label>
+      <label><input type="radio" name="q18" value="c"> (c) Newtons</label>
+      <label><input type="radio" name="q18" value="d"> (d) Meters</label>
+    </div>
+
+    <div class="question">19. Which of the following is a renewable source of energy?</div>
+    <div class="options">
+      <label><input type="radio" name="q19" value="a"> (a) Coal</label>
+      <label><input type="radio" name="q19" value="b"> (b) Petroleum</label>
+      <label><input type="radio" name="q19" value="c"> (c) Solar energy</label>
+      <label><input type="radio" name="q19" value="d"> (d) Natural gas</label>
+    </div>
+
+    <div class="question">20. The steps in a food pyramid are each known as a:</div>
+    <div class="options">
+      <label><input type="radio" name="q20" value="a"> (a) Trophic level</label>
+      <label><input type="radio" name="q20" value="b"> (b) Food web</label>
+      <label><input type="radio" name="q20" value="c"> (c) Food chain</label>
+      <label><input type="radio" name="q20" value="d"> (d) Energy cycle</label>
+    </div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পরবর্তী</button>
+</div>
+
+  <!-- Section 2: Questions 11-20 -->
+<div id="quizSection2" class="quiz-section">
+
+    <span>Section B: Fill in the Blanks (Select the Correct Option) — (Marks: 15)</span>
+
+    <div class="question">21. The SI unit of mass is the ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q21" value="a"> Gram</label>
+      <label><input type="radio" name="q21" value="b"> Kilogram</label>
+      <label><input type="radio" name="q21" value="c"> Quintal</label>
+    </div>
+
+    <div class="question">22. 1 decimeter is ______ of a meter.</div>
+    <div class="options">
+      <label><input type="radio" name="q22" value="a"> 1/100th</label>
+      <label><input type="radio" name="q22" value="b"> 1/10th</label>
+      <label><input type="radio" name="q22" value="c"> 1/1000th</label>
+    </div>
+
+    <div class="question">23. The energy an object possesses due to its motion is called ______ energy.</div>
+    <div class="options">
+      <label><input type="radio" name="q23" value="a"> Potential</label>
+      <label><input type="radio" name="q23" value="b"> Kinetic</label>
+      <label><input type="radio" name="q23" value="c"> Sound</label>
+    </div>
+
+    <div class="question">24. A ______ is used to measure the weight of an object.</div>
+    <div class="options">
+      <label><input type="radio" name="q24" value="a"> Beam balance</label>
+      <label><input type="radio" name="q24" value="b"> Spring balance</label>
+      <label><input type="radio" name="q24" value="c"> Measuring cylinder</label>
+    </div>
+
+    <div class="question">25. The points on a plant stem where leaves grow are called ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q25" value="a"> Internodes</label>
+      <label><input type="radio" name="q25" value="b"> Roots</label>
+      <label><input type="radio" name="q25" value="c"> Nodes</label>
+    </div>
+
+    <div class="question">26. In a food chain, green plants are known as ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q26" value="a"> Consumers</label>
+      <label><input type="radio" name="q26" value="b"> Decomposers</label>
+      <label><input type="radio" name="q26" value="c"> Producers</label>
+    </div>
+
+    <div class="question">27. When an electric fan runs, electrical energy is converted into ______ energy.</div>
+    <div class="options">
+      <label><input type="radio" name="q27" value="a"> Heat</label>
+      <label><input type="radio" name="q27" value="b"> Mechanical</label>
+      <label><input type="radio" name="q27" value="c"> Light</label>
+    </div>
+
+    <div class="question">28. 1 minute is equal to ______ seconds.</div>
+    <div class="options">
+      <label><input type="radio" name="q28" value="a"> 24</label>
+      <label><input type="radio" name="q28" value="b"> 60</label>
+      <label><input type="radio" name="q28" value="c"> 365</label>
+    </div>
+
+    <div class="question">29. The ultimate source of energy stored in coal and petroleum is the ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q29" value="a"> Water</label>
+      <label><input type="radio" name="q29" value="b"> Sun</label>
+      <label><input type="radio" name="q29" value="c"> Wind</label>
+    </div>
+
+    <div class="question">30. 1 centimeter is equal to ______ millimeters.</div>
+    <div class="options">
+      <label><input type="radio" name="q30" value="a"> 100</label>
+      <label><input type="radio" name="q30" value="b"> 10</label>
+      <label><input type="radio" name="q30" value="c"> 1</label>
+    </div>
+
+    <div class="question">31. One year is typically equal to ______ days.</div>
+    <div class="options">
+      <label><input type="radio" name="q31" value="a"> 30</label>
+      <label><input type="radio" name="q31" value="b"> 365</label>
+      <label><input type="radio" name="q31" value="c"> 24</label>
+    </div>
+
+    <div class="question">32. Organisms that produce their own food are called ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q32" value="a"> Producers</label>
+      <label><input type="radio" name="q32" value="b"> Primary Consumers</label>
+      <label><input type="radio" name="q32" value="c"> Omnivores</label>
+    </div>
+
+    <div class="question">33. The space occupied by an object is known as its ______.</div>
+    <div class="options">
+      <label><input type="radio" name="q33" value="a"> Area</label>
+      <label><input type="radio" name="q33" value="b"> Mass</label>
+      <label><input type="radio" name="q33" value="c"> Volume</label>
+    </div>
+
+    <div class="question">34. Coal is a ______ source of energy.</div>
+    <div class="options">
+      <label><input type="radio" name="q34" value="a"> Renewable</label>
+      <label><input type="radio" name="q34" value="b"> Non-renewable</label>
+      <label><input type="radio" name="q34" value="c"> Endless</label>
+    </div>
+
+    <div class="question">35. 1 hour is equal to ______ minutes.</div>
+    <div class="options">
+      <label><input type="radio" name="q35" value="a"> 24</label>
+      <label><input type="radio" name="q35" value="b"> 60</label>
+      <label><input type="radio" name="q35" value="c"> 100</label>
+    </div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection1')">পূর্ববর্তী</button>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পরবর্তী</button>
+</div>
+
+  <!-- Section 3: Questions 21-30 -->
+<div id="quizSection3" class="quiz-section">
+  
+    <span>Section C: True or False — (Marks: 15)</span>
+
+    <div class="question">36. Hand-span (বিঘত) is a standard and precise unit for measuring length.</div>
+    <div class="options">
+      <label><input type="radio" name="q36" value="true"> True</label>
+      <label><input type="radio" name="q36" value="false"> False</label>
+    </div>
+
+    <div class="question">37. In the SI system, the fundamental unit of time is the second.</div>
+    <div class="options">
+      <label><input type="radio" name="q37" value="true"> True</label>
+      <label><input type="radio" name="q37" value="false"> False</label>
+    </div>
+
+    <div class="question">38. The Sun is the ultimate source of food for all animals on Earth.</div>
+    <div class="options">
+      <label><input type="radio" name="q38" value="true"> True</label>
+      <label><input type="radio" name="q38" value="false"> False</label>
+    </div>
+
+    <div class="question">39. According to the Law of Conservation of Energy, energy can be created or destroyed.</div>
+    <div class="options">
+      <label><input type="radio" name="q39" value="true"> True</label>
+      <label><input type="radio" name="q39" value="false"> False</label>
+    </div>
+
+    <div class="question">40. A digital stopwatch can measure time as accurately as 0.01 seconds.</div>
+    <div class="options">
+      <label><input type="radio" name="q40" value="true"> True</label>
+      <label><input type="radio" name="q40" value="false"> False</label>
+    </div>
+
+    <div class="question">41. A thermometer is an instrument used specifically to measure heat.</div>
+    <div class="options">
+      <label><input type="radio" name="q41" value="true"> True</label>
+      <label><input type="radio" name="q41" value="false"> False</label>
+    </div>
+
+    <div class="question">42. Rubbing hands together creates heat due to the force of friction.</div>
+    <div class="options">
+      <label><input type="radio" name="q42" value="true"> True</label>
+      <label><input type="radio" name="q42" value="false"> False</label>
+    </div>
+
+    <div class="question">43. Applying force can never change the shape or volume of an object.</div>
+    <div class="options">
+      <label><input type="radio" name="q43" value="true"> True</label>
+      <label><input type="radio" name="q43" value="false"> False</label>
+    </div>
+
+    <div class="question">44. Coal is a renewable source of energy because it will never run out.</div>
+    <div class="options">
+      <label><input type="radio" name="q44" value="true"> True</label>
+      <label><input type="radio" name="q44" value="false"> False</label>
+    </div>
+
+    <div class="question">45. Lindeman’s law states that only about 10% of energy reaches the next trophic level.</div>
+    <div class="options">
+      <label><input type="radio" name="q45" value="true"> True</label>
+      <label><input type="radio" name="q45" value="false"> False</label>
+    </div>
+
+    <div class="question">46. Units like 'deci' or 'centi' are called sub-multiple units in the SI system.</div>
+    <div class="options">
+      <label><input type="radio" name="q46" value="true"> True</label>
+      <label><input type="radio" name="q46" value="false"> False</label>
+    </div>
+
+    <div class="question">47. Weight is actually a type of force called gravitational force.</div>
+    <div class="options">
+      <label><input type="radio" name="q47" value="true"> True</label>
+      <label><input type="radio" name="q47" value="false"> False</label>
+    </div>
+
+    <div class="question">48. The weight of a living plant measured immediately after removal from soil is its fresh weight.</div>
+    <div class="options">
+      <label><input type="radio" name="q48" value="true"> True</label>
+      <label><input type="radio" name="q48" value="false"> False</label>
+    </div>
+
+    <div class="question">49. Omnivores are animals that eat only plants directly.</div>
+    <div class="options">
+      <label><input type="radio" name="q49" value="true"> True</label>
+      <label><input type="radio" name="q49" value="false"> False</label>
+    </div>
+
+    <div class="question">50. Sound is recognized as a form of energy.</div>
+    <div class="options">
+      <label><input type="radio" name="q50" value="true"> True</label>
+      <label><input type="radio" name="q50" value="false"> False</label>
+    </div>
+  
+
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পূর্ববর্তী</button>
+  <button type="submit" class="submit-btn">জমা দিন</button>
+</div>
+
+</form>
+</div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; 
+    var subject = document.getElementById("subject").innerText;
+    var exam_code = document.getElementById("exam_code").innerText;
+    
+    // সঠিক উত্তরের অবজেক্ট
+    const quizAnswers = {
+    q1: "b", q2: "c", q3: "c", q4: "c", q5: "c",
+    q6: "b", q7: "b", q8: "c", q9: "b", q10: "c",
+    q11: "b", q12: "b", q13: "c", q14: "b", q15: "c",
+    q16: "c", q17: "b", q18: "c", q19: "c", q20: "a",
+    q21: "b", q22: "b", q23: "b", q24: "b", q25: "c",
+    q26: "c", q27: "b", q28: "b", q29: "b", q30: "b",
+    q31: "b", q32: "a", q33: "c", q34: "b", q35: "b",
+    q36: "false", q37: "true", q38: "true", q39: "false", q40: "true",
+    q41: "false", q42: "true", q43: "false", q44: "false", q45: "true",
+    q46: "true", q47: "true", q48: "true", q49: "false", q50: "true"
+  };
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    let timeLeft = 30 * 60; 
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const progressBar = document.getElementById("progressBar");
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+      let userResponses = {};
+
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : "Not Answered";
+        userResponses[q] = selected;
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // ইউজার রেসপন্স গ্লোবাল করা হলো ডাউনলোডের জন্য
+      window.currentUserResponses = userResponses;
+
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+
+      fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          total: totalQuestions,
+          subject: subject,
+          exam_code: exam_code
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      document.getElementById("quizArea").style.display = "none";
+      document.getElementById("thankYou").style.display = "block";
+      downloadAnswerScript();
+    });
+
+    // ডাইনামিক আনসার স্ক্রিপ্ট ডাউনলোড ফাংশন
+    function downloadAnswerScript() {
+    const questions = [];
+    const currentSubject = document.getElementById("subject").innerText;
+    const currentExamCode = document.getElementById("exam_code").innerText;
+    
+    // ১. প্রশ্ন এবং উত্তর সংগ্রহ (আপনার আগের কোড অনুযায়ী)
+    document.querySelectorAll('.question').forEach((qEl, index) => {
+        const qKey = "q" + (index + 1);
+        const questionText = qEl.innerText;
+        const options = {};
+        const optionsDiv = qEl.nextElementSibling;
+        
+        if (optionsDiv && optionsDiv.classList.contains('options')) {
+            optionsDiv.querySelectorAll('label').forEach(label => {
+                const radio = label.querySelector('input');
+                if(radio){
+                    options[radio.value] = label.innerText;
+                }
+            });
+        }
+
+        questions.push({
+            key: qKey,
+            question: questionText,
+            options: options,
+            userAnswer: window.currentUserResponses[qKey],
+            correctAnswer: quizAnswers[qKey]
+        });
+    });
+
+    //২.  ফর্ম ডাটা তৈরি করা (যাতে ব্যাকগ্রাউন্ডে পাঠানো যায়)
+    const formData = new FormData();
+    formData.append('email', studentEmail);
+    formData.append('full_data', JSON.stringify(questions));
+    formData.append('subject', currentSubject);
+    formData.append('exam_code', currentExamCode);
+
+    // fetch ব্যবহার করে ব্যাকগ্রাউন্ডে ডাটা পাঠানো (কোনো নতুন পেজ খুলবে না)
+    fetch('https://learnnova.cfd/assets/php/generate_answer_script.php', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // ক্রস-অরিজিন ইস্যু এড়াতে
+    }).then(() => {
+        console.log("PDF generated and saved in background.");
+    }).catch(err => console.error("PDF generation failed:", err));
+
+    // ৩. ডাটা ইনপুটগুলো যোগ করা
+    
+    // ইমেইল পাঠানো (এটি আগে মিস ছিল)
+    const inputEmail = document.createElement('input');
+    inputEmail.type = 'hidden';
+    inputEmail.name = 'email';
+    inputEmail.value = studentEmail; // loginSection থেকে পাওয়া গ্লোবাল ভেরিয়েবল
+    formExport.appendChild(inputEmail);
+
+    // প্রশ্ন-উত্তরের ডাটা
+    const inputData = document.createElement('input');
+    inputData.type = 'hidden';
+    inputData.name = 'full_data';
+    inputData.value = JSON.stringify(questions);
+    formExport.appendChild(inputData);
+    
+    // সাবজেক্ট
+    const inputSubject = document.createElement('input');
+    inputSubject.type = 'hidden';
+    inputSubject.name = 'subject';
+    inputSubject.value = currentSubject;
+    formExport.appendChild(inputSubject);
+
+    // এক্সাম কোড
+    const inputCode = document.createElement('input');
+    inputCode.type = 'hidden';
+    inputCode.name = 'exam_code';
+    inputCode.value = currentExamCode;
+    formExport.appendChild(inputCode);
+  
+    // ৪. ফর্ম সাবমিট করা
+    document.body.appendChild(formExport);
+    formExport.submit();
+    document.body.removeChild(formExport);
+}
+
+    // ইমেইল ভেরিফিকেশন লজিক
+    const urlParams = new URLSearchParams(window.location.search);
+    const validEmail = urlParams.get('email');
+
+    document.getElementById("checkEmailBtn").addEventListener("click", function () {
+      const emailInput = document.getElementById("studentEmail").value.trim();
+      if (emailInput === validEmail) {
+        document.getElementById("checkEmailBtn").style.display = "none";
+        document.getElementById("goQuiz").style.display = "inline-block";
+      } else {
+        const message = document.getElementById("message");
+        message.style.display = "block";
+        message.textContent = "Oops! That email doesn't match our records.";
+      }
+    });
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+  </script>
+</body>
+</html>
