@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LearnNova Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 26px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+
+    }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 10px;
+
+    }
+
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h3>Welcome to <u>LearnNova</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+
+      <h2 id="subject">English</h2>
+      <h1 id="exam_code">E07ECH4&5_3</h1>
+      </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" id="captchaDiv" style="display: none;" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        
+        <button type="submit" class="submit-btn" id="goQuiz" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center; display: none;">Confirm</button>
+      </form>
+      <button class="submit-btn" id="checkEmailBtn" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center;">Verify</button>
+      <p id="message" style="display: none; color: green; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">LearnNova Education Center</h1>
+    <h3 style="text-align:center;">Subject: English    Full marks: 60    Time: 30mnts     Class: VII</h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+<form id="quizForm">
+  <!-- Section 1: MCQ (Questions 1-20) -->
+
+  <div id="quizSection1" class="quiz-section active">
+    
+    <span>SECTION 1: MULTIPLE CHOICE QUESTIONS (Marks: 25)</span>
+
+    <div class="question">1. "The Beauty and the Beast" is a traditional fairy tale from which country?</div>
+    <div class="options">
+      <label><input type="radio" name="q1" value="a"> A) England</label>
+      <label><input type="radio" name="q1" value="b"> B) France</label>
+      <label><input type="radio" name="q1" value="c"> C) Germany</label>
+      <label><input type="radio" name="q1" value="d"> D) Italy</label>
+    </div>
+
+    <div class="question">2. Where did the merchant and his daughters move after losing their wealth?</div>
+    <div class="options">
+      <label><input type="radio" name="q2" value="a"> A) A big mansion</label>
+      <label><input type="radio" name="q2" value="b"> B) A city apartment</label>
+      <label><input type="radio" name="q2" value="c"> C) A village farmhouse</label>
+      <label><input type="radio" name="q2" value="d"> D) A dazzling palace</label>
+    </div>
+
+    <div class="question">3. What rare gift did Belle ask her father to bring her?</div>
+    <div class="options">
+      <label><input type="radio" name="q3" value="a"> A) Jewels</label>
+      <label><input type="radio" name="q3" value="b"> B) Fine dresses</label>
+      <label><input type="radio" name="q3" value="c"> C) A gold ring</label>
+      <label><input type="radio" name="q3" value="d"> D) A rose</label>
+    </div>
+
+    <div class="question">4. Why was the merchant's ship's cargo seized when he reached the city?</div>
+    <div class="options">
+      <label><input type="radio" name="q4" value="a"> A) To pay his debts</label>
+      <label><input type="radio" name="q4" value="b"> B) Because of a tempest</label>
+      <label><input type="radio" name="q4" value="c"> C) By the Beast’s order</label>
+      <label><input type="radio" name="q4" value="d"> D) It was stolen by robbers</label>
+    </div>
+
+    <div class="question">5. What does the word 'hideous' mean in the context of the Beast?</div>
+    <div class="options">
+      <label><input type="radio" name="q5" value="a"> A) Very kind</label>
+      <label><input type="radio" name="q5" value="b"> B) Extremely ugly</label>
+      <label><input type="radio" name="q5" value="c"> C) Very wealthy</label>
+      <label><input type="radio" name="q5" value="d"> D) Hidden away</label>
+    </div>
+
+    <div class="question">6. The Beast told Belle she was the "mistress of the castle" and he was her:</div>
+    <div class="options">
+      <label><input type="radio" name="q6" value="a"> A) Master</label>
+      <label><input type="radio" name="q6" value="b"> B) King</label>
+      <label><input type="radio" name="q6" value="c"> C) Servant</label>
+      <label><input type="radio" name="q6" value="d"> D) Guard</label>
+    </div>
+
+    <div class="question">7. What did the Beast ask Belle every night?</div>
+    <div class="options">
+      <label><input type="radio" name="q7" value="a"> A) To cook for him</label>
+      <label><input type="radio" name="q7" value="b"> B) To leave the castle</label>
+      <label><input type="radio" name="q7" value="c"> C) To marry him</label>
+      <label><input type="radio" name="q7" value="d"> D) To tell him a story</label>
+    </div>
+
+    <div class="question">8. Belle dreamed of a handsome prince who pleaded with her to explain why she:</div>
+    <div class="options">
+      <label><input type="radio" name="q8" value="a"> A) Loved her father</label>
+      <label><input type="radio" name="q8" value="b"> B) Kept refusing the Beast</label>
+      <label><input type="radio" name="q8" value="c"> C) Wanted to go home</label>
+      <label><input type="radio" name="q8" value="d"> D) Was so beautiful</label>
+    </div>
+
+    <div class="question">9. Which magic items did the Beast give Belle to use during her visit home?</div>
+    <div class="options">
+      <label><input type="radio" name="q9" value="a"> A) A wand and a hat</label>
+      <label><input type="radio" name="q9" value="b"> B) A mirror and a ring</label>
+      <label><input type="radio" name="q9" value="c"> C) A rose and a locket</label>
+      <label><input type="radio" name="q9" value="d"> D) A map and a compass</label>
+    </div>
+
+    <div class="question">10. What happened to the Beast when Belle’s tears touched him?</div>
+    <div class="options">
+      <label><input type="radio" name="q10" value="a"> A) He died of heartbreak</label>
+      <label><input type="radio" name="q10" value="b"> B) He turned into a handsome prince</label>
+      <label><input type="radio" name="q10" value="c"> C) He became even more hideous</label>
+      <label><input type="radio" name="q10" value="d"> D) He fell into a deep sleep</label>
+    </div>
+
+    <div class="question">11. How did the Prince become a beast originally?</div>
+    <div class="options">
+      <label><input type="radio" name="q11" value="a"> A) A merchant cursed him</label>
+      <label><input type="radio" name="q11" value="b"> B) He was born that way</label>
+      <label><input type="radio" name="q11" value="c"> C) A fairy turned him after he refused her entry</label>
+      <label><input type="radio" name="q11" value="d"> D) He lost a battle</label>
+    </div>
+
+    <div class="question">12. What would Uncle Podger take off before starting a job?</div>
+    <div class="options">
+      <label><input type="radio" name="q12" value="a"> A) His vest</label>
+      <label><input type="radio" name="q12" value="b"> B) His tie</label>
+      <label><input type="radio" name="q12" value="c"> C) His spectacles</label>
+      <label><input type="radio" name="q12" value="d"> D) His coat</label>
+    </div>
+
+    <div class="question">13. Where did Uncle Podger find his coat after the whole house searched for it?</div>
+    <div class="options">
+      <label><input type="radio" name="q13" value="a"> A) In the garden</label>
+      <label><input type="radio" name="q13" value="b"> B) He had been sitting on it</label>
+      <label><input type="radio" name="q13" value="c"> C) Hanging on the door</label>
+      <label><input type="radio" name="q13" value="d"> D) In the kitchen</label>
+    </div>
+
+    <div class="question">14. What was the first thing Uncle Podger dropped while trying to hang the picture?</div>
+    <div class="options">
+      <label><input type="radio" name="q14" value="a"> A) The hammer</label>
+      <label><input type="radio" name="q14" value="b"> B) The nail</label>
+      <label><input type="radio" name="q14" value="c"> C) The picture</label>
+      <label><input type="radio" name="q14" value="d"> D) The cord</label>
+    </div>
+
+    <div class="question">15. How many people were required to help Uncle Podger by holding the chair?</div>
+    <div class="options">
+      <label><input type="radio" name="q15" value="a"> A) One</label>
+      <label><input type="radio" name="q15" value="b"> B) Two</label>
+      <label><input type="radio" name="q15" value="c"> C) Three</label>
+      <label><input type="radio" name="q15" value="d"> D) Six</label>
+    </div>
+
+    <div class="question">16. The word 'grovel' in the story means to:</div>
+    <div class="options">
+      <label><input type="radio" name="q16" value="a"> A) Stand tall</label>
+      <label><input type="radio" name="q16" value="b"> B) Shout loudly</label>
+      <label><input type="radio" name="q16" value="c"> C) Crawl</label>
+      <label><input type="radio" name="q16" value="d"> D) Run fast</label>
+    </div>
+
+    <div class="question">17. What did Uncle Podger lose immediately after the nail was found?</div>
+    <div class="options">
+      <label><input type="radio" name="q17" value="a"> A) His handkerchief</label>
+      <label><input type="radio" name="q17" value="b"> B) The hammer</label>
+      <label><input type="radio" name="q17" value="c"> C) His thumb</label>
+      <label><input type="radio" name="q17" value="d"> D) The picture</label>
+    </div>
+
+    <div class="question">18. Aunt Maria said she would spend a week with her mother the next time:</div>
+    <div class="options">
+      <label><input type="radio" name="q18" value="a"> A) Uncle Podger went on holiday</label>
+      <label><input type="radio" name="q18" value="b"> B) The house was being painted</label>
+      <label><input type="radio" name="q18" value="c"> C) Uncle Podger was going to hammer a nail</label>
+      <label><input type="radio" name="q18" value="d"> D) The children were away</label>
+    </div>
+
+    <div class="question">19. What did Uncle Podger do to his thumb with the first blow of the hammer?</div>
+    <div class="options">
+      <label><input type="radio" name="q19" value="a"> A) Cut it</label>
+      <label><input type="radio" name="q19" value="b"> B) Smashed it</label>
+      <label><input type="radio" name="q19" value="c"> C) Burned it</label>
+      <label><input type="radio" name="q19" value="d"> D) Tied it up</label>
+    </div>
+
+    <div class="question">20. At what time was the picture finally hung on the wall?</div>
+    <div class="options">
+      <label><input type="radio" name="q20" value="a"> A) Mid-day</label>
+      <label><input type="radio" name="q20" value="b"> B) Sunset</label>
+      <label><input type="radio" name="q20" value="c"> C) Around midnight</label>
+      <label><input type="radio" name="q20" value="d"> D) Early morning</label>
+    </div>
+
+    <div class="question">21. How did the picture look once it was finally up?</div>
+    <div class="options">
+      <label><input type="radio" name="q21" value="a"> A) Perfectly straight</label>
+      <label><input type="radio" name="q21" value="b"> B) Very small</label>
+      <label><input type="radio" name="q21" value="c"> C) Crooked and insecure</label>
+      <label><input type="radio" name="q21" value="d"> D) Colorful and bright</label>
+    </div>
+
+    <div class="question">22. The word 'commotion' is defined in the Word Nest as:</div>
+    <div class="options">
+      <label><input type="radio" name="q22" value="a"> A) Silence</label>
+      <label><input type="radio" name="q22" value="b"> B) Trouble</label>
+      <label><input type="radio" name="q22" value="c"> C) Happiness</label>
+      <label><input type="radio" name="q22" value="d"> D) Progress</label>
+    </div>
+
+    <div class="question">23. Which of these is a 'nominal compound' mentioned in the text?</div>
+    <div class="options">
+      <label><input type="radio" name="q23" value="a"> A) Dazzling palace</label>
+      <label><input type="radio" name="q23" value="b"> B) Kitchen-chair</label>
+      <label><input type="radio" name="q23" value="c"> C) Rare rose</label>
+      <label><input type="radio" name="q23" value="d"> D) Beautiful daughters</label>
+    </div>
+
+    <div class="question">24. In the sentence "Runa is a trained nurse," the word 'trained' is a:</div>
+    <div class="options">
+      <label><input type="radio" name="q24" value="a"> A) Proper noun</label>
+      <label><input type="radio" name="q24" value="b"> B) Participle adjective</label>
+      <label><input type="radio" name="q24" value="c"> C) Future tense verb</label>
+      <label><input type="radio" name="q24" value="d"> D) Pronoun</label>
+    </div>
+
+    <div class="question">25. Uncle Podger surveyed the mess he made with evident:</div>
+    <div class="options">
+      <label><input type="radio" name="q25" value="a"> A) Shame</label>
+      <label><input type="radio" name="q25" value="b"> B) Anger</label>
+      <label><input type="radio" name="q25" value="c"> C) Pride</label>
+      <label><input type="radio" name="q25" value="d"> D) Sadness</label>
+    </div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">NEXT</button>
+</div>
+
+  <!-- Section 2: Questions 11-20 -->
+<div id="quizSection2" class="quiz-section">
+
+    <span>SECTION 2: FILL IN THE BLANKS (Marks: 20)</span>
+
+    <div class="question">26. The merchant’s elder daughters were described as _____ and selfish.</div>
+    <div class="options">
+      <label><input type="radio" name="q26" value="a"> kind</label>
+      <label><input type="radio" name="q26" value="b"> wicked</label>
+      <label><input type="radio" name="q26" value="c"> polite</label>
+    </div>
+
+    <div class="question">27. The merchant lost his way in a _____ while returning home.</div>
+    <div class="options">
+      <label><input type="radio" name="q27" value="a"> forest</label>
+      <label><input type="radio" name="q27" value="b"> city</label>
+      <label><input type="radio" name="q27" value="c"> desert</label>
+    </div>
+
+    <div class="question">28. The Beast's palace had tables _____ with food and drink.</div>
+    <div class="options">
+      <label><input type="radio" name="q28" value="a"> empty</label>
+      <label><input type="radio" name="q28" value="b"> laden</label>
+      <label><input type="radio" name="q28" value="c"> broken</label>
+    </div>
+
+    <div class="question">29. Belle went to the Beast’s castle of her own _____.</div>
+    <div class="options">
+      <label><input type="radio" name="q29" value="a"> fear</label>
+      <label><input type="radio" name="q29" value="b"> accord</label>
+      <label><input type="radio" name="q29" value="c"> sadness</label>
+    </div>
+
+    <div class="question">30. The Beast received Belle _____ when she arrived at the castle.</div>
+    <div class="options">
+      <label><input type="radio" name="q30" value="a"> angrily</label>
+      <label><input type="radio" name="q30" value="b"> graciously</label>
+      <label><input type="radio" name="q30" value="c"> silently</label>
+    </div>
+
+    <div class="question">31. Belle discovered many _____ rooms while searching for the prince.</div>
+    <div class="options">
+      <label><input type="radio" name="q31" value="a"> enchanted</label>
+      <label><input type="radio" name="q31" value="b"> small</label>
+      <label><input type="radio" name="q31" value="c"> dark</label>
+    </div>
+
+    <div class="question">32. The elder sisters were _____ of Belle’s happy life at the castle.</div>
+    <div class="options">
+      <label><input type="radio" name="q32" value="a"> proud</label>
+      <label><input type="radio" name="q32" value="b"> jealous</label>
+      <label><input type="radio" name="q32" value="c"> tired</label>
+    </div>
+
+    <div class="question">33. The sisters put _____ in their eyes to make it appear they were weeping.</div>
+    <div class="options">
+      <label><input type="radio" name="q33" value="a"> water</label>
+      <label><input type="radio" name="q33" value="b"> onion</label>
+      <label><input type="radio" name="q33" value="c"> salt</label>
+    </div>
+
+    <div class="question">34. A _____ story is one that is retold by many famous writers.</div>
+    <div class="options">
+      <label><input type="radio" name="q34" value="a"> fairy</label>
+      <label><input type="radio" name="q34" value="b"> true</label>
+      <label><input type="radio" name="q34" value="c"> news</label>
+    </div>
+
+    <div class="question">35. Uncle Podger would _____ round the room looking for his handkerchief.</div>
+    <div class="options">
+      <label><input type="radio" name="q35" value="a"> walk</label>
+      <label><input type="radio" name="q35" value="b"> spring</label>
+      <label><input type="radio" name="q35" value="c"> sleep</label>
+    </div>
+
+    <div class="question">36. He used his _____ to reach a point three inches beyond what was possible.</div>
+    <div class="options">
+      <label><input type="radio" name="q36" value="a"> rule</label>
+      <label><input type="radio" name="q36" value="b"> ladder</label>
+      <label><input type="radio" name="q36" value="c"> hand</label>
+    </div>
+
+    <div class="question">37. "I _____ want the step-ladder," said Uncle Podger.</div>
+    <div class="options">
+      <label><input type="radio" name="q37" value="a"> did</label>
+      <label><input type="radio" name="q37" value="b"> shall</label>
+      <label><input type="radio" name="q37" value="c"> was</label>
+    </div>
+
+    <div class="question">38. The word _____ means looking with the mouth open.</div>
+    <div class="options">
+      <label><input type="radio" name="q38" value="a"> grovel</label>
+      <label><input type="radio" name="q38" value="b"> gaping</label>
+      <label><input type="radio" name="q38" value="c"> injured</label>
+    </div>
+
+    <div class="question">39. Uncle Podger called the children _____ when they found things in different places.</div>
+    <div class="options">
+      <label><input type="radio" name="q39" value="a"> geniuses</label>
+      <label><input type="radio" name="q39" value="b"> fools</label>
+      <label><input type="radio" name="q39" value="c"> heroes</label>
+    </div>
+
+    <div class="question">40. Aunt Maria mildly observed that Uncle Podger made such a _____ over everything.</div>
+    <div class="options">
+      <label><input type="radio" name="q40" value="a"> song</label>
+      <label><input type="radio" name="q40" value="b"> fuss</label>
+      <label><input type="radio" name="q40" value="c"> painting</label>
+    </div>
+
+    <div class="question">41. A _____ would pass him up the hammer.</div>
+    <div class="options">
+      <label><input type="radio" name="q41" value="a"> fourth</label>
+      <label><input type="radio" name="q41" value="b"> fifth</label>
+      <label><input type="radio" name="q41" value="c"> second</label>
+    </div>
+
+    <div class="question">42. The picture came out of the _____ when he lifted it.</div>
+    <div class="options">
+      <label><input type="radio" name="q42" value="a"> wall</label>
+      <label><input type="radio" name="q42" value="b"> frame</label>
+      <label><input type="radio" name="q42" value="c"> box</label>
+    </div>
+
+    <div class="question">43. The word 'lavish' means _____.</div>
+    <div class="options">
+      <label><input type="radio" name="q43" value="a"> cheap</label>
+      <label><input type="radio" name="q43" value="b"> generous</label>
+      <label><input type="radio" name="q43" value="c"> dirty</label>
+    </div>
+
+    <div class="question">44. Belle stayed an extra day because her heart was moved by her sisters' false show of _____.</div>
+    <div class="options">
+      <label><input type="radio" name="q44" value="a"> anger</label>
+      <label><input type="radio" name="q44" value="b"> love</label>
+      <label><input type="radio" name="q44" value="c"> wealth</label>
+    </div>
+
+    <div class="question">45. Uncle Podger would _____ his finger while trying to save the glass.</div>
+    <div class="options">
+      <label><input type="radio" name="q45" value="a"> cut</label>
+      <label><input type="radio" name="q45" value="b"> wash</label>
+      <label><input type="radio" name="q45" value="c"> hide</label>
+    </div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection1')">PREVIOUS</button>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">NEXT</button>
+</div>
+
+  <!-- Section 3: Questions 21-30 -->
+<div id="quizSection3" class="quiz-section">
+  
+    <span>SECTION 3: TRUE OR FALSE (Marks: 15)</span>
+
+    <div class="question">46. The merchant was very poor at the beginning of the story.</div>
+    <div class="options">
+      <label><input type="radio" name="q46" value="true"> True</label>
+      <label><input type="radio" name="q46" value="false"> False</label>
+    </div>
+
+    <div class="question">47. The Beast's most precious possession was his rose garden.</div>
+    <div class="options">
+      <label><input type="radio" name="q47" value="true"> True</label>
+      <label><input type="radio" name="q47" value="false"> False</label>
+    </div>
+
+    <div class="question">48. The Beast told the merchant he must die for his conduct.</div>
+    <div class="options">
+      <label><input type="radio" name="q48" value="true"> True</label>
+      <label><input type="radio" name="q48" value="false"> False</label>
+    </div>
+
+    <div class="question">49. Belle found the handsome prince of her dreams inside an enchanted room.</div>
+    <div class="options">
+      <label><input type="radio" name="q49" value="true"> True</label>
+      <label><input type="radio" name="q49" value="false"> False</label>
+    </div>
+
+    <div class="question">50. Belle returned to the castle using a magic ring.</div>
+    <div class="options">
+      <label><input type="radio" name="q50" value="true"> True</label>
+      <label><input type="radio" name="q50" value="false"> False</label>
+    </div>
+
+    <div class="question">51. Uncle Podger was a very organized and quiet worker.</div>
+    <div class="options">
+      <label><input type="radio" name="q51" value="true"> True</label>
+      <label><input type="radio" name="q51" value="false"> False</label>
+    </div>
+
+    <div class="question">52. Uncle Podger used his handkerchief to tie up his cut finger.</div>
+    <div class="options">
+      <label><input type="radio" name="q52" value="true"> True</label>
+      <label><input type="radio" name="q52" value="false"> False</label>
+    </div>
+
+    <div class="question">53. The whole house had to stop looking for tools to look for Uncle Podger's coat.</div>
+    <div class="options">
+      <label><input type="radio" name="q53" value="true"> True</label>
+      <label><input type="radio" name="q53" value="false"> False</label>
+    </div>
+
+    <div class="question">54. Uncle Podger reached the spot he wanted on the first try.</div>
+    <div class="options">
+      <label><input type="radio" name="q54" value="true"> True</label>
+      <label><input type="radio" name="q54" value="false"> False</label>
+    </div>
+
+    <div class="question">55. The hammer went clean through the plaster on the second blow.</div>
+    <div class="options">
+      <label><input type="radio" name="q55" value="true"> True</label>
+      <label><input type="radio" name="q55" value="false"> False</label>
+    </div>
+
+    <div class="question">56. 'Mansion' means a large palace.</div>
+    <div class="options">
+      <label><input type="radio" name="q56" value="true"> True</label>
+      <label><input type="radio" name="q56" value="false"> False</label>
+    </div>
+
+    <div class="question">57. 'Insecure' means a state of being very safe.</div>
+    <div class="options">
+      <label><input type="radio" name="q57" value="true"> True</label>
+      <label><input type="radio" name="q57" value="false"> False</label>
+    </div>
+
+    <div class="question">58. Uncle Podger finished hanging the picture with evident pride.</div>
+    <div class="options">
+      <label><input type="radio" name="q58" value="true"> True</label>
+      <label><input type="radio" name="q58" value="false"> False</label>
+    </div>
+
+    <div class="question">59. The children were happy to help Uncle Podger all night.</div>
+    <div class="options">
+      <label><input type="radio" name="q59" value="true"> True</label>
+      <label><input type="radio" name="q59" value="false"> False</label>
+    </div>
+
+    <div class="question">60. A fairy turned the prince into a beast long ago.</div>
+    <div class="options">
+      <label><input type="radio" name="q60" value="true"> True</label>
+      <label><input type="radio" name="q60" value="false"> False</label>
+    </div>
+  
+
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">PREVIOUS</button>
+  <button type="submit" class="submit-btn">SUBMIT</button>
+</div>
+
+</form>
+</div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; 
+    var subject = document.getElementById("subject").innerText;
+    var exam_code = document.getElementById("exam_code").innerText;
+    
+    // সঠিক উত্তরের অবজেক্ট
+    const quizAnswers = {
+    q1: "b", q2: "c", q3: "d", q4: "a", q5: "b",
+    q6: "c", q7: "c", q8: "b", q9: "b", q10: "b",
+    q11: "c", q12: "d", q13: "b", q14: "c", q15: "b",
+    q16: "c", q17: "b", q18: "c", q19: "b", q20: "c",
+    q21: "c", q22: "b", q23: "b", q24: "b", q25: "c",
+    q26: "b", q27: "a", q28: "b", q29: "b", q30: "b",
+    q31: "a", q32: "b", q33: "b", q34: "a", q35: "b",
+    q36: "a", q37: "b", q38: "b", q39: "b", q40: "b",
+    q41: "b", q42: "b", q43: "b", q44: "b", q45: "a",
+    q46: "false", q47: "true", q48: "true", q49: "false", q50: "true",
+    q51: "false", q52: "false", q53: "true", q54: "false", q55: "false",
+    q56: "true", q57: "false", q58: "true", q59: "false", q60: "true"
+  };
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    let timeLeft = 30 * 60; 
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const progressBar = document.getElementById("progressBar");
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+      let userResponses = {};
+
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : "Not Answered";
+        userResponses[q] = selected;
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // ইউজার রেসপন্স গ্লোবাল করা হলো ডাউনলোডের জন্য
+      window.currentUserResponses = userResponses;
+
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+
+      fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          total: totalQuestions,
+          subject: subject,
+          exam_code: exam_code
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      document.getElementById("quizArea").style.display = "none";
+      document.getElementById("thankYou").style.display = "block";
+      downloadAnswerScript();
+    });
+
+    // ডাইনামিক আনসার স্ক্রিপ্ট ডাউনলোড ফাংশন
+    function downloadAnswerScript() {
+    const questions = [];
+    const currentSubject = document.getElementById("subject").innerText;
+    const currentExamCode = document.getElementById("exam_code").innerText;
+    
+    // ১. প্রশ্ন এবং উত্তর সংগ্রহ (আপনার আগের কোড অনুযায়ী)
+    document.querySelectorAll('.question').forEach((qEl, index) => {
+        const qKey = "q" + (index + 1);
+        const questionText = qEl.innerText;
+        const options = {};
+        const optionsDiv = qEl.nextElementSibling;
+        
+        if (optionsDiv && optionsDiv.classList.contains('options')) {
+            optionsDiv.querySelectorAll('label').forEach(label => {
+                const radio = label.querySelector('input');
+                if(radio){
+                    options[radio.value] = label.innerText;
+                }
+            });
+        }
+
+        questions.push({
+            key: qKey,
+            question: questionText,
+            options: options,
+            userAnswer: window.currentUserResponses[qKey],
+            correctAnswer: quizAnswers[qKey]
+        });
+    });
+
+    //২.  ফর্ম ডাটা তৈরি করা (যাতে ব্যাকগ্রাউন্ডে পাঠানো যায়)
+    const formData = new FormData();
+    formData.append('email', studentEmail);
+    formData.append('full_data', JSON.stringify(questions));
+    formData.append('subject', currentSubject);
+    formData.append('exam_code', currentExamCode);
+
+    // fetch ব্যবহার করে ব্যাকগ্রাউন্ডে ডাটা পাঠানো (কোনো নতুন পেজ খুলবে না)
+    fetch('https://learnnova.cfd/assets/php/generate_answer_script.php', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // ক্রস-অরিজিন ইস্যু এড়াতে
+    }).then(() => {
+        console.log("PDF generated and saved in background.");
+    }).catch(err => console.error("PDF generation failed:", err));
+
+    // ৩. ডাটা ইনপুটগুলো যোগ করা
+    
+    // ইমেইল পাঠানো (এটি আগে মিস ছিল)
+    const inputEmail = document.createElement('input');
+    inputEmail.type = 'hidden';
+    inputEmail.name = 'email';
+    inputEmail.value = studentEmail; // loginSection থেকে পাওয়া গ্লোবাল ভেরিয়েবল
+    formExport.appendChild(inputEmail);
+
+    // প্রশ্ন-উত্তরের ডাটা
+    const inputData = document.createElement('input');
+    inputData.type = 'hidden';
+    inputData.name = 'full_data';
+    inputData.value = JSON.stringify(questions);
+    formExport.appendChild(inputData);
+    
+    // সাবজেক্ট
+    const inputSubject = document.createElement('input');
+    inputSubject.type = 'hidden';
+    inputSubject.name = 'subject';
+    inputSubject.value = currentSubject;
+    formExport.appendChild(inputSubject);
+
+    // এক্সাম কোড
+    const inputCode = document.createElement('input');
+    inputCode.type = 'hidden';
+    inputCode.name = 'exam_code';
+    inputCode.value = currentExamCode;
+    formExport.appendChild(inputCode);
+  
+    // ৪. ফর্ম সাবমিট করা
+    document.body.appendChild(formExport);
+    formExport.submit();
+    document.body.removeChild(formExport);
+}
+
+    // ইমেইল ভেরিফিকেশন লজিক
+    const urlParams = new URLSearchParams(window.location.search);
+    const validEmail = urlParams.get('email');
+
+    document.getElementById("checkEmailBtn").addEventListener("click", function () {
+      const emailInput = document.getElementById("studentEmail").value.trim();
+      if (emailInput === validEmail) {
+        document.getElementById("checkEmailBtn").style.display = "none";
+        document.getElementById("goQuiz").style.display = "inline-block";
+      } else {
+        const message = document.getElementById("message");
+        message.style.display = "block";
+        message.textContent = "Oops! That email doesn't match our records.";
+      }
+    });
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+  </script>
+</body>
+</html>
