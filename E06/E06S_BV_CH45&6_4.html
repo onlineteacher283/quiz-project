@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LearnNova Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 26px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+
+    }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 10px;
+
+    }
+
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h3>Welcome to <u>LearnNova</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+
+      <h2 id="subject">Science</h2>
+      <h1 id="exam_code">E06S_BV_CH45&6_4</h1>
+      </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" id="captchaDiv" style="display: none;" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        
+        <button type="submit" class="submit-btn" id="goQuiz" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center; display: none;">Confirm</button>
+      </form>
+      <button class="submit-btn" id="checkEmailBtn" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center;">Verify</button>
+      <p id="message" style="display: none; color: green; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">LearnNova Education Center</h1>
+    <h3 style="text-align:center;">Subject: Science    Full marks: 60    Time: 30mnts     Class: VI</h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+<form id="quizForm">
+  <!-- Section 1: MCQ (Questions 1-20) -->
+
+  <div id="quizSection1" class="quiz-section active">
+    
+    <span>বিভাগ ১: সঠিক উত্তরটি নির্বাচন করো (MCQ) — (মান: ২০)</span>
+
+    <div class="question">১. পিউমিস কোন ধরনের শিলা?</div>
+    <div class="options">
+      <label><input type="radio" name="q1" value="a"> (ক) আগ্নেয়</label>
+      <label><input type="radio" name="q1" value="b"> (খ) পাললিক</label>
+      <label><input type="radio" name="q1" value="c"> (গ) পরিবর্তিত</label>
+      <label><input type="radio" name="q1" value="d"> (ঘ) কোনোটিই নয়</label>
+    </div>
+
+    <div class="question">২. অ্যালুমিনিয়ামের আকরিক কোনটি?</div>
+    <div class="options">
+      <label><input type="radio" name="q2" value="a"> (ক) হেমাটাইট</label>
+      <label><input type="radio" name="q2" value="b"> (খ) বক্সাইট</label>
+      <label><input type="radio" name="q2" value="c"> (গ) কপার গ্লান্স</label>
+      <label><input type="radio" name="q2" value="d"> (ঘ) কোনোটিই নয়</label>
+    </div>
+
+    <div class="question">৩. পিতল তৈরির জন্য তামা ও কী মেশানো হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q3" value="a"> (ক) টিন</label>
+      <label><input type="radio" name="q3" value="b"> (খ) লোহা</label>
+      <label><input type="radio" name="q3" value="c"> (গ) দস্তা</label>
+      <label><input type="radio" name="q3" value="d"> (ঘ) রূপো</label>
+    </div>
+
+    <div class="question">৪. এসআই (SI) পদ্ধতিতে দৈর্ঘ্যের একক কী?</div>
+    <div class="options">
+      <label><input type="radio" name="q4" value="a"> (ক) সেন্টিমিটার</label>
+      <label><input type="radio" name="q4" value="b"> (খ) মিটার</label>
+      <label><input type="radio" name="q4" value="c"> (গ) কিলোমিটার</label>
+      <label><input type="radio" name="q4" value="d"> (ঘ) ফুট</label>
+    </div>
+
+    <div class="question">৫. উদ্ভিদের বৃদ্ধি পরিমাপ করার যন্ত্রের নাম কী?</div>
+    <div class="options">
+      <label><input type="radio" name="q5" value="a"> (ক) থার্মোমিটার</label>
+      <label><input type="radio" name="q5" value="b"> (খ) স্টপ ওয়াচ</label>
+      <label><input type="radio" name="q5" value="c"> (গ) অক্সানোমিটার</label>
+      <label><input type="radio" name="q5" value="d"> (ঘ) দাড়ি পাল্লা</label>
+    </div>
+
+    <div class="question">৬. বলের এসআই (SI) একক কী?</div>
+    <div class="options">
+      <label><input type="radio" name="q6" value="a"> (ক) ডাইন</label>
+      <label><input type="radio" name="q6" value="b"> (খ) নিউটন</label>
+      <label><input type="radio" name="q6" value="c"> (গ) জুল</label>
+      <label><input type="radio" name="q6" value="d"> (ঘ) ক্যালোরি</label>
+    </div>
+
+    <div class="question">৭. স্থির বস্তুকে গতিশীল করতে বাইরে থেকে কী প্রয়োগ করতে হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q7" value="a"> (ক) তাপ</label>
+      <label><input type="radio" name="q7" value="b"> (খ) বল</label>
+      <label><input type="radio" name="q7" value="c"> (গ) আলো</label>
+      <label><input type="radio" name="q7" value="d"> (ঘ) শব্দ</label>
+    </div>
+
+    <div class="question">৮. খাদ্য শৃঙ্খলে উৎপাদক হিসেবে পরিচিত কারা?</div>
+    <div class="options">
+      <label><input type="radio" name="q8" value="a"> (ক) বাঘ</label>
+      <label><input type="radio" name="q8" value="b"> (খ) সবুজ উদ্ভিদ</label>
+      <label><input type="radio" name="q8" value="c"> (গ) হরিণ</label>
+      <label><input type="radio" name="q8" value="d"> (ঘ) ব্যাঙ</label>
+    </div>
+
+    <div class="question">৯. চুন আর জলের রাসায়নার বিক্রিয়ায় কোন শক্তি উৎপন্ন হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q9" value="a"> (ক) আলোক শক্তি</label>
+      <label><input type="radio" name="q9" value="b"> (খ) তাপ শক্তি</label>
+      <label><input type="radio" name="q9" value="c"> (গ) শব্দ শক্তি</label>
+      <label><input type="radio" name="q9" value="d"> (ঘ) গতিশক্তি</label>
+    </div>
+
+    <div class="question">১০. পেট্রোলিয়াম শোধন করে নিচের কোনটি পাওয়া যায় না?</div>
+    <div class="options">
+      <label><input type="radio" name="q10" value="a"> (ক) কেরোসিন</label>
+      <label><input type="radio" name="q10" value="b"> (খ) পেট্রোল</label>
+      <label><input type="radio" name="q10" value="c"> (গ) কয়লা</label>
+      <label><input type="radio" name="q10" value="d"> (ঘ) ডিজেল</label>
+    </div>
+
+    <div class="question">১১. লিন্ডেম্যানের ১০ শতাংশের সূত্র অনুযায়ী পরবর্তী পুষ্টিস্তরে কত শতাংশ শক্তি পৌঁছায়?</div>
+    <div class="options">
+      <label><input type="radio" name="q11" value="a"> (ক) ১%</label>
+      <label><input type="radio" name="q11" value="b"> (খ) ৯০%</label>
+      <label><input type="radio" name="q11" value="c"> (গ) ১০০%</label>
+      <label><input type="radio" name="q11" value="d"> (ঘ) ১০%</label>
+    </div>
+
+    <div class="question">১২. এসআই (SI) পদ্ধতিতে আয়তনের একক কী?</div>
+    <div class="options">
+      <label><input type="radio" name="q12" value="a"> (ক) বর্গমিটার</label>
+      <label><input type="radio" name="q12" value="b"> (খ) ঘনমিটার</label>
+      <label><input type="radio" name="q12" value="c"> (গ) মিটার</label>
+      <label><input type="radio" name="q12" value="d"> (ঘ) সেন্টিমিটার</label>
+    </div>
+
+    <div class="question">১৩. পাললিক শিলার স্তরে কীসের দেহাবশেষ বা ফসিল পাওয়া যায়?</div>
+    <div class="options">
+      <label><input type="radio" name="q13" value="a"> (ক) ম্যাগমা</label>
+      <label><input type="radio" name="q13" value="b"> (খ) লাভা</label>
+      <label><input type="radio" name="q13" value="c"> (গ) মাছ ও শামুক</label>
+      <label><input type="radio" name="q13" value="d"> (ঘ) সোনা</label>
+    </div>
+
+    <div class="question">১৪. সাধারণ তুলা যন্ত্র দিয়ে কী পরিমাপ করা হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q14" value="a"> (ক) ওজন</label>
+      <label><input type="radio" name="q14" value="b"> (খ) ভর</label>
+      <label><input type="radio" name="q14" value="c"> (গ) আয়তন</label>
+      <label><input type="radio" name="q14" value="d"> (ঘ) দৈর্ঘ্য</label>
+    </div>
+
+    <div class="question">১৫. ঘর্ষণের ফলে বস্তুর কী ঘটে?</div>
+    <div class="options">
+      <label><input type="radio" name="q15" value="a"> (ক) বৃদ্ধি</label>
+      <label><input type="radio" name="q15" value="b"> (খ) ক্ষয়</label>
+      <label><input type="radio" name="q15" value="c"> (গ) ওজন বৃদ্ধি</label>
+      <label><input type="radio" name="q15" value="d"> (ঘ) কোনোটিই নয়</label>
+    </div>
+
+    <div class="question">১৬. সবুজ উদ্ভিদ সূর্যের আলোক শক্তিকে কী হিসেবে নিজের দেহে জমা রাখে?</div>
+    <div class="options">
+      <label><input type="radio" name="q16" value="a"> (ক) শব্দ শক্তি</label>
+      <label><input type="radio" name="q16" value="b"> (খ) রাসায়নিক শক্তি</label>
+      <label><input type="radio" name="q16" value="c"> (গ) যান্ত্রিক শক্তি</label>
+      <label><input type="radio" name="q16" value="d"> (ঘ) তাপ শক্তি</label>
+    </div>
+
+    <div class="question">১৭. ১ সৌরদিন কত ঘণ্টার সমান?</div>
+    <div class="options">
+      <label><input type="radio" name="q17" value="a"> (ক) ১২ ঘণ্টা</label>
+      <label><input type="radio" name="q17" value="b"> (খ) ৬০ ঘণ্টা</label>
+      <label><input type="radio" name="q17" value="c"> (গ) ২৪ ঘণ্টা</label>
+      <label><input type="radio" name="q17" value="d"> (ঘ) ৩৬৫ ঘণ্টা</label>
+    </div>
+
+    <div class="question">১৮. তাপবিদ্যুৎ কেন্দ্রে কী পুড়িয়ে বিদ্যুৎ তৈরি করা হয়?</div>
+    <div class="options">
+      <label><input type="radio" name="q18" value="a"> (ক) লোহা</label>
+      <label><input type="radio" name="q18" value="b"> (খ) কয়লা</label>
+      <label><input type="radio" name="q18" value="c"> (গ) তামা</label>
+      <label><input type="radio" name="q18" value="d"> (ঘ) বক্সাইট</label>
+    </div>
+
+    <div class="question">১৯. গতিশীল অবস্থায় বস্তুর মধ্যে যে সামর্থ্য তৈরি হয় তাকে কী বলে?</div>
+    <div class="options">
+      <label><input type="radio" name="q19" value="a"> (ক) স্থিতিশক্তি</label>
+      <label><input type="radio" name="q19" value="b"> (খ) গতিশক্তি</label>
+      <label><input type="radio" name="q19" value="c"> (গ) আলোক শক্তি</label>
+      <label><input type="radio" name="q19" value="d"> (ঘ) শব্দ শক্তি</label>
+    </div>
+
+    <div class="question">২০. ডিজিটাল স্টপ ওয়াচ সর্বোচ্চ কত সূক্ষ্মভাবে সময় মাপতে পারে?</div>
+    <div class="options">
+      <label><input type="radio" name="q20" value="a"> (ক) ১ সেকেন্ড</label>
+      <label><input type="radio" name="q20" value="b"> (খ) ০.১ সেকেন্ড</label>
+      <label><input type="radio" name="q20" value="c"> (গ) ০.০১ সেকেন্ড</label>
+      <label><input type="radio" name="q20" value="d"> (ঘ) ১০ সেকেন্ড</label>
+    </div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পরবর্তী</button>
+</div>
+
+  <!-- Section 2: Questions 11-20 -->
+<div id="quizSection2" class="quiz-section">
+
+    <span>বিভাগ ২: শূন্যস্থান পূরণ করো (সঠিক বিকল্পটি বেছে নাও) — (মান: ২০)</span>
+
+    <div class="question">২১. চুনাপাথর পরিবর্তিত হয়ে _______ তৈরি হয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q21" value="a"> মার্বেল</label>
+      <label><input type="radio" name="q21" value="b"> স্লেট</label>
+      <label><input type="radio" name="q21" value="c"> নীস</label>
+    </div>
+
+    <div class="question">২২. লোহার প্রধান আকরিক হলো _______।</div>
+    <div class="options">
+      <label><input type="radio" name="q22" value="a"> হেমাটাইট</label>
+      <label><input type="radio" name="q22" value="b"> বক্সাইট</label>
+      <label><input type="radio" name="q22" value="c"> কপার গ্লান্স</label>
+    </div>
+
+    <div class="question">২৩. তামা আর টিন মিশিয়ে _______ তৈরি হয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q23" value="a"> পিতল</label>
+      <label><input type="radio" name="q23" value="b"> ব্রোঞ্জ</label>
+      <label><input type="radio" name="q23" value="c"> ইস্পাত</label>
+    </div>
+
+    <div class="question">২৪. এসআই পদ্ধতিতে ভরের একক হলো _______।</div>
+    <div class="options">
+      <label><input type="radio" name="q24" value="a"> গ্রাম</label>
+      <label><input type="radio" name="q24" value="b"> কিলোগ্রাম</label>
+      <label><input type="radio" name="q24" value="c"> পাউন্ড</label>
+    </div>
+
+    <div class="question">২৫. ১ কিমি = _______ মিটার।</div>
+    <div class="options">
+      <label><input type="radio" name="q25" value="a"> ১০০</label>
+      <label><input type="radio" name="q25" value="b"> ১০০০</label>
+      <label><input type="radio" name="q25" value="c"> ১০০০০</label>
+    </div>
+
+    <div class="question">২৬. আয়তন = দৈর্ঘ্য × প্রস্থ × _______।</div>
+    <div class="options">
+      <label><input type="radio" name="q26" value="a"> ওজন</label>
+      <label><input type="radio" name="q26" value="b"> উচ্চতা</label>
+      <label><input type="radio" name="q26" value="c"> ভর</label>
+    </div>
+
+    <div class="question">২৭. ১ ঘণ্টা = _______ মিনিট।</div>
+    <div class="options">
+      <label><input type="radio" name="q26" value="a"> ৬০</label>
+      <label><input type="radio" name="q26" value="b"> ২৪</label>
+      <label><input type="radio" name="q26" value="c"> ৩৬৫</label>
+    </div>
+
+    <div class="question">২৮. বলের প্রভাবে বস্তুর _______ পরিবর্তন হতে পারে।</div>
+    <div class="options">
+      <label><input type="radio" name="q28" value="a"> রঙের</label>
+      <label><input type="radio" name="q28" value="b"> আকৃতির</label>
+      <label><input type="radio" name="q28" value="c"> স্বাদের</label>
+    </div>
+
+    <div class="question">২৯. ওজন আসলে এক প্রকারের _______।</div>
+    <div class="options">
+      <label><input type="radio" name="q29" value="a"> বল</label>
+      <label><input type="radio" name="q29" value="b"> ভর</label>
+      <label><input type="radio" name="q29" value="c"> সময়</label>
+    </div>
+
+    <div class="question">৩০. কাজ করার সামর্থ্যই হলো _______।</div>
+    <div class="options">
+      <label><input type="radio" name="q30" value="a"> স্থিতিশক্তি</label>
+      <label><input type="radio" name="q30" value="b"> গতিশক্তি</label>
+      <label><input type="radio" name="q30" value="c"> শক্তি</label>
+    </div>
+
+    <div class="question">৩১. বৈদ্যুতিক শক্তি _______ শক্তিতে রূপান্তরিত হয়ে পাখা ঘোরে।</div>
+    <div class="options">
+      <label><input type="radio" name="q31" value="a"> যান্ত্রিক</label>
+      <label><input type="radio" name="q31" value="b"> শব্দ</label>
+      <label><input type="radio" name="q31" value="c"> আলোক</label>
+    </div>
+
+    <div class="question">৩২. পৃথিবীতে সব খাদ্যের শক্তির উৎস হলো _______।</div>
+    <div class="options">
+      <label><input type="radio" name="q32" value="a"> চাঁদ</label>
+      <label><input type="radio" name="q32" value="b"> সূর্য</label>
+      <label><input type="radio" name="q32" value="c"> পৃথিবী</label>
+    </div>
+
+    <div class="question">৩৩. লিন্ডেম্যানের সূত্র অনুযায়ী প্রায় _______ শতাংশ শক্তি দেহ গঠনের কাজে লাগে না।</div>
+    <div class="options">
+      <label><input type="radio" name="q33" value="a"> ১০</label>
+      <label><input type="radio" name="q33" value="b"> ৯০</label>
+      <label><input type="radio" name="q33" value="c"> ১০০</label>
+    </div>
+
+    <div class="question">৩৪. দু-হাতের তালু ঘষলে _______ উৎপন্ন হয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q34" value="a"> ঠান্ডা</label>
+      <label><input type="radio" name="q34" value="b"> তাপ</label>
+      <label><input type="radio" name="q34" value="c"> বিদ্যুৎ</label>
+    </div>
+
+    <div class="question">৩৫. কয়লা একটি _______ জ্বালানি।</div>
+    <div class="options">
+      <label><input type="radio" name="q35" value="a"> জীবাশ্ম</label>
+      <label><input type="radio" name="q35" value="b"> কৃত্রিম</label>
+      <label><input type="radio" name="q35" value="c"> তরল</label>
+    </div>
+
+    <div class="question">৩৬. তরল পদার্থের আয়তন মাপতে _______ চোঙ ব্যবহৃত হয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q36" value="a"> আয়তন মাপনি</label>
+      <label><input type="radio" name="q36" value="b"> উষ্ণতা মাপনি</label>
+      <label><input type="radio" name="q36" value="c"> ভর মাপনি</label>
+    </div>
+
+    <div class="question">৩৭. শরীরের উষ্ণতা মাপতে _______ ব্যবহার করা হয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q37" value="a"> স্কেল</label>
+      <label><input type="radio" name="q37" value="b"> থার্মোমিটার</label>
+      <label><input type="radio" name="q37" value="c"> ঘড়ি</label>
+    </div>
+
+    <div class="question">৩৮. যারা নিজের খাদ্য নিজেই তৈরি করে তাদের _______ বলে।</div>
+    <div class="options">
+      <label><input type="radio" name="q38" value="a"> খাদক</label>
+      <label><input type="radio" name="q38" value="b"> উৎপাদক</label>
+      <label><input type="radio" name="q38" value="c"> বিয়োজক</label>
+    </div>
+
+    <div class="question">৩৯. একটি অনবীকরণযোগ্য শক্তির উৎস হলো _______।</div>
+    <div class="options">
+      <label><input type="radio" name="q39" value="a"> সৌরশক্তি</label>
+      <label><input type="radio" name="q39" value="b"> কয়লা</label>
+      <label><input type="radio" name="q39" value="c"> বায়ুশক্তি</label>
+    </div>
+
+    <div class="question">৪০. ভূগর্ভের তরল পাথরকে _______ বলা হয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q40" value="a"> ম্যাগমা</label>
+      <label><input type="radio" name="q40" value="b"> লাভা</label>
+      <label><input type="radio" name="q40" value="c"> পাথর</label>
+    </div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection1')">পূর্ববর্তী</button>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পরবর্তী</button>
+</div>
+
+  <!-- Section 3: Questions 21-30 -->
+<div id="quizSection3" class="quiz-section">
+  
+    <span>বিভাগ ৩: সত্য অথবা মিথ্যা নির্বাচন করো — (মান: ২০)</span>
+
+    <div class="question">৪১. গ্রানাইট একটি আগ্নেয় শিলা।</div>
+    <div class="options">
+      <label><input type="radio" name="q41" value="true"> সত্য</label>
+      <label><input type="radio" name="q41" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪২. মার্বেল পাথর চুনাপাথর পরিবর্তিত হয়ে তৈরি হয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q42" value="true"> সত্য</label>
+      <label><input type="radio" name="q42" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৩. প্রকৃতিতে সোনাকে সবসময় যৌগ অবস্থায় পাওয়া যায়।</div>
+    <div class="options">
+      <label><input type="radio" name="q43" value="true"> সত্য</label>
+      <label><input type="radio" name="q43" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৪. সি.এন.জি (CNG) চালিত বাসে ডিজেলচালিত বাসের চেয়ে দূষণ কম হয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q44" value="true"> সত্য</label>
+      <label><input type="radio" name="q44" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৫. দৈর্ঘ্য একটি মৌলিক বা প্রাথমিক রাশি।</div>
+    <div class="options">
+      <label><input type="radio" name="q45" value="true"> সত্য</label>
+      <label><input type="radio" name="q45" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৬. এসআই পদ্ধতিতে সময়ের একক হলো মিনিট।</div>
+    <div class="options">
+      <label><input type="radio" name="q46" value="true"> সত্য</label>
+      <label><input type="radio" name="q46" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৭. ১ লিটার ১০০০ মিলিলিটারের সমান।</div>
+    <div class="options">
+      <label><input type="radio" name="q47" value="true"> সত্য</label>
+      <label><input type="radio" name="q47" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৮. স্টপ ওয়াচ দিয়ে দৌড় প্রতিযোগিতার সঠিক সময় মাপা যায়।</div>
+    <div class="options">
+      <label><input type="radio" name="q48" value="true"> সত্য</label>
+      <label><input type="radio" name="q48" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৯. ওজনকে পরিমাপ করা হয় স্প্রিং তুলা যন্ত্রের সাহায্যে।</div>
+    <div class="options">
+      <label><input type="radio" name="q49" value="true"> সত্য</label>
+      <label><input type="radio" name="q49" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫০. স্থিতিশক্তি ও গতিশক্তিকে একত্রে যান্ত্রিক শক্তি বলে।</div>
+    <div class="options">
+      <label><input type="radio" name="q50" value="true"> সত্য</label>
+      <label><input type="radio" name="q50" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫১. শক্তি সৃষ্টি বা ধ্বংস করা যায় - এটিই শক্তির নিত্যতা সূত্র।</div>
+    <div class="options">
+      <label><input type="radio" name="q51" value="true"> সত্য</label>
+      <label><input type="radio" name="q51" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫২. হরিণ হলো একটি প্রথম শ্রেণীর খাদক।</div>
+    <div class="options">
+      <label><input type="radio" name="q52" value="true"> সত্য</label>
+      <label><input type="radio" name="q52" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৩. ঘর্ষণ বল গতির বিপরীতে বাধা দেয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q53" value="true"> সত্য</label>
+      <label><input type="radio" name="q53" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৪. মসরিন তলে ঘর্ষণ বল বেশি হয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q54" value="true"> সত্য</label>
+      <label><input type="radio" name="q54" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৫. সৌরশক্তি একটি নবীকরণযোগ্য শক্তির উৎস।</div>
+    <div class="options">
+      <label><input type="radio" name="q55" value="true"> সত্য</label>
+      <label><input type="radio" name="q55" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৬. পেট্রোলিয়াম শোধন করে কেরোসিন ও ডিজেল পাওয়া যায়।</div>
+    <div class="options">
+      <label><input type="radio" name="q56" value="true"> সত্য</label>
+      <label><input type="radio" name="q56" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৭. ক্ষেত্রফল বের করার সূত্র হলো দৈর্ঘ্য × প্রস্থ।</div>
+    <div class="options">
+      <label><input type="radio" name="q57" value="true"> সত্য</label>
+      <label><input type="radio" name="q57" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৮. লোহার আকরিকের নাম হলো বক্সাইট।</div>
+    <div class="options">
+      <label><input type="radio" name="q58" value="true"> সত্য</label>
+      <label><input type="radio" name="q58" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৯. লোহা আর সামান্য কার্বন মিশিয়ে ইস্পাত তৈরি করা হয়।</div>
+    <div class="options">
+      <label><input type="radio" name="q59" value="true"> সত্য</label>
+      <label><input type="radio" name="q59" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৬০. ঘর্ষণের ফলে বস্তুর উষ্ণতা বাড়ে।</div>
+    <div class="options">
+      <label><input type="radio" name="q60" value="true"> সত্য</label>
+      <label><input type="radio" name="q60" value="false"> মিথ্যা</label>
+    </div>
+  
+
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পূর্ববর্তী</button>
+  <button type="submit" class="submit-btn">জমা দিন</button>
+</div>
+
+</form>
+</div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; 
+    var subject = document.getElementById("subject").innerText;
+    var exam_code = document.getElementById("exam_code").innerText;
+    
+    // সঠিক উত্তরের অবজেক্ট
+    const quizAnswers = {
+    q1: "a", q2: "b", q3: "c", q4: "b", q5: "c",
+    q6: "b", q7: "b", q8: "b", q9: "b", q10: "c",
+    q11: "d", q12: "b", q13: "c", q14: "b", q15: "b",
+    q16: "b", q17: "c", q18: "b", q19: "b", q20: "c",
+    q21: "a", q22: "a", q23: "b", q24: "b", q25: "b",
+    q26: "b", q27: "a", q28: "b", q29: "a", q30: "c",
+    q31: "a", q32: "b", q33: "b", q34: "b", q35: "b",
+    q36: "a", q37: "b", q38: "b", q39: "b", q40: "a",
+    q41: "true", q42: "true", q43: "false", q44: "true", q45: "true",
+    q46: "false", q47: "true", q48: "true", q49: "true", q50: "true",
+    q51: "false", q52: "true", q53: "true", q54: "false", q55: "true",
+    q56: "true", q57: "true", q58: "false", q59: "true", q60: "true"
+  };
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    let timeLeft = 30 * 60; 
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const progressBar = document.getElementById("progressBar");
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+      let userResponses = {};
+
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : "Not Answered";
+        userResponses[q] = selected;
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // ইউজার রেসপন্স গ্লোবাল করা হলো ডাউনলোডের জন্য
+      window.currentUserResponses = userResponses;
+
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+
+      fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          total: totalQuestions,
+          subject: subject,
+          exam_code: exam_code
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      document.getElementById("quizArea").style.display = "none";
+      document.getElementById("thankYou").style.display = "block";
+      downloadAnswerScript();
+    });
+
+    // ডাইনামিক আনসার স্ক্রিপ্ট ডাউনলোড ফাংশন
+    function downloadAnswerScript() {
+    const questions = [];
+    const currentSubject = document.getElementById("subject").innerText;
+    const currentExamCode = document.getElementById("exam_code").innerText;
+    
+    // ১. প্রশ্ন এবং উত্তর সংগ্রহ (আপনার আগের কোড অনুযায়ী)
+    document.querySelectorAll('.question').forEach((qEl, index) => {
+        const qKey = "q" + (index + 1);
+        const questionText = qEl.innerText;
+        const options = {};
+        const optionsDiv = qEl.nextElementSibling;
+        
+        if (optionsDiv && optionsDiv.classList.contains('options')) {
+            optionsDiv.querySelectorAll('label').forEach(label => {
+                const radio = label.querySelector('input');
+                if(radio){
+                    options[radio.value] = label.innerText;
+                }
+            });
+        }
+
+        questions.push({
+            key: qKey,
+            question: questionText,
+            options: options,
+            userAnswer: window.currentUserResponses[qKey],
+            correctAnswer: quizAnswers[qKey]
+        });
+    });
+
+    //২.  ফর্ম ডাটা তৈরি করা (যাতে ব্যাকগ্রাউন্ডে পাঠানো যায়)
+    const formData = new FormData();
+    formData.append('email', studentEmail);
+    formData.append('full_data', JSON.stringify(questions));
+    formData.append('subject', currentSubject);
+    formData.append('exam_code', currentExamCode);
+
+    // fetch ব্যবহার করে ব্যাকগ্রাউন্ডে ডাটা পাঠানো (কোনো নতুন পেজ খুলবে না)
+    fetch('https://learnnova.cfd/assets/php/generate_answer_script.php', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // ক্রস-অরিজিন ইস্যু এড়াতে
+    }).then(() => {
+        console.log("PDF generated and saved in background.");
+    }).catch(err => console.error("PDF generation failed:", err));
+
+    // ৩. ডাটা ইনপুটগুলো যোগ করা
+    
+    // ইমেইল পাঠানো (এটি আগে মিস ছিল)
+    const inputEmail = document.createElement('input');
+    inputEmail.type = 'hidden';
+    inputEmail.name = 'email';
+    inputEmail.value = studentEmail; // loginSection থেকে পাওয়া গ্লোবাল ভেরিয়েবল
+    formExport.appendChild(inputEmail);
+
+    // প্রশ্ন-উত্তরের ডাটা
+    const inputData = document.createElement('input');
+    inputData.type = 'hidden';
+    inputData.name = 'full_data';
+    inputData.value = JSON.stringify(questions);
+    formExport.appendChild(inputData);
+    
+    // সাবজেক্ট
+    const inputSubject = document.createElement('input');
+    inputSubject.type = 'hidden';
+    inputSubject.name = 'subject';
+    inputSubject.value = currentSubject;
+    formExport.appendChild(inputSubject);
+
+    // এক্সাম কোড
+    const inputCode = document.createElement('input');
+    inputCode.type = 'hidden';
+    inputCode.name = 'exam_code';
+    inputCode.value = currentExamCode;
+    formExport.appendChild(inputCode);
+  
+    // ৪. ফর্ম সাবমিট করা
+    document.body.appendChild(formExport);
+    formExport.submit();
+    document.body.removeChild(formExport);
+}
+
+    // ইমেইল ভেরিফিকেশন লজিক
+    const urlParams = new URLSearchParams(window.location.search);
+    const validEmail = urlParams.get('email');
+
+    document.getElementById("checkEmailBtn").addEventListener("click", function () {
+      const emailInput = document.getElementById("studentEmail").value.trim();
+      if (emailInput === validEmail) {
+        document.getElementById("checkEmailBtn").style.display = "none";
+        document.getElementById("goQuiz").style.display = "inline-block";
+      } else {
+        const message = document.getElementById("message");
+        message.style.display = "block";
+        message.textContent = "Oops! That email doesn't match our records.";
+      }
+    });
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+  </script>
+</body>
+</html>
