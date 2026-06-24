@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LearnNova Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 26px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+
+    }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 10px;
+
+    }
+
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h3>Welcome to <u>LearnNova</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+
+      <h2 id="subject">History</h2>
+      <h1 id="exam_code">E06H_BV_CH4_6</h1>
+      </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" id="captchaDiv" style="display: none;" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        
+        <button type="submit" class="submit-btn" id="goQuiz" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center; display: none;">Confirm</button>
+      </form>
+      <button class="submit-btn" id="checkEmailBtn" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center;">Verify</button>
+      <p id="message" style="display: none; color: green; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">LearnNova Education Center</h1>
+    <h3 style="text-align:center;">Subject: History    Full marks: 60    Time: 30mnts     Class: VI</h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+<form id="quizForm">
+  <!-- Section 1: MCQ (Questions 1-20) -->
+
+  <div id="quizSection1" class="quiz-section active">
+    
+    <span>বিভাগ ১: সঠিক উত্তরটি নির্বাচন করো (MCQ) — (মান: ২০)</span>
+
+    <div class="question">১. ‘বেদ’ শব্দের মূল শব্দ ‘বিদ্’ এর অর্থ কী?</div>
+    <div class="options">
+      <label><input type="radio" name="q1" value="a"> (ক) ধর্ম</label>
+      <label><input type="radio" name="q1" value="b"> (খ) গান</label>
+      <label><input type="radio" name="q1" value="c"> (গ) জ্ঞান</label>
+      <label><input type="radio" name="q1" value="d"> (ঘ) সমাজ</label>
+    </div>
+
+    <div class="question">২. ঋগ্বেদ সংহিতায় মন্ত্রগুলো কীভাবে সাজানো আছে?</div>
+    <div class="options">
+      <label><input type="radio" name="q2" value="a"> (ক) গল্পে</label>
+      <label><input type="radio" name="q2" value="b"> (খ) ছন্দে বাঁধা কবিতায়</label>
+      <label><input type="radio" name="q2" value="c"> (গ) নাচের ছন্দে</label>
+      <label><input type="radio" name="q2" value="d"> (ঘ) ছোট বাক্যে</label>
+    </div>
+
+    <div class="question">৩. সামবেদ সংহিতার বেশিরভাগ অংশ কোথা থেকে নেওয়া হয়েছে?</div>
+    <div class="options">
+      <label><input type="radio" name="q3" value="a"> (ক) যজুর্বেদ</label>
+      <label><input type="radio" name="q3" value="b"> (খ) অথর্ববেদ</label>
+      <label><input type="radio" name="q3" value="c"> (গ) ঋগ্বেদ</label>
+      <label><input type="radio" name="q3" value="d"> (ঘ) উপনিষদ</label>
+    </div>
+
+    <div class="question">৪. বেদাঙ্গ সংখ্যায় কয়টি?</div>
+    <div class="options">
+      <label><input type="radio" name="q4" value="a"> (ক) ৪টি</label>
+      <label><input type="radio" name="q4" value="b"> (খ) ৬টি</label>
+      <label><input type="radio" name="q4" value="c"> (গ) ৮টি</label>
+      <label><input type="radio" name="q4" value="d"> (ঘ) ১০টি</label>
+    </div>
+
+    <div class="question">৫. সিন্ধু ও তার উপনদী বিধৌত এলাকাকে কী বলা হতো?</div>
+    <div class="options">
+      <label><input type="radio" name="q5" value="a"> (ক) আর্যাবর্ত</label>
+      <label><input type="radio" name="q5" value="b"> (খ) সপ্তসিন্ধু</label>
+      <label><input type="radio" name="q5" value="c"> (গ) দাক্ষিণাত্য</label>
+      <label><input type="radio" name="q5" value="d"> (ঘ) ব্রহ্মাবর্ত</label>
+    </div>
+
+    <div class="question">৬. ‘দশ রাজার যুদ্ধ’-এ ভরত গোষ্ঠীর রাজার নাম কী ছিল?</div>
+    <div class="options">
+      <label><input type="radio" name="q6" value="a"> (ক) সুদাস</label>
+      <label><input type="radio" name="q6" value="b"> (খ) দিবোদাস</label>
+      <label><input type="radio" name="q6" value="c"> (গ) যদু</label>
+      <label><input type="radio" name="q6" value="d"> (ঘ) কুরু</label>
+    </div>
+
+    <div class="question">৭. ঋগ্বেদে রাজাকে কী বলা হয়েছে?</div>
+    <div class="options">
+      <label><input type="radio" name="q7" value="a"> (ক) মহীপতি</label>
+      <label><input type="radio" name="q7" value="b"> (খ) গোপতি</label>
+      <label><input type="radio" name="q7" value="c"> (গ) নপতি</label>
+      <label><input type="radio" name="q7" value="d"> (ঘ) ভূপতি</label>
+    </div>
+
+    <div class="question">৮. বৈদিক যুগে কর হিসেবে পরিচিত ছিল কোনটি?</div>
+    <div class="options">
+      <label><input type="radio" name="q8" value="a"> (ক) ভাগ</label>
+      <label><input type="radio" name="q8" value="b"> (খ) শুল্ক</label>
+      <label><input type="radio" name="q8" value="c"> (গ) বলি</label>
+      <label><input type="radio" name="q8" value="d"> (ঘ) hironyo</label>
+    </div>
+
+    <div class="question">৯. আদি বৈদিক সমাজে প্রধান সম্পদ কী ছিল?</div>
+    <div class="options">
+      <label><input type="radio" name="q9" value="a"> (ক) জমি</label>
+      <label><input type="radio" name="q9" value="b"> (খ) সোনা</label>
+      <label><input type="radio" name="q9" value="c"> (গ) গবাদি পশু</label>
+      <label><input type="radio" name="q9" value="d"> (ঘ) রথ</label>
+    </div>
+
+    <div class="question">১০. পরবর্তী বৈদিক যুগে চাষের প্রধান ফসল কী ছিল?</div>
+    <div class="options">
+      <label><input type="radio" name="q10" value="a"> (ক) শুধু যব</label>
+      <label><input type="radio" name="q10" value="b"> (খ) জোয়ার ও বাজরা</label>
+      <label><input type="radio" name="q10" value="c"> (গ) ধান ও গম</label>
+      <label><input type="radio" name="q10" value="d"> (ঘ) ভুট্টা</label>
+    </div>
+
+    <div class="question">১১. বৈদিক সমাজ মূলত কেমন ছিল?</div>
+    <div class="options">
+      <label><input type="radio" name="q11" value="a"> (ক) মাতৃতান্ত্রিক</label>
+      <label><input type="radio" name="q11" value="b"> (খ) পিতৃতান্ত্রিক</label>
+      <label><input type="radio" name="q11" value="c"> (গ) সমতান্ত্রিক</label>
+      <label><input type="radio" name="q11" value="d"> (ঘ) যাযাবর</label>
+    </div>
+
+    <div class="question">১২. ‘গোত্র’ শব্দের আদি অর্থ কী ছিল?</div>
+    <div class="options">
+      <label><input type="radio" name="q12" value="a"> (ক) একই পূর্বপুরুষ</label>
+      <label><input type="radio" name="q12" value="b"> (খ) গবাদি পশু রাখার জায়গা</label>
+      <label><input type="radio" name="q12" value="c"> (গ) গোষ্ঠীর নেতা</label>
+      <label><input type="radio" name="q12" value="d"> (ঘ) বিয়ের নিয়ম</label>
+    </div>
+
+    <div class="question">১৩. চতূরা শ্রমের প্রথম পর্যায় কোনটি?</div>
+    <div class="options">
+      <label><input type="radio" name="q13" value="a"> (ক) গার্হস্থ্য</label>
+      <label><input type="radio" name="q13" value="b"> (খ) সন্ন্যাস</label>
+      <label><input type="radio" name="q13" value="c"> (গ) ব্রহ্মচর্য</label>
+      <label><input type="radio" name="q13" value="d"> (ঘ) বানপ্রস্থ</label>
+    </div>
+
+    <div class="question">১৪. ঋগ্বেদের যুগের প্রধান দেবতা কে ছিলেন?</div>
+    <div class="options">
+      <label><input type="radio" name="q14" value="a"> (ক) রুদ্র</label>
+      <label><input type="radio" name="q14" value="b"> (খ) বিষ্ণু</label>
+      <label><input type="radio" name="q14" value="c"> (গ) ইন্দ্র</label>
+      <label><input type="radio" name="q14" value="d"> (ঘ) প্রজাপতি</label>
+    </div>
+
+    <div class="question">১৫. শিক্ষা শুরুর আগে কোন অনুষ্ঠানটি হতো?</div>
+    <div class="options">
+      <label><input type="radio" name="q15" value="a"> (ক) সমাবর্তন</label>
+      <label><input type="radio" name="q15" value="b"> (খ) উপনয়ন</label>
+      <label><input type="radio" name="q15" value="c"> (গ) অশ্বমেধ</label>
+      <label><input type="radio" name="q15" value="d"> (ঘ) রাজসূয়</label>
+    </div>
+
+    <div class="question">১৬. একলব্য কার কাছে অস্ত্রশিক্ষা নিতে চেয়েছিলেন?</div>
+    <div class="options">
+      <label><input type="radio" name="q16" value="a"> (ক) পরশুরাম</label>
+      <label><input type="radio" name="q16" value="b"> (খ) দ্রোণাচার্য</label>
+      <label><input type="radio" name="q16" value="c"> (গ) বিশ্বামিত্র</label>
+      <label><input type="radio" name="q16" value="d"> (ঘ) আয়োদधৌম্য</label>
+    </div>
+
+    <div class="question">১৭. ‘মেগালিথ’ শব্দের অর্থ কী?</div>
+    <div class="options">
+      <label><input type="radio" name="q17" value="a"> (ক) ছোট পাথর</label>
+      <label><input type="radio" name="q17" value="b"> (খ) বড় পাথরের সমাধি</label>
+      <label><input type="radio" name="q17" value="c"> (গ) পাথরের খেলনা</label>
+      <label><input type="radio" name="q17" value="d"> (ঘ) পাহাড়ের গুহা</label>
+    </div>
+
+    <div class="question">১৮. ইনামগাঁও প্রত্নকেন্দ্রটি বর্তমানে কোন রাজ্যে অবস্থিত?</div>
+    <div class="options">
+      <label><input type="radio" name="q18" value="a"> (ক) রাজস্থান</label>
+      <label><input type="radio" name="q18" value="b"> (খ) পশ্চিমবঙ্গ</label>
+      <label><input type="radio" name="q18" value="c"> (গ) মহারাষ্ট্র</label>
+      <label><input type="radio" name="q18" value="d"> (ঘ) পাঞ্জাব</label>
+    </div>
+
+    <div class="question">১৯. ঋগ্বেদে ‘বর্ণ’ শব্দের আদি অর্থ কী ছিল?</div>
+    <div class="options">
+      <label><input type="radio" name="q19" value="a"> (ক) জাতি</label>
+      <label><input type="radio" name="q19" value="b"> (খ) গায়ের রং</label>
+      <label><input type="radio" name="q19" value="c"> (গ) পেশা</label>
+      <label><input type="radio" name="q19" value="d"> (ঘ) গোত্র</label>
+    </div>
+
+    <div class="question">২০. শিক্ষা শেষে গুরুকে শিষ্যরা কী উপহার দিত?</div>
+    <div class="options">
+      <label><input type="radio" name="q20" value="a"> (ক) জমি</label>
+      <label><input type="radio" name="q20" value="b"> (খ) মোহর</label>
+      <label><input type="radio" name="q20" value="c"> (গ) গুরুদক্ষিণা</label>
+      <label><input type="radio" name="q20" value="d"> (ঘ) রথ</label>
+    </div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পরবর্তী</button>
+</div>
+
+  <!-- Section 2: Questions 11-20 -->
+<div id="quizSection2" class="quiz-section">
+
+    <span>বিভাগ ২: শূন্যস্থান পূরণ করো (সঠিক বিকল্পটি বেছে নাও) — (মান: ২০)</span>
+
+    <div class="question">২১. বৈদিক সাহিত্যকে মোট ______ ভাগে ভাগ করা যায়।</div>
+    <div class="options">
+      <label><input type="radio" name="q21" value="a"> তিন</label>
+      <label><input type="radio" name="q21" value="b"> চার</label>
+      <label><input type="radio" name="q21" value="c"> পাঁচ</label>
+    </div>
+
+    <div class="question">২২. আদি বৈদিক সাহিত্য হলো ______।</div>
+    <div class="options">
+      <label><input type="radio" name="q22" value="a"> ঋগ্বেদ</label>
+      <label><input type="radio" name="q22" value="b"> সামবেদ</label>
+      <label><input type="radio" name="q22" value="c"> যজুর্বেদ</label>
+    </div>
+
+    <div class="question">২৩. আরণ্যকগুলো যারা লিখতেন তারা ______ থাকতেন।</div>
+    <div class="options">
+      <label><input type="radio" name="q23" value="a"> নগরে</label>
+      <label><input type="radio" name="q23" value="b"> পাহাড়তলায়</label>
+      <label><input type="radio" name="q23" value="c"> অরণ্যে</label>
+    </div>
+
+    <div class="question">২৪. জাদুমন্ত্রের সংকলন পাওয়া যায় ______ বেদে।</div>
+    <div class="options">
+      <label><input type="radio" name="q24" value="a"> সাম</label>
+      <label><input type="radio" name="q24" value="b"> যজু</label>
+      <label><input type="radio" name="q24" value="c"> অথর্ব</label>
+    </div>
+
+    <div class="question">২৫. বৈদিক সাহিত্যে হিমালয়কে ______ বলা হয়েছে।</div>
+    <div class="options">
+      <label><input type="radio" name="q25" value="a"> হিমবৎ</label>
+      <label><input type="radio" name="q25" value="b"> মুজবন্ত</label>
+      <label><input type="radio" name="q25" value="c"> গিরিরাজ</label>
+    </div>
+
+    <div class="question">২৬. পরবর্তী বৈদিক সাহিত্যে ______ ভারতকে নীচু নজরে দেখা হতো।</div>
+    <div class="options">
+      <label><input type="radio" name="q26" value="a"> উত্তর</label>
+      <label><input type="radio" name="q26" value="b"> পশ্চিম</label>
+      <label><input type="radio" name="q26" value="c"> পূর্ব</label>
+    </div>
+
+    <div class="question">২৭. বৈদিক সমাজ চারটি ______ বিভক্ত ছিল।</div>
+    <div class="options">
+      <label><input type="radio" name="q27" value="a"> আশ্রমে</label>
+      <label><input type="radio" name="q27" value="b"> বর্ণে</label>
+      <label><input type="radio" name="q27" value="c"> গোত্রে</label>
+    </div>
+
+    <div class="question">২৮. ঋগ্বেদে যুদ্ধের বর্ণনায় ______ ও রথের ব্যবহার ছিল প্রচুর।</div>
+    <div class="options">
+      <label><input type="radio" name="q28" value="a"> হাতি</label>
+      <label><input type="radio" name="q28" value="b"> ঘোড়া</label>
+      <label><input type="radio" name="q28" value="c"> উট</label>
+    </div>
+
+    <div class="question">২৯. আদি বৈদিক যুগে রাজাকে পরামর্শ দিত ______ ও সমিতি।</div>
+    <div class="options">
+      <label><input type="radio" name="q29" value="a"> পরিষদ</label>
+      <label><input type="radio" name="q29" value="b"> বিদ্বৎ</label>
+      <label><input type="radio" name="q29" value="c"> সভা</label>
+    </div>
+
+    <div class="question">৩০. পরবর্তী বৈদিক যুগে ______ লাঙ্গলের ফলা ব্যবহারের প্রমাণ পাওয়া যায়।</div>
+    <div class="options">
+      <label><input type="radio" name="q30" value="a"> লোহার</label>
+      <label><input type="radio" name="q30" value="b"> তামার</label>
+      <label><input type="radio" name="q30" value="c"> পাথরের</label>
+    </div>
+
+    <div class="question">৩১. বৈদিক যুগে বিনিময়ের মাধ্যম হিসেবে সম্ভবত ______ ব্যবহৃত হতো।</div>
+    <div class="options">
+      <label><input type="radio" name="q31" value="a"> নিষ্ক</label>
+      <label><input type="radio" name="q31" value="b"> টাকা</label>
+      <label><input type="radio" name="q31" value="c"> মোহর</label>
+    </div>
+
+    <div class="question">৩২. পরিবারের প্রধানকে বৈদিক ভাষায় ______ বলা হতো।</div>
+    <div class="options">
+      <label><input type="radio" name="q32" value="a"> বিম্পতি</label>
+      <label><input type="radio" name="q32" value="b"> নপতি</label>
+      <label><input type="radio" name="q32" value="c"> কুলপ বা বাবা</label>
+    </div>
+
+    <div class="question">৩৩. ______ ও গার্গী ছিলেন বৈদিক যুগের বিদুষী নারী।</div>
+    <div class="options">
+      <label><input type="radio" name="q33" value="a"> লোপামুদ্রা</label>
+      <label><input type="radio" name="q33" value="b"> মৈত্রেয়ী</label>
+      <label><input type="radio" name="q33" value="c"> খনা</label>
+    </div>
+
+    <div class="question">৩৪. বেদের আর এক নাম হলো ______।</div>
+    <div class="options">
+      <label><input type="radio" name="q34" value="a"> সংহিতা</label>
+      <label><input type="radio" name="q34" value="b"> শ্রুতি</label>
+      <label><input type="radio" name="q34" value="c"> উপনিষদ</label>
+    </div>
+
+    <div class="question">৩৫. যজ্ঞবেদি তৈরির জন্য ______ চর্চার প্রয়োজন হতো।</div>
+    <div class="options">
+      <label><input type="radio" name="q35" value="a"> ইতিহাস</label>
+      <label><input type="radio" name="q35" value="b"> ভূগোল</label>
+      <label><input type="radio" name="q35" value="c"> জ্যামিতি</label>
+    </div>
+
+    <div class="question">৩৬. মেগালিথ সমাধিগুলো বেশি পাওয়া গেছে ______ ভারতে।</div>
+    <div class="options">
+      <label><input type="radio" name="q36" value="a"> উত্তর</label>
+      <label><input type="radio" name="q36" value="b"> দক্ষিণ</label>
+      <label><input type="radio" name="q36" value="c"> পূর্ব</label>
+    </div>
+
+    <div class="question">৩৭. ইনামগাঁও গ্রামে চাষের জন্য ______ অবশেষ পাওয়া গেছে।</div>
+    <div class="options">
+      <label><input type="radio" name="q37" value="a"> বাঁধের</label>
+      <label><input type="radio" name="q37" value="b"> সেচখালের</label>
+      <label><input type="radio" name="q37" value="c"> পুকুরের</label>
+    </div>
+
+    <div class="question">৩৮. সত্যকাম তার মায়ের নাম অনুযায়ী নিজের পরিচয় দিয়েছিলেন ______ জাবাল।</div>
+    <div class="options">
+      <label><input type="radio" name="q38" value="a"> গৌতম</label>
+      <label><input type="radio" name="q38" value="b"> উদ্দালক</label>
+      <label><input type="radio" name="q38" value="c"> সত্যকাম</label>
+    </div>
+
+    <div class="question">৩৯. ঋগ্বেদে ‘জন’ বলতে একটি ছোট ______ বোঝানো হতো।</div>
+    <div class="options">
+      <label><input type="radio" name="q39" value="a"> রাজ্যকে</label>
+      <label><input type="radio" name="q39" value="b"> শহরকে</label>
+      <label><input type="radio" name="q39" value="c"> জনসমষ্টিকে</label>
+    </div>
+
+    <div class="question">৪০. বৈদিক যুগের শিক্ষাব্যবস্থায় গুরু ও শিষ্যের সম্পর্ক ছিল ______।</div>
+    <div class="options">
+      <label><input type="radio" name="q40" value="a"> মৌখিক</label>
+      <label><input type="radio" name="q40" value="b"> লিখিত</label>
+      <label><input type="radio" name="q40" value="c"> যান্ত্রিক</label>
+    </div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection1')">পূর্ববর্তী</button>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পরবর্তী</button>
+</div>
+
+  <!-- Section 3: Questions 21-30 -->
+<div id="quizSection3" class="quiz-section">
+  
+    <span>বিভাগ ৩: সত্য অথবা মিথ্যা নির্ণয় করো (True/False) — (মান: ২০)</span>
+
+    <div class="question">৪১. ঋগ্বেদ হলো সবচেয়ে পুরনো বৈদিক সংহিতা।</div>
+    <div class="options">
+      <label><input type="radio" name="q41" value="true"> সত্য</label>
+      <label><input type="radio" name="q41" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪২. আর্যদের প্রথম বসতি ছিল দাক্ষিণাত্যে।</div>
+    <div class="options">
+      <label><input type="radio" name="q42" value="true"> সত্য</label>
+      <label><input type="radio" name="q42" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৩. বৈদিক যুগে লোহার ব্যবহার জানত না।</div>
+    <div class="options">
+      <label><input type="radio" name="q43" value="true"> সত্য</label>
+      <label><input type="radio" name="q43" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৪. যজ্ঞে ঘি, দুধ এবং পশুবলি দেওয়া হতো।</div>
+    <div class="options">
+      <label><input type="radio" name="q44" value="true"> সত্য</label>
+      <label><input type="radio" name="q44" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৫. বৈদিক সমাজ ছিল মূলত মাতৃতান্ত্রিক।</div>
+    <div class="options">
+      <label><input type="radio" name="q45" value="true"> সত্য</label>
+      <label><input type="radio" name="q45" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৬. পরবর্তী বৈদিক যুগে ব্রাহ্মণদের ক্ষমতা কমে গিয়েছিল।</div>
+    <div class="options">
+      <label><input type="radio" name="q46" value="true"> সত্য</label>
+      <label><input type="radio" name="q46" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৭. শুদ্ররা কোনো সামাজিক সুযোগ-সুবিধা পেত না।</div>
+    <div class="options">
+      <label><input type="radio" name="q47" value="true"> সত্য</label>
+      <label><input type="radio" name="q47" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৮. সতীদাহ প্রথা বৈদিক যুগে প্রচলিত ছিল না।</div>
+    <div class="options">
+      <label><input type="radio" name="q48" value="true"> সত্য</label>
+      <label><input type="radio" name="q48" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৪৯. বৈদিক যুগে পাশা খেলা খুব জনপ্রিয় ছিল।</div>
+    <div class="options">
+      <label><input type="radio" name="q49" value="true"> সত্য</label>
+      <label><input type="radio" name="q49" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫০. বেদের মন্ত্রগুলো ছাত্ররা শুনে শুনে মুখস্থ করত।</div>
+    <div class="options">
+      <label><input type="radio" name="q50" value="true"> সত্য</label>
+      <label><input type="radio" name="q50" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫১. আরুনির গুরু ছিলেন মহর্ষি আয়োদধৌম্য।</div>
+    <div class="options">
+      <label><input type="radio" name="q51" value="true"> সত্য</label>
+      <label><input type="radio" name="q51" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫২. একলব্য ছিলেন একজন ক্ষত্রিয় রাজকুমার।</div>
+    <div class="options">
+      <label><input type="radio" name="q52" value="true"> সত্য</label>
+      <label><input type="radio" name="q52" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৩. ১২ বছর বয়সে পড়াশোনা শেষ হলে সমাবর্তন অনুষ্ঠান হতো।</div>
+    <div class="options">
+      <label><input type="radio" name="q53" value="true"> সত্য</label>
+      <label><input type="radio" name="q53" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৪. বৈদিক চিকিৎসাবিদ্যার উল্লেখ অথর্ববেদে পাওয়া যায়।</div>
+    <div class="options">
+      <label><input type="radio" name="q54" value="true"> সত্য</label>
+      <label><input type="radio" name="q54" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৫. মেগালিথ সমাধিতে মৃতদেহের সঙ্গে লোহার জিনিস দেওয়া হতো।</div>
+    <div class="options">
+      <label><input type="radio" name="q55" value="true"> সত্য</label>
+      <label><input type="radio" name="q55" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৬. আর্য কথাটি একটি জাতিবাচক শব্দ।</div>
+    <div class="options">
+      <label><input type="radio" name="q56" value="true"> সত্য</label>
+      <label><input type="radio" name="q56" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৭. রাজাকে শাসনকাজে যারা সাহায্য করতেন তাদের ‘রত্নিন’ বলা হতো।</div>
+    <div class="options">
+      <label><input type="radio" name="q57" value="true"> সত্য</label>
+      <label><input type="radio" name="q57" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৮. পরবর্তী বৈদিক যুগে যব ছাড়া ধান ও গমের চাষ হতো না।</div>
+    <div class="options">
+      <label><input type="radio" name="q58" value="true"> সত্য</label>
+      <label><input type="radio" name="q58" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৫৯. বৈদিক যুগের রথ তৈরিতে কাঠের ব্যবহার ছিল না।</div>
+    <div class="options">
+      <label><input type="radio" name="q59" value="true"> সত্য</label>
+      <label><input type="radio" name="q59" value="false"> মিথ্যা</label>
+    </div>
+
+    <div class="question">৬০. ঋগ্বেদে গঙ্গা ও যমুনা নদীর কথা বারবার এসেছে।</div>
+    <div class="options">
+      <label><input type="radio" name="q60" value="true"> সত্য</label>
+      <label><input type="radio" name="q60" value="false"> মিথ্যা</label>
+    </div>
+  
+
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পূর্ববর্তী</button>
+  <button type="submit" class="submit-btn">জমা দিন</button>
+</div>
+
+</form>
+</div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; 
+    var subject = document.getElementById("subject").innerText;
+    var exam_code = document.getElementById("exam_code").innerText;
+    
+    // সঠিক উত্তরের অবজেক্ট
+    const quizAnswers = {
+    q1: "c", q2: "b", q3: "c", q4: "b", q5: "b",
+    q6: "a", q7: "b", q8: "c", q9: "c", q10: "c",
+    q11: "b", q12: "b", q13: "c", q14: "c", q15: "b",
+    q16: "b", q17: "b", q18: "c", q19: "b", q20: "c",
+    q21: "b", q22: "a", q23: "c", q24: "c", q25: "a",
+    q26: "c", q27: "b", q28: "b", q29: "c", q30: "a",
+    q31: "a", q32: "c", q33: "b", q34: "b", q35: "c",
+    q36: "b", q37: "b", q38: "c", q39: "c", q40: "a",
+    q41: "true", q42: "false", q43: "false", q44: "true", q45: "false",
+    q46: "false", q47: "true", q48: "true", q49: "true", q50: "true",
+    q51: "true", q52: "false", q53: "true", q54: "true", q55: "true",
+    q56: "false", q57: "true", q58: "false", q59: "false", q60: "false"
+  };
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    let timeLeft = 30 * 60; 
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const progressBar = document.getElementById("progressBar");
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+      let userResponses = {};
+
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : "Not Answered";
+        userResponses[q] = selected;
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // ইউজার রেসপন্স গ্লোবাল করা হলো ডাউনলোডের জন্য
+      window.currentUserResponses = userResponses;
+
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+
+      fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          total: totalQuestions,
+          subject: subject,
+          exam_code: exam_code
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      document.getElementById("quizArea").style.display = "none";
+      document.getElementById("thankYou").style.display = "block";
+      downloadAnswerScript();
+    });
+
+    // ডাইনামিক আনসার স্ক্রিপ্ট ডাউনলোড ফাংশন
+    function downloadAnswerScript() {
+    const questions = [];
+    const currentSubject = document.getElementById("subject").innerText;
+    const currentExamCode = document.getElementById("exam_code").innerText;
+    
+    // ১. প্রশ্ন এবং উত্তর সংগ্রহ (আপনার আগের কোড অনুযায়ী)
+    document.querySelectorAll('.question').forEach((qEl, index) => {
+        const qKey = "q" + (index + 1);
+        const questionText = qEl.innerText;
+        const options = {};
+        const optionsDiv = qEl.nextElementSibling;
+        
+        if (optionsDiv && optionsDiv.classList.contains('options')) {
+            optionsDiv.querySelectorAll('label').forEach(label => {
+                const radio = label.querySelector('input');
+                if(radio){
+                    options[radio.value] = label.innerText;
+                }
+            });
+        }
+
+        questions.push({
+            key: qKey,
+            question: questionText,
+            options: options,
+            userAnswer: window.currentUserResponses[qKey],
+            correctAnswer: quizAnswers[qKey]
+        });
+    });
+
+    //২.  ফর্ম ডাটা তৈরি করা (যাতে ব্যাকগ্রাউন্ডে পাঠানো যায়)
+    const formData = new FormData();
+    formData.append('email', studentEmail);
+    formData.append('full_data', JSON.stringify(questions));
+    formData.append('subject', currentSubject);
+    formData.append('exam_code', currentExamCode);
+
+    // fetch ব্যবহার করে ব্যাকগ্রাউন্ডে ডাটা পাঠানো (কোনো নতুন পেজ খুলবে না)
+    fetch('https://learnnova.cfd/assets/php/generate_answer_script.php', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // ক্রস-অরিজিন ইস্যু এড়াতে
+    }).then(() => {
+        console.log("PDF generated and saved in background.");
+    }).catch(err => console.error("PDF generation failed:", err));
+
+    // ৩. ডাটা ইনপুটগুলো যোগ করা
+    
+    // ইমেইল পাঠানো (এটি আগে মিস ছিল)
+    const inputEmail = document.createElement('input');
+    inputEmail.type = 'hidden';
+    inputEmail.name = 'email';
+    inputEmail.value = studentEmail; // loginSection থেকে পাওয়া গ্লোবাল ভেরিয়েবল
+    formExport.appendChild(inputEmail);
+
+    // প্রশ্ন-উত্তরের ডাটা
+    const inputData = document.createElement('input');
+    inputData.type = 'hidden';
+    inputData.name = 'full_data';
+    inputData.value = JSON.stringify(questions);
+    formExport.appendChild(inputData);
+    
+    // সাবজেক্ট
+    const inputSubject = document.createElement('input');
+    inputSubject.type = 'hidden';
+    inputSubject.name = 'subject';
+    inputSubject.value = currentSubject;
+    formExport.appendChild(inputSubject);
+
+    // এক্সাম কোড
+    const inputCode = document.createElement('input');
+    inputCode.type = 'hidden';
+    inputCode.name = 'exam_code';
+    inputCode.value = currentExamCode;
+    formExport.appendChild(inputCode);
+  
+    // ৪. ফর্ম সাবমিট করা
+    document.body.appendChild(formExport);
+    formExport.submit();
+    document.body.removeChild(formExport);
+}
+
+    // ইমেইল ভেরিফিকেশন লজিক
+    const urlParams = new URLSearchParams(window.location.search);
+    const validEmail = urlParams.get('email');
+
+    document.getElementById("checkEmailBtn").addEventListener("click", function () {
+      const emailInput = document.getElementById("studentEmail").value.trim();
+      if (emailInput === validEmail) {
+        document.getElementById("checkEmailBtn").style.display = "none";
+        document.getElementById("goQuiz").style.display = "inline-block";
+      } else {
+        const message = document.getElementById("message");
+        message.style.display = "block";
+        message.textContent = "Oops! That email doesn't match our records.";
+      }
+    });
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+  </script>
+</body>
+</html>
