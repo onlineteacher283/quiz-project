@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LearnNova Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 26px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+
+    }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 10px;
+
+    }
+
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h3>Welcome to <u>LearnNova</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+
+      <h2 id="subject">Science</h2>
+      <h1 id="exam_code">E06S_EV_CH6_3</h1>
+      </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" id="captchaDiv" style="display: none;" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        
+        <button type="submit" class="submit-btn" id="goQuiz" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center; display: none;">Confirm</button>
+      </form>
+      <button class="submit-btn" id="checkEmailBtn" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center;">Verify</button>
+      <p id="message" style="display: none; color: green; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">LearnNova Education Center</h1>
+    <h3 style="text-align:center;">Subject: Science    Full marks: 50    Time: 30mnts     Class: VI</h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+<form id="quizForm">
+  <!-- Section 1: MCQ (Questions 1-20) -->
+
+  <div id="quizSection1" class="quiz-section active">
+    
+    <span>SECTION A: MULTIPLE CHOICE QUESTIONS (MCQs) — [Marks: 25 × 1 = 25] Choose the correct option from the four choices provided.</span>
+
+<div class="question">১. An object that changes its position with respect to time is called a:</div>
+<div class="options">
+  <label><input type="radio" name="q1" value="a"> (A) Stationary object</label>
+  <label><input type="radio" name="q1" value="b"> (B) Object in motion</label>
+  <label><input type="radio" name="q1" value="c"> (C) Invisible object</label>
+  <label><input type="radio" name="q1" value="d"> (D) Constant object</label>
+</div>
+
+<div class="question">২. Whether an object is 'stationary' or 'in motion' depends entirely on the:</div>
+<div class="options">
+  <label><input type="radio" name="q2" value="a"> (A) Weight of the object</label>
+  <label><input type="radio" name="q2" value="b"> (B) State of the observer</label>
+  <label><input type="radio" name="q2" value="c"> (C) Temperature of the surroundings</label>
+  <label><input type="radio" name="q2" value="d"> (D) Size of the object</label>
+</div>
+
+<div class="question">৩. What is the SI unit of Force?</div>
+<div class="options">
+  <label><input type="radio" name="q3" value="a"> (A) Dyne</label>
+  <label><input type="radio" name="q3" value="b"> (B) Gram</label>
+  <label><input type="radio" name="q3" value="c"> (C) Newton</label>
+  <label><input type="radio" name="q3" value="d"> (D) Joule</label>
+</div>
+
+<div class="question">৪. What is the unit of force in the CGS system?</div>
+<div class="options">
+  <label><input type="radio" name="q4" value="a"> (A) Newton</label>
+  <label><input type="radio" name="q4" value="b"> (B) Dyne</label>
+  <label><input type="radio" name="q4" value="c"> (C) Watt</label>
+  <label><input type="radio" name="q4" value="d"> (D) Kilogram</label>
+</div>
+
+<div class="question">৫. Which of the following can be caused by applying force to an object?</div>
+<div class="options">
+  <label><input type="radio" name="q5" value="a"> (A) Change in its shape or volume</label>
+  <label><input type="radio" name="q5" value="b"> (B) Stopping a moving object</label>
+  <label><input type="radio" name="q5" value="c"> (C) Changing the direction of a moving object</label>
+  <label><input type="radio" name="q5" value="d"> (D) All of the above</label>
+</div>
+
+<div class="question">৬. Which of the following is an example of a force that acts without direct contact (non-contact force)?</div>
+<div class="options">
+  <label><input type="radio" name="q6" value="a"> (A) Kicking a football</label>
+  <label><input type="radio" name="q6" value="b"> (B) Pulling a drawer</label>
+  <label><input type="radio" name="q6" value="c"> (C) Magnetic attraction on an iron nail</label>
+  <label><input type="radio" name="q6" value="d"> (D) Erasing a pencil sketch with an eraser</label>
+</div>
+
+<div class="question">৭. Which of the following materials is a magnetic substance?</div>
+<div class="options">
+  <label><input type="radio" name="q7" value="a"> (A) Wood</label>
+  <label><input type="radio" name="q7" value="b"> (B) Plastic</label>
+  <label><input type="radio" name="q7" value="c"> (C) Nickel</label>
+  <label><input type="radio" name="q7" value="d"> (D) Gold</label>
+</div>
+
+<div class="question">৮. Which instrument is used to measure the weight (gravitational pull) of an object?</div>
+<div class="options">
+  <label><input type="radio" name="q8" value="a"> (A) Common balance</label>
+  <label><input type="radio" name="q8" value="b"> (B) Spring balance</label>
+  <label><input type="radio" name="q8" value="c"> (C) Thermometer</label>
+  <label><input type="radio" name="q8" value="d"> (D) Barometer</label>
+</div>
+
+<div class="question">৯. Since weight is also a gravitational force, what is its SI unit?</div>
+<div class="options">
+  <label><input type="radio" name="q9" value="a"> (A) Kilogram</label>
+  <label><input type="radio" name="q9" value="b"> (B) Gram</label>
+  <label><input type="radio" name="q9" value="c"> (C) Newton</label>
+  <label><input type="radio" name="q9" value="d"> (D) Dyne</label>
+</div>
+
+<div class="question">১০. The ability to do work is defined as:</div>
+<div class="options">
+  <label><input type="radio" name="q10" value="a"> (A) Force</label>
+  <label><input type="radio" name="q10" value="b"> (B) Power</label>
+  <label><input type="radio" name="q10" value="c"> (C) Energy</label>
+  <label><input type="radio" name="q10" value="d"> (D) Motion</label>
+</div>
+
+<div class="question">১১. The energy acquired by an object due to its state of motion is called:</div>
+<div class="options">
+  <label><input type="radio" name="q11" value="a"> (A) Potential Energy</label>
+  <label><input type="radio" name="q11" value="b"> (B) Kinetic Energy</label>
+  <label><input type="radio" name="q11" value="c"> (C) Magnetic Energy</label>
+  <label><input type="radio" name="q11" value="d"> (D) Sound Energy</label>
+</div>
+
+<div class="question">১২. Mechanical energy is the combination of:</div>
+<div class="options">
+  <label><input type="radio" name="q12" value="a"> (A) Heat and Light energy</label>
+  <label><input type="radio" name="q12" value="b"> (B) Potential and Kinetic energy</label>
+  <label><input type="radio" name="q12" value="c"> (C) Sound and Electrical energy</label>
+  <label><input type="radio" name="q12" value="d"> (D) Chemical and Nuclear energy</label>
+</div>
+
+<div class="question">১৩. When a bowstring is pulled, what type of energy is stored in it?</div>
+<div class="options">
+  <label><input type="radio" name="q13" value="a"> (A) Kinetic energy</label>
+  <label><input type="radio" name="q13" value="b"> (B) Potential energy</label>
+  <label><input type="radio" name="q13" value="c"> (C) Heat energy</label>
+  <label><input type="radio" name="q13" value="d"> (D) Chemical energy</label>
+</div>
+
+<div class="question">১৪. Rubbing two palms together converts mechanical energy into:</div>
+<div class="options">
+  <label><input type="radio" name="q14" value="a"> (A) Chemical energy</label>
+  <label><input type="radio" name="q14" value="b"> (B) Heat energy</label>
+  <label><input type="radio" name="q14" value="c"> (C) Light energy</label>
+  <label><input type="radio" name="q14" value="d"> (D) Magnetic energy</label>
+</div>
+
+<div class="question">১৫. In an electric fan, electrical energy is converted into:</div>
+<div class="options">
+  <label><input type="radio" name="q15" value="a"> (A) Chemical energy</label>
+  <label><input type="radio" name="q15" value="b"> (B) Sound energy</label>
+  <label><input type="radio" name="q15" value="c"> (C) Mechanical energy</label>
+  <label><input type="radio" name="q15" value="d"> (D) Magnetic energy</label>
+</div>
+
+<div class="question">১৬. When quicklime (পোড়া চুন) reacts with water, which energy transformation occurs?</div>
+<div class="options">
+  <label><input type="radio" name="q16" value="a"> (A) Sound energy to heat energy</label>
+  <label><input type="radio" name="q16" value="b"> (B) Chemical energy to heat energy</label>
+  <label><input type="radio" name="q16" value="c"> (C) Electrical energy to magnetic energy</label>
+  <label><input type="radio" name="q16" value="d"> (D) Light energy to potential energy</label>
+</div>
+
+<div class="question">১৭. According to the Law of Conservation of Energy, energy can be:</div>
+<div class="options">
+  <label><input type="radio" name="q17" value="a"> (A) Created but not destroyed</label>
+  <label><input type="radio" name="q17" value="b"> (B) Destroyed but not created</label>
+  <label><input type="radio" name="q17" value="c"> (C) Neither created nor destroyed, only transformed</label>
+  <label><input type="radio" name="q17" value="d"> (D) Created and destroyed easily</label>
+</div>
+
+<div class="question">১৮. What is the ultimate source of all food energy on Earth?</div>
+<div class="options">
+  <label><input type="radio" name="q18" value="a"> (A) Water</label>
+  <label><input type="radio" name="q18" value="b"> (B) Soil</label>
+  <label><input type="radio" name="q18" value="c"> (C) Coal</label>
+  <label><input type="radio" name="q18" value="d"> (D) The Sun</label>
+</div>
+
+<div class="question">১৯. Fossil fuels like coal and petroleum are formed over millions of years due to:</div>
+<div class="options">
+  <label><input type="radio" name="q19" value="a"> (A) Exposure to sunlight and fresh air</label>
+  <label><input type="radio" name="q19" value="b"> (B) High heat and high pressure beneath the soil</label>
+  <label><input type="radio" name="q19" value="c"> (C) Dissolution of minerals in ocean water</label>
+  <label><input type="radio" name="q19" value="d"> (D) Rapid freezing of plants</label>
+</div>
+
+<div class="question">২০. Green plants, which produce their own food using sunlight, are called:</div>
+<div class="options">
+  <label><input type="radio" name="q20" value="a"> (A) Consumers</label>
+  <label><input type="radio" name="q20" value="b"> (B) Decomposers</label>
+  <label><input type="radio" name="q20" value="c"> (C) Omnivores</label>
+  <label><input type="radio" name="q20" value="d"> (D) Producers</label>
+</div>
+
+<div class="question">২১. Who proposed the Law of Ten Percent regarding energy transfer in food chains?</div>
+<div class="options">
+  <label><input type="radio" name="q21" value="a"> (A) Raymond Lindeman</label>
+  <label><input type="radio" name="q21" value="b"> (B) Isaac Newton</label>
+  <label><input type="radio" name="q21" value="c"> (C) Albert Einstein</label>
+  <label><input type="radio" name="q21" value="d"> (D) Charles Darwin</label>
+</div>
+
+<div class="question">২২. The flow of energy through a food chain is always:</div>
+<div class="options">
+  <label><input type="radio" name="q22" value="a"> (A) Cyclic (circular)</label>
+  <label><input type="radio" name="q22" value="b"> (B) Unidirectional (one-way)</label>
+  <label><input type="radio" name="q22" value="c"> (C) Bidirectional (two-way)</label>
+  <label><input type="radio" name="q22" value="d"> (D) Multidirectional</label>
+</div>
+
+<div class="question">২৩. Which of the following is an example of a non-renewable energy source?</div>
+<div class="options">
+  <label><input type="radio" name="q23" value="a"> (A) Solar energy</label>
+  <label><input type="radio" name="q23" value="b"> (B) Coal</label>
+  <label><input type="radio" name="q23" value="c"> (C) Wind energy</label>
+  <label><input type="radio" name="q23" value="d"> (D) Tidal energy</label>
+</div>
+
+<div class="question">২৪. Friction force always acts in which direction relative to the motion of an object?</div>
+<div class="options">
+  <label><input type="radio" name="q24" value="a"> (A) In the same direction as the motion</label>
+  <label><input type="radio" name="q24" value="b"> (B) At a right angle to the motion</label>
+  <label><input type="radio" name="q24" value="c"> (C) In the opposite direction of the motion</label>
+  <label><input type="radio" name="q24" value="d"> (D) It does not have any fixed direction</label>
+</div>
+
+<div class="question">২৫. Even highly polished or smooth surfaces show tiny bumps and irregularities when viewed under a/an:</div>
+<div class="options">
+  <label><input type="radio" name="q25" value="a"> (A) Stethoscope</label>
+  <label><input type="radio" name="q25" value="b"> (B) Telescope</label>
+  <label><input type="radio" name="q25" value="c"> (C) Microscope</label>
+  <label><input type="radio" name="q25" value="d"> (D) Ophthalmoscope</label>
+</div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পরবর্তী</button>
+</div>
+
+  <!-- Section 2: Questions 11-20 -->
+<div id="quizSection2" class="quiz-section">
+
+    <span>SECTION B: FILL IN THE BLANKS — [Marks: 15 × 1 = 15] Fill in the blank space by choosing the correct option from the three options provided.</span>
+
+<div class="question">২৬. An object that does not change its position with time is called a __________ object.</div>
+<div class="options">
+  <label><input type="radio" name="q26" value="a"> stationary</label>
+  <label><input type="radio" name="q26" value="b"> moving</label>
+  <label><input type="radio" name="q26" value="c"> vibrating</label>
+</div>
+
+<div class="question">২৭. To change the direction of a moving ball, we must apply __________ from the outside.</div>
+<div class="options">
+  <label><input type="radio" name="q27" value="a"> mass</label>
+  <label><input type="radio" name="q27" value="b"> force</label>
+  <label><input type="radio" name="q27" value="c"> temperature</label>
+</div>
+
+<div class="question">২৮. Applying force on a spring can change its length or __________ .</div>
+<div class="options">
+  <label><input type="radio" name="q28" value="a"> mass</label>
+  <label><input type="radio" name="q28" value="b"> shape</label>
+  <label><input type="radio" name="q28" value="c"> chemical properties</label>
+</div>
+
+<div class="question">২৯. A spring balance has a pointer and a __________ scale to show the weight.</div>
+<div class="options">
+  <label><input type="radio" name="q29" value="a"> weight-determining</label>
+  <label><input type="radio" name="q29" value="b"> temperature</label>
+  <label><input type="radio" name="q29" value="c"> chemical</label>
+</div>
+
+<div class="question">৩০. A magnet can attract iron nails without any __________ .</div>
+<div class="options">
+  <label><input type="radio" name="q30" value="a"> force</label>
+  <label><input type="radio" name="q30" value="b"> physical contact</label>
+  <label><input type="radio" name="q30" value="c"> magnetic field</label>
+</div>
+
+<div class="question">৩১. Hitting a clay pot with a moving stone causes the pot to break because of the stone's __________ energy.</div>
+<div class="options">
+  <label><input type="radio" name="q31" value="a"> potential</label>
+  <label><input type="radio" name="q31" value="b"> kinetic</label>
+  <label><input type="radio" name="q31" value="c"> chemical</label>
+</div>
+
+<div class="question">৩২. Stored water at a height has potential energy, which converts to __________ energy when the water falls.</div>
+<div class="options">
+  <label><input type="radio" name="q32" value="a"> kinetic</label>
+  <label><input type="radio" name="q32" value="b"> chemical</label>
+  <label><input type="radio" name="q32" value="c"> magnetic</label>
+</div>
+
+<div class="question">৩৩. Striking a table or a drum with a stick converts mechanical energy into __________ energy.</div>
+<div class="options">
+  <label><input type="radio" name="q33" value="a"> light</label>
+  <label><input type="radio" name="q33" value="b"> sound</label>
+  <label><input type="radio" name="q33" value="c"> electrical</label>
+</div>
+
+<div class="question">৩৪. A solar cooker converts solar energy into __________ energy to cook food.</div>
+<div class="options">
+  <label><input type="radio" name="q34" value="a"> electrical</label>
+  <label><input type="radio" name="q34" value="b"> chemical</label>
+  <label><input type="radio" name="q34" value="c"> heat</label>
+</div>
+
+<div class="question">৩৫. Diesel, petrol, and kerosene are obtained from __________ .</div>
+<div class="options">
+  <label><input type="radio" name="q35" value="a"> plants directly</label>
+  <label><input type="radio" name="q35" value="b"> petroleum</label>
+  <label><input type="radio" name="q35" value="c"> coal mines</label>
+</div>
+
+<div class="question">৩৬. In a food chain, a grasshopper that eats plants directly is a __________ consumer.</div>
+<div class="options">
+  <label><input type="radio" name="q36" value="a"> primary</label>
+  <label><input type="radio" name="q36" value="b"> secondary</label>
+  <label><input type="radio" name="q36" value="c"> tertiary</label>
+</div>
+
+<div class="question">৩৭. Multiple food chains interlinked together form a __________ in an ecosystem.</div>
+<div class="options">
+  <label><input type="radio" name="q37" value="a"> food pyramid</label>
+  <label><input type="radio" name="q37" value="b"> food web</label>
+  <label><input type="radio" name="q37" value="c"> trophic level</label>
+</div>
+
+<div class="question">৩৮. According to Lindeman's law, only about __________ percent of energy is passed to the next trophic level.</div>
+<div class="options">
+  <label><input type="radio" name="q38" value="a"> ten</label>
+  <label><input type="radio" name="q38" value="b"> fifty</label>
+  <label><input type="radio" name="q38" value="c"> ninety</label>
+</div>
+
+<div class="question">৩৯. Biogas, solar energy, and wind energy are examples of __________ sources of energy.</div>
+<div class="options">
+  <label><input type="radio" name="q39" value="a"> non-renewable</label>
+  <label><input type="radio" name="q39" value="b"> renewable</label>
+  <label><input type="radio" name="q39" value="c"> fossil</label>
+</div>
+
+<div class="question">৪০. An eraser wears out over time when erasing pencil marks due to __________ with the paper.</div>
+<div class="options">
+  <label><input type="radio" name="q40" value="a"> gravity</label>
+  <label><input type="radio" name="q40" value="b"> magnetic force</label>
+  <label><input type="radio" name="q40" value="c"> friction</label>
+</div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection1')">পূর্ববর্তী</button>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পরবর্তী</button>
+</div>
+
+  <!-- Section 3: Questions 21-30 -->
+<div id="quizSection3" class="quiz-section">
+  
+    <span>SECTION C: TRUE OR FALSE — [Marks: 10 × 1 = 10] State whether the given statements are True or False.</span>
+
+<div class="question">৪১. A person sitting inside a moving train is stationary with respect to the seats inside the train.</div>
+<div class="options">
+  <label><input type="radio" name="q41" value="true"> True</label>
+  <label><input type="radio" name="q41" value="false"> False</label>
+</div>
+
+<div class="question">৪২. The Newton is the unit of force in the CGS system.</div>
+<div class="options">
+  <label><input type="radio" name="q42" value="true"> True</label>
+  <label><input type="radio" name="q42" value="false"> False</label>
+</div>
+
+<div class="question">৪৩. A magnet can attract any substance, including wood, plastic, and paper.</div>
+<div class="options">
+  <label><input type="radio" name="q43" value="true"> True</label>
+  <label><input type="radio" name="q43" value="false"> False</label>
+</div>
+
+<div class="question">৪৪. The Earth pulls objects towards its center without any physical touch.</div>
+<div class="options">
+  <label><input type="radio" name="q44" value="true"> True</label>
+  <label><input type="radio" name="q44" value="false"> False</label>
+</div>
+
+<div class="question">৪৫. Storing potential energy in an object requires changing its shape, size, or position.</div>
+<div class="options">
+  <label><input type="radio" name="q45" value="true"> True</label>
+  <label><input type="radio" name="q45" value="false"> False</label>
+</div>
+
+<div class="question">৪৬. Mechanical energy is the combination of magnetic and electric energy.</div>
+<div class="options">
+  <label><input type="radio" name="q46" value="true"> True</label>
+  <label><input type="radio" name="q46" value="false"> False</label>
+</div>
+
+<div class="question">৪৭. Humans can easily create new energy out of nothing.</div>
+<div class="options">
+  <label><input type="radio" name="q47" value="true"> True</label>
+  <label><input type="radio" name="q47" value="false"> False</label>
+</div>
+
+<div class="question">৪৮. Coal is a renewable source of energy because it never runs out.</div>
+<div class="options">
+  <label><input type="radio" name="q48" value="true"> True</label>
+  <label><input type="radio" name="q48" value="false"> False</label>
+</div>
+
+<div class="question">৪৯. A ball will experience less frictional resistance when rolling on a smooth cement floor than on rough grass.</div>
+<div class="options">
+  <label><input type="radio" name="q49" value="true"> True</label>
+  <label><input type="radio" name="q49" value="false"> False</label>
+</div>
+
+<div class="question">৫০. Frictional force always acts in the same direction as the motion of the moving object.</div>
+<div class="options">
+  <label><input type="radio" name="q50" value="true"> True</label>
+  <label><input type="radio" name="q50" value="false"> False</label>
+</div>
+  
+
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পূর্ববর্তী</button>
+  <button type="submit" class="submit-btn">জমা দিন</button>
+</div>
+
+</form>
+</div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; 
+    var subject = document.getElementById("subject").innerText;
+    var exam_code = document.getElementById("exam_code").innerText;
+    
+    // সঠিক উত্তরের অবজেক্ট
+    const quizAnswers = {
+    q1: "b", q2: "b", q3: "c", q4: "b", q5: "d",
+    q6: "c", q7: "c", q8: "b", q9: "c", q10: "c",
+    q11: "b", q12: "b", q13: "b", q14: "b", q15: "c",
+    q16: "b", q17: "c", q18: "d", q19: "b", q20: "d",
+    q21: "a", q22: "b", q23: "b", q24: "c", q25: "c",
+    q26: "a", q27: "b", q28: "b", q29: "a", q30: "b",
+    q31: "b", q32: "a", q33: "b", q34: "c", q35: "b",
+    q36: "a", q37: "b", q38: "a", q39: "b", q40: "c",
+    q41: "true", q42: "false", q43: "false", q44: "true", q45: "true",
+    q46: "false", q47: "false", q48: "false", q49: "true", q50: "false"
+  };
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    let timeLeft = 30 * 60; 
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const progressBar = document.getElementById("progressBar");
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+      let userResponses = {};
+
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : "Not Answered";
+        userResponses[q] = selected;
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // ইউজার রেসপন্স গ্লোবাল করা হলো ডাউনলোডের জন্য
+      window.currentUserResponses = userResponses;
+
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+
+      fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          total: totalQuestions,
+          subject: subject,
+          exam_code: exam_code
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      document.getElementById("quizArea").style.display = "none";
+      document.getElementById("thankYou").style.display = "block";
+      downloadAnswerScript();
+    });
+
+    // ডাইনামিক আনসার স্ক্রিপ্ট ডাউনলোড ফাংশন
+    function downloadAnswerScript() {
+    const questions = [];
+    const currentSubject = document.getElementById("subject").innerText;
+    const currentExamCode = document.getElementById("exam_code").innerText;
+    
+    // ১. প্রশ্ন এবং উত্তর সংগ্রহ (আপনার আগের কোড অনুযায়ী)
+    document.querySelectorAll('.question').forEach((qEl, index) => {
+        const qKey = "q" + (index + 1);
+        const questionText = qEl.innerText;
+        const options = {};
+        const optionsDiv = qEl.nextElementSibling;
+        
+        if (optionsDiv && optionsDiv.classList.contains('options')) {
+            optionsDiv.querySelectorAll('label').forEach(label => {
+                const radio = label.querySelector('input');
+                if(radio){
+                    options[radio.value] = label.innerText;
+                }
+            });
+        }
+
+        questions.push({
+            key: qKey,
+            question: questionText,
+            options: options,
+            userAnswer: window.currentUserResponses[qKey],
+            correctAnswer: quizAnswers[qKey]
+        });
+    });
+
+    //২.  ফর্ম ডাটা তৈরি করা (যাতে ব্যাকগ্রাউন্ডে পাঠানো যায়)
+    const formData = new FormData();
+    formData.append('email', studentEmail);
+    formData.append('full_data', JSON.stringify(questions));
+    formData.append('subject', currentSubject);
+    formData.append('exam_code', currentExamCode);
+
+    // fetch ব্যবহার করে ব্যাকগ্রাউন্ডে ডাটা পাঠানো (কোনো নতুন পেজ খুলবে না)
+    fetch('https://learnnova.cfd/assets/php/generate_answer_script.php', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // ক্রস-অরিজিন ইস্যু এড়াতে
+    }).then(() => {
+        console.log("PDF generated and saved in background.");
+    }).catch(err => console.error("PDF generation failed:", err));
+
+    // ৩. ডাটা ইনপুটগুলো যোগ করা
+    
+    // ইমেইল পাঠানো (এটি আগে মিস ছিল)
+    const inputEmail = document.createElement('input');
+    inputEmail.type = 'hidden';
+    inputEmail.name = 'email';
+    inputEmail.value = studentEmail; // loginSection থেকে পাওয়া গ্লোবাল ভেরিয়েবল
+    formExport.appendChild(inputEmail);
+
+    // প্রশ্ন-উত্তরের ডাটা
+    const inputData = document.createElement('input');
+    inputData.type = 'hidden';
+    inputData.name = 'full_data';
+    inputData.value = JSON.stringify(questions);
+    formExport.appendChild(inputData);
+    
+    // সাবজেক্ট
+    const inputSubject = document.createElement('input');
+    inputSubject.type = 'hidden';
+    inputSubject.name = 'subject';
+    inputSubject.value = currentSubject;
+    formExport.appendChild(inputSubject);
+
+    // এক্সাম কোড
+    const inputCode = document.createElement('input');
+    inputCode.type = 'hidden';
+    inputCode.name = 'exam_code';
+    inputCode.value = currentExamCode;
+    formExport.appendChild(inputCode);
+  
+    // ৪. ফর্ম সাবমিট করা
+    document.body.appendChild(formExport);
+    formExport.submit();
+    document.body.removeChild(formExport);
+}
+
+    // ইমেইল ভেরিফিকেশন লজিক
+    const urlParams = new URLSearchParams(window.location.search);
+    const validEmail = urlParams.get('email');
+
+    document.getElementById("checkEmailBtn").addEventListener("click", function () {
+      const emailInput = document.getElementById("studentEmail").value.trim();
+      if (emailInput === validEmail) {
+        document.getElementById("checkEmailBtn").style.display = "none";
+        document.getElementById("goQuiz").style.display = "inline-block";
+      } else {
+        const message = document.getElementById("message");
+        message.style.display = "block";
+        message.textContent = "Oops! That email doesn't match our records.";
+      }
+    });
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+  </script>
+</body>
+</html>
