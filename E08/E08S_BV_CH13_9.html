@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LearnNova Quiz Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      font-family: 'Poppins', 'Noto Sans Bengali', sans-serif;
+    }
+
+    .banner {
+      width: 100%;
+      height: 250px;
+      background-image: url('/assets/image/banner.webp');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      display: flex;
+      padding: 40px 5%;
+      gap: 30px;
+    }
+
+    .left, .right {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .left {
+      flex: 7;
+    }
+
+    .right {
+      flex: 3;
+    }
+
+    .left h1 {
+      font-size: 26px;
+      color: #0066cc;
+      text-align: center;
+    }
+
+    .left h2 {
+      font-size: 50px;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .left h3 {
+      font-size: 30px;
+      color: #000000;
+      text-align: center;
+      
+    }
+
+    .right h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .submit-btn, .next-btn {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+
+    }
+
+     .submit-btn, .next-btn1 {
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-left: 10px;
+
+    }
+
+
+    .submit-btn:hover, .next-btn:hover {
+      background-color: #004a99;
+    }
+
+    .submit-btn:hover, .next-btn1:hover {
+      background-color: #004a99;
+    }    
+
+    #error-message {
+      color: red;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    #quizArea {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 40px auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .question {
+      font-size: 18px;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    .options label {
+      display: block;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .quiz-section {
+        display: none;
+    }
+    .quiz-section.active {
+        display: block;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: red;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #progressBarContainer {
+      width: 100%;
+      background: #ddd;
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #progressBar {
+      height: 100%;
+      background: #4CAF50;
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    #thankYou {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 20px;
+      color: green;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 50px auto;
+    }
+
+    #thankYou h2 {
+        color: #0066cc;
+        margin-bottom: 20px;
+    }
+
+    #thankYou p {
+        font-size: 22px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    #thankYou .score-display {
+        font-size: 28px;
+        font-weight: bold;
+        color: #28a745; /* Green color for score */
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+  <div class="container" id="loginSection">
+    <div class="left">
+      <h3>Welcome to <u>LearnNova</u></h3> 
+      <h1>Examination Portal</h1>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">We are excited to have you here! Please log in to begin your examination. Remember, you can take this examination only once, and it must be submitted within the allotted time. Failure to do so will result in cancellation.</p>
+      <p style="margin-top: 5px; font-size: 15px; text-align: justify;">আমরা আপনাকে এখানে পেয়ে খুবই আনন্দিত! আপনার পরীক্ষা শুরু করতে অনুগ্রহ করে লগ ইন করুন। মনে রাখবেন, আপনি এই পরীক্ষা মাত্র একবারই দিতে পারবেন এবং নির্ধারিত সময়ের মধ্যেই জমা দিতে হবে। নির্দিষ্ট সময়ের মধ্যে জমা না দিলে, আপনার পরীক্ষা বাতিল হয়ে যাবে।</p>
+
+      <h2 id="subject">Science</h2>
+      <h1 id="exam_code">E08S_BV_CH13_9</h1>
+      </div>
+
+    <div class="right">
+      <h2>Student Login</h2>
+      <form onsubmit="return checkLogin(event)">
+        <div id="error-message"></div>
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <input type="text" id="studentName" name="studentName" required>
+        </div>
+        <div class="form-group">
+          <label for="studentEmail">Email</label>
+          <input type="email" id="studentEmail" name="studentEmail" required>
+        </div>
+        <div class="g-recaptcha" id="captchaDiv" style="display: none;" data-sitekey="6LcAn28rAAAAAAGEZfbCyabyn3-ygSAKfcqEboWq"></div>        
+        
+        <button type="submit" class="submit-btn" id="goQuiz" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center; display: none;">Confirm</button>
+      </form>
+      <button class="submit-btn" id="checkEmailBtn" style="margin-top: 20px; margin-left: 28px; width: 280px; text-align: center;">Verify</button>
+      <p id="message" style="display: none; color: green; margin-top: 10px;"></p>
+    </div>
+  </div>
+
+  <div id="quizArea">
+    <h1 style="text-align:center;">LearnNova Education Center</h1>
+    <h3 style="text-align:center;">Subject: Science    Full marks: 50    Time: 30mnts     Class: VIII</h3>
+
+    <div id="timer">
+      <img src="https://img.icons8.com/color/48/000000/stopwatch.png" style="vertical-align: middle; margin-right: 8px;">
+      <span id="timerText">সময় বাকি: 30 মিনিট</span>
+    </div>
+
+    <div id="progressBarContainer">
+      <div id="progressBar"></div>
+    </div>
+
+<form id="quizForm">
+  <!-- Section 1: MCQ (Questions 1-20) -->
+
+  <div id="quizSection1" class="quiz-section active">
+    
+    <span>বিভাগ ক: বহুনির্বাচনী প্রশ্ন (MCQ) — প্রতিটি প্রশ্নের মান ১ নম্বর। সব প্রশ্নের উত্তর দেওয়া বাধ্যতামূলক। (২৫ × ১ = ২৫)</span>
+
+<div class="question">১. পাকস্থলীর আকৃতি কেমন?</div>
+<div class="options">
+  <label><input type="radio" name="q1" value="a"> (A) 'U' আকৃতি</label>
+  <label><input type="radio" name="q1" value="b"> (B) 'J' আকৃতি</label>
+  <label><input type="radio" name="q1" value="c"> (C) 'S' আকৃতি</label>
+  <label><input type="radio" name="q1" value="d"> (D) 'L' আকৃতি</label>
+</div>
+
+<div class="question">২. ল্যারিংস বা স্বরযন্ত্রের ওপরে কয়টি ভোকাল কর্ড (Vocal Cord) থাকে?</div>
+<div class="options">
+  <label><input type="radio" name="q2" value="a"> (A) এক জোড়া</label>
+  <label><input type="radio" name="q2" value="b"> (B) দুই জোড়া</label>
+  <label><input type="radio" name="q2" value="c"> (C) তিন জোড়া</label>
+  <label><input type="radio" name="q2" value="d"> (D) চার জোড়া</label>
+</div>
+
+<div class="question">৩. ট্রাকিয়ার দৈর্ঘ্য সাধারণত কত সেন্টিমিটার হয়?</div>
+<div class="options">
+  <label><input type="radio" name="q3" value="a"> (A) ৫ সেমি</label>
+  <label><input type="radio" name="q3" value="b"> (B) ১০ সেমি</label>
+  <label><input type="radio" name="q3" value="c"> (C) ১২ সেমি</label>
+  <label><input type="radio" name="q3" value="d"> (D) ২০ সেমি</label>
+</div>
+
+<div class="question">৪. জিহ্বার অগ্রভাগে কোন স্বাদ গ্রহণকারী স্বাদ কোরক থাকে?</div>
+<div class="options">
+  <label><input type="radio" name="q4" value="a"> (A) তেতো</label>
+  <label><input type="radio" name="q4" value="b"> (B) মিষ্টি</label>
+  <label><input type="radio" name="q4" value="c"> (C) টক</label>
+  <label><input type="radio" name="q4" value="d"> (D) নোনতা</label>
+</div>
+
+<div class="question">৫. মানুষের মুখবিবরে কত জোড়া লালাগ্রন্থি থাকে?</div>
+<div class="options">
+  <label><input type="radio" name="q5" value="a"> (A) ১ জোড়া</label>
+  <label><input type="radio" name="q5" value="b"> (B) ২ জোড়া</label>
+  <label><input type="radio" name="q5" value="c"> (C) ৩ জোড়া</label>
+  <label><input type="radio" name="q5" value="d"> (D) ৪ জোড়া</label>
+</div>
+
+<div class="question">৬. মানুষের শরীরের সবচেয়ে বড় লালাগ্রন্থির নাম কী?</div>
+<div class="options">
+  <label><input type="radio" name="q6" value="a"> (A) সাবলিঙ্গুয়াল গ্রন্থি</label>
+  <label><input type="radio" name="q6" value="b"> (B) সাবম্যান্ডিবুলার গ্রন্থি</label>
+  <label><input type="radio" name="q6" value="c"> (C) প্যারোটিড গ্রন্থি</label>
+  <label><input type="radio" name="q6" value="d"> (D) থাইরয়েড গ্রন্থি</label>
+</div>
+
+<div class="question">৭. মানুষের ডান ফুসফুস কয়টি খণ্ড নিয়ে গঠিত?</div>
+<div class="options">
+  <label><input type="radio" name="q7" value="a"> (A) ১টি</label>
+  <label><input type="radio" name="q7" value="b"> (B) ২টি</label>
+  <label><input type="radio" name="q7" value="c"> (C) ৩টি</label>
+  <label><input type="radio" name="q7" value="d"> (D) ৪টি</label>
+</div>
+
+<div class="question">৮. জীবাণু সংক্রমণের ফলে ফুসফুসের প্রদাহকে কী বলা হয়?</div>
+<div class="options">
+  <label><input type="radio" name="q8" value="a"> (A) ব্রংকাইটিস</label>
+  <label><input type="radio" name="q8" value="b"> (B) নিউমোনিয়া</label>
+  <label><input type="radio" name="q8" value="c"> (C) অ্যাজমা</label>
+  <label><input type="radio" name="q8" value="d"> (D) প্লুরিসি</label>
+</div>
+
+<div class="question">৯. পাকস্থলী থেকে নিচের কোন হরমোনটি ক্ষরিত হয়?</div>
+<div class="options">
+  <label><input type="radio" name="q9" value="a"> (A) ইনসুলিন</label>
+  <label><input type="radio" name="q9" value="b"> (B) গ্যাস্ট্রিন</label>
+  <label><input type="radio" name="q9" value="c"> (C) থাইরক্সিন</label>
+  <label><input type="radio" name="q9" value="d"> (D) পেপসিন</label>
+</div>
+
+<div class="question">১০. প্রাপ্তবয়স্ক মানুষের উভয় চোয়ালে মোট কতটি দাঁত থাকে?</div>
+<div class="options">
+  <label><input type="radio" name="q10" value="a"> (A) ১৬টি</label>
+  <label><input type="radio" name="q10" value="b"> (B) ২০টি</label>
+  <label><input type="radio" name="q10" value="c"> (C) ২৮টি</label>
+  <label><input type="radio" name="q10" value="d"> (D) ৩২টি</label>
+</div>
+
+<div class="question">১১. খাদ্যবস্তু ছিঁড়তে (Tearing) সাহায্য করে কোন ধরণের দাঁত?</div>
+<div class="options">
+  <label><input type="radio" name="q11" value="a"> (A) কৃন্তক (Incisor)</label>
+  <label><input type="radio" name="q11" value="b"> (B) ছেদক (Canine)</label>
+  <label><input type="radio" name="q11" value="c"> (C) পুরঃপেষক (Premolar)</label>
+  <label><input type="radio" name="q11" value="d"> (D) পেষক (Molar)</label>
+</div>
+
+<div class="question">১২. ক্ষুদ্রান্ত্রের অন্তর্গত ডিওডিনাম বা গ্রহণীর আকৃতি কেমন হয়?</div>
+<div class="options">
+  <label><input type="radio" name="q12" value="a"> (A) 'U' আকৃতি</label>
+  <label><input type="radio" name="q12" value="b"> (B) 'J' আকৃতি</label>
+  <label><input type="radio" name="q12" value="c"> (C) 'C' আকৃতি</label>
+  <label><input type="radio" name="q12" value="d"> (D) 'L' আকৃতি</label>
+</div>
+
+<div class="question">১৩. মানুষের ক্ষুদ্রান্ত্রের দৈর্ঘ্য সাধারণত কত মিটার হয়ে থাকে?</div>
+<div class="options">
+  <label><input type="radio" name="q13" value="a"> (A) ১-১.৫ মিটার</label>
+  <label><input type="radio" name="q13" value="b"> (B) ২-৩ মিটার</label>
+  <label><input type="radio" name="q13" value="c"> (C) ৪-৫ মিটার</label>
+  <label><input type="radio" name="q13" value="d"> (D) ৬-৭ মিটার</label>
+</div>
+
+<div class="question">১৪. লালাগ্রন্থি বা আন্ত্রিক রসে উপস্থিত কোন উৎসেচক শ্বেতসারকে মলটোজে পরিণত করে?</div>
+<div class="options">
+  <label><input type="radio" name="q14" value="a"> (A) সুক্রেজ</label>
+  <label><input type="radio" name="q14" value="b"> (B) মলটেজ</label>
+  <label><input type="radio" name="q14" value="c"> (C) অ্যামাইলেজ</label>
+  <label><input type="radio" name="q14" value="d"> (D) পেপসিন</label>
+</div>
+
+<div class="question">১৫. বৃহদন্ত্রের সিকামের শেষপ্রান্তে কোন নিষ্ক্রিয় অঙ্গটি যুক্ত থাকে?</div>
+<div class="options">
+  <label><input type="radio" name="q15" value="a"> (A) যকৃৎ</label>
+  <label><input type="radio" name="q15" value="b"> (B) পিত্তাশয়</label>
+  <label><input type="radio" name="q15" value="c"> (C) অ্যাপেনডিক্স</label>
+  <label><input type="radio" name="q15" value="d"> (D) অগ্ন্যাশয়</label>
+</div>
+
+<div class="question">১৬. গলবিল গ্রাসনালির সঙ্গে কোন ছিদ্রের মাধ্যমে যুক্ত থাকে?</div>
+<div class="options">
+  <label><input type="radio" name="q16" value="a"> (A) গ্লটিস</label>
+  <label><input type="radio" name="q16" value="b"> (B) গ্যালেট</label>
+  <label><input type="radio" name="q16" value="c"> (C) পায়ু</label>
+  <label><input type="radio" name="q16" value="d"> (D) পাইলোরিক ছিদ্র</label>
+</div>
+
+<div class="question">১৭. মানুষের গ্রাসনালির দৈর্ঘ্য সাধারণত কত সেন্টিমিটার হয়?</div>
+<div class="options">
+  <label><input type="radio" name="q17" value="a"> (A) ১০-১২ সেমি</label>
+  <label><input type="radio" name="q17" value="b"> (B) ১৫-১৮ সেমি</label>
+  <label><input type="radio" name="q17" value="c"> (C) ২৩-২৫ সেমি</label>
+  <label><input type="radio" name="q17" value="d"> (D) ৩০-৩৫ সেমি</label>
+</div>
+
+<div class="question">১৮. নিচের কোনটি লালাগ্রন্থির অংশ নয়?</div>
+<div class="options">
+  <label><input type="radio" name="q18" value="a"> (A) প্যারোটিড গ্রন্থি</label>
+  <label><input type="radio" name="q18" value="b"> (B) সাবম্যান্ডিবুলার গ্রন্থি</label>
+  <label><input type="radio" name="q18" value="c"> (C) সাবলিঙ্গুয়াল গ্রন্থি</label>
+  <label><input type="radio" name="q18" value="d"> (D) থাইরয়েড গ্রন্থি</label>
+</div>
+
+<div class="question">১৯. গ্যাসীয় আদানপ্রদান ফুসফুসের কোন অংশে ঘটে?</div>
+<div class="options">
+  <label><input type="radio" name="q19" value="a"> (A) ব্রংকিওল</label>
+  <label><input type="radio" name="q19" value="b"> (B) প্লুরা</label>
+  <label><input type="radio" name="q19" value="c"> (C) অ্যালভিওলাই বা বায়ুথলি</label>
+  <label><input type="radio" name="q19" value="d"> (D) ট্রাকিয়া</label>
+</div>
+
+<div class="question">২০. ফুসফুসকে আবৃত করে রাখা দ্বিস্তরী ফুসফুস ঝিল্লিকে কী বলা হয়?</div>
+<div class="options">
+  <label><input type="radio" name="q20" value="a"> (A) পেরিকার্ডিয়াম</label>
+  <label><input type="radio" name="q20" value="b"> (B) প্লুরা</label>
+  <label><input type="radio" name="q20" value="c"> (C) পেরিটোনিয়াম</label>
+  <label><input type="radio" name="q20" value="d"> (D) মেনিনজেস</label>
+</div>
+
+<div class="question">২১. জিহ্বার পশ্চাদভাগে (পিছনের অংশে) কোন স্বাদগ্রাহী স্বাদ কোরক থাকে?</div>
+<div class="options">
+  <label><input type="radio" name="q21" value="a"> (A) মিষ্টি</label>
+  <label><input type="radio" name="q21" value="b"> (B) তেতো</label>
+  <label><input type="radio" name="q21" value="c"> (C) টক</label>
+  <label><input type="radio" name="q21" value="d"> (D) নোনতা</label>
+</div>
+
+<div class="question">২২. পাকরসে উপস্থিত পেপসিন নামক উৎসেচক প্রোটিনকে কিসে পরিণত করে?</div>
+<div class="options">
+  <label><input type="radio" name="q22" value="a"> (A) অ্যামাইনো অ্যাসিড</label>
+  <label><input type="radio" name="q22" value="b"> (B) পেপটন</label>
+  <label><input type="radio" name="q22" value="c"> (C) ফ্যাটি অ্যাসিড</label>
+  <label><input type="radio" name="q22" value="d"> (D) গ্লুকোজ</label>
+</div>
+
+<div class="question">২৩. মানুষের ট্রাকিয়া বা শ্বাসনালিতে কতগুলি তরুণাস্থি বা কার্টিলেজ থাকে?</div>
+<div class="options">
+  <label><input type="radio" name="q23" value="a"> (A) ৫-১০টি</label>
+  <label><input type="radio" name="q23" value="b"> (B) ১০-১৫টি</label>
+  <label><input type="radio" name="q23" value="c"> (C) ১৬-২০টি</label>
+  <label><input type="radio" name="q23" value="d"> (D) ২৫-৩০টি</label>
+</div>
+
+<div class="question">২৪. মানুষের বৃহদন্ত্রের দৈর্ঘ্য প্রায় কত মিটার হয়?</div>
+<div class="options">
+  <label><input type="radio" name="q24" value="a"> (A) ০.৫ মিটার</label>
+  <label><input type="radio" name="q24" value="b"> (B) ১.০-১.৫ মিটার</label>
+  <label><input type="radio" name="q24" value="c"> (C) ৩.০-৪.৫ মিটার</label>
+  <label><input type="radio" name="q24" value="d"> (D) ৬.০-৭.০ মিটার</label>
+</div>
+
+<div class="question">২৫. খাদ্যগ্রহণের সময় কোন অঙ্গটি গ্লটিস বা শ্বাসনালির মুখকে ঢেকে দেয়?</div>
+<div class="options">
+  <label><input type="radio" name="q25" value="a"> (A) ল্যারিংস</label>
+  <label><input type="radio" name="q25" value="b"> (B) ভোকাল কর্ড</label>
+  <label><input type="radio" name="q25" value="c"> (C) এপিগ্লটিস</label>
+  <label><input type="radio" name="q25" value="d"> (D) প্যালেট</label>
+</div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পরবর্তী</button>
+</div>
+
+  <!-- Section 2: Questions 11-20 -->
+<div id="quizSection2" class="quiz-section">
+
+    <span>বিভাগ খ: শূন্যস্থান পূরণ করো — নিচের বন্ধনী থেকে সঠিক উত্তরটি বেছে নিয়ে শূন্যস্থান পূরণ করো। (১৫ × ১ = ১৫)</span>
+
+<div class="question">২৬. ব্রংকিওলের জীবাণু সংক্রমণজনিত প্রদাহকে ___________ বলা হয়।</div>
+<div class="options">
+  <label><input type="radio" name="q26" value="a"> ব্রংকাইটিস</label>
+  <label><input type="radio" name="q26" value="b"> নিউমোনিয়া</label>
+  <label><input type="radio" name="q26" value="c"> প্লুরিসি</label>
+</div>
+
+<div class="question">২৭. জিহ্বার দু-পাশে ___________ স্বাদগ্রাহী স্বাদ কোরক থাকে।</div>
+<div class="options">
+  <label><input type="radio" name="q27" value="a"> মিষ্টি</label>
+  <label><input type="radio" name="q27" value="b"> টক</label>
+  <label><input type="radio" name="q27" value="c"> তেতো</label>
+</div>
+
+<div class="question">২৮. পাকস্থলীর মাঝখানের অংশকে ___________ বলা হয়।</div>
+<div class="options">
+  <label><input type="radio" name="q28" value="a"> হৃদপ্রান্ত</label>
+  <label><input type="radio" name="q28" value="b"> দেহ</label>
+  <label><input type="radio" name="q28" value="c"> ফান্ডাস</label>
+</div>
+
+<div class="question">২৯. আন্ত্রিক রসে উপস্থিত ইরেপসিন পেপটাইডকে ___________-এ পরিণত করে।</div>
+<div class="options">
+  <label><input type="radio" name="q29" value="a"> গ্লুকোজ</label>
+  <label><input type="radio" name="q29" value="b"> অ্যামাইনো অ্যাসিড</label>
+  <label><input type="radio" name="q29" value="c"> ফ্যাটি অ্যাসিড</label>
+</div>
+
+<div class="question">৩০. সাবলিঙ্গুয়াল লালাগ্রন্থিটি মানুষের ___________-এর তলদেশে অবস্থিত।</div>
+<div class="options">
+  <label><input type="radio" name="q30" value="a"> চোয়াল</label>
+  <label><input type="radio" name="q30" value="b"> জিহ্বা</label>
+  <label><input type="radio" name="q30" value="c"> কান</label>
+</div>
+
+<div class="question">৩১. মানুষের বাম ফুসফুসটি ___________ খণ্ড বিশিষ্ট হয়।</div>
+<div class="options">
+  <label><input type="radio" name="q31" value="a"> দুটি</label>
+  <label><input type="radio" name="q31" value="b"> তিনটি</label>
+  <label><input type="radio" name="q31" value="c"> চারটি</label>
+</div>
+
+<div class="question">৩২. পাকস্থলীর ডিওডিনাম সংলগ্ন শেষ প্রান্তটিকে ___________ প্রান্ত বলে।</div>
+<div class="options">
+  <label><input type="radio" name="q32" value="a"> হৃদপ্রান্ত</label>
+  <label><input type="radio" name="q32" value="b"> ফান্ডাস</label>
+  <label><input type="radio" name="q32" value="c"> পাইলোরিক</label>
+</div>
+
+<div class="question">৩৩. ক্ষুদ্রান্ত্রের অভ্যন্তরে শোষণে সাহায্যকারী আঙ্গুলের মতো প্রবর্ধকগুলিকে ___________ বলে।</div>
+<div class="options">
+  <label><input type="radio" name="q33" value="a"> অ্যালভিওলাই</label>
+  <label><input type="radio" name="q33" value="b"> ভিলাই</label>
+  <label><input type="radio" name="q33" value="c"> লালাগ্রন্থি</label>
+</div>
+
+<div class="question">৩৪. মানুষের মুখবিবরের ছাদকে ___________ বলে।</div>
+<div class="options">
+  <label><input type="radio" name="q34" value="a"> প্যালেট</label>
+  <label><input type="radio" name="q34" value="b"> গ্লটিস</label>
+  <label><input type="radio" name="q34" value="c"> ল্যারিংস</label>
+</div>
+
+<div class="question">৩৫. প্রাপ্তবয়স্ক মানুষের মুখগহ্বরে ক্যানাইন বা ছেদক দাঁত মোট ___________টি থাকে।</div>
+<div class="options">
+  <label><input type="radio" name="q35" value="a"> ২টি</label>
+  <label><input type="radio" name="q35" value="b"> ৪টি</label>
+  <label><input type="radio" name="q35" value="c"> ৮টি</label>
+</div>
+
+<div class="question">৩৬. দুধে দাঁতের পরবর্তীকালে মানুষের যে দাঁত ওঠে, তাকে ___________ দাঁত বলে।</div>
+<div class="options">
+  <label><input type="radio" name="q36" value="a"> পেষক</label>
+  <label><input type="radio" name="q36" value="b"> স্থায়ী</label>
+  <label><input type="radio" name="q36" value="c"> মোলার</label>
+</div>
+
+<div class="question">৩৭. গলবিল যে ছিদ্র দিয়ে ল্যারিংসে উন্মুক্ত হয়, তাকে ___________ বলে।</div>
+<div class="options">
+  <label><input type="radio" name="q37" value="a"> গ্লটিস</label>
+  <label><input type="radio" name="q37" value="b"> গ্যালেট</label>
+  <label><input type="radio" name="q37" value="c"> এপিগ্লটিস</label>
+</div>
+
+<div class="question">৩৮. পরিপাক হওয়া খাদ্যের পর বৃহদন্ত্রে প্রধানত ___________ পরিশ্রুত বা শোষিত হয়।</div>
+<div class="options">
+  <label><input type="radio" name="q38" value="a"> খাদ্য</label>
+  <label><input type="radio" name="q38" value="b"> জল</label>
+  <label><input type="radio" name="q38" value="c"> রক্ত</label>
+</div>
+
+<div class="question">৩৯. গলবিল ও শ্বাসনালির সংযোগস্থলে অবস্থান করে ___________-গলবিল।</div>
+<div class="options">
+  <label><input type="radio" name="q39" value="a"> নাসা</label>
+  <label><input type="radio" name="q39" value="b"> মুখ</label>
+  <label><input type="radio" name="q39" value="c"> স্বর</label>
+</div>
+
+<div class="question">৪০. প্রশ্বাসের (শ্বাসগ্রহণের) সময় মধ্যচ্ছদা বা ডায়াফ্রাম সংকুচিত হয়ে ___________ নেমে যায়।</div>
+<div class="options">
+  <label><input type="radio" name="q40" value="a"> উপরে</label>
+  <label><input type="radio" name="q40" value="b"> নিচে</label>
+  <label><input type="radio" name="q40" value="c"> পাশে</label>
+</div>
+  
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection1')">পূর্ববর্তী</button>
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection3')">পরবর্তী</button>
+</div>
+
+  <!-- Section 3: Questions 21-30 -->
+<div id="quizSection3" class="quiz-section">
+  
+    <span>বিভাগ গ: সত্য অথবা মিথ্যা নিরূপণ করো — নিচের বিবৃতিগুলি সত্য না মিথ্যা তা নির্দেশ করো। (১০ × ১ = ১০)</span>
+
+<div class="question">৪১. মানুষের ডান ফুসফুসটি বাম ফুসফুসের তুলনায় কিছুটা ছোট হয়।</div>
+<div class="options">
+  <label><input type="radio" name="q41" value="true"> সত্য</label>
+  <label><input type="radio" name="q41" value="false"> মিথ্যা</label>
+</div>
+
+<div class="question">৪২. পাকস্থলীতে উপস্থিত পেপসিন ও লাইপেজ উৎসেচক যথাক্রমে প্রোটিন ও ফ্যাট জাতীয় খাদ্য পরিপাকে সাহায্য করে।</div>
+<div class="options">
+  <label><input type="radio" name="q42" value="true"> সত্য</label>
+  <label><input type="radio" name="q42" value="false"> মিথ্যা</label>
+</div>
+
+<div class="question">৪৩. প্যারোটিড গ্রন্থিটি মানুষের জিহ্বার তলদেশে অবস্থিত।</div>
+<div class="options">
+  <label><input type="radio" name="q43" value="true"> সত্য</label>
+  <label><input type="radio" name="q43" value="false"> মিথ্যা</label>
+</div>
+
+<div class="question">৪৪. জিহ্বার মধ্যভাগে বা মাঝখানে নোনতা স্বাদগ্রাহী স্বাদ কোরক থাকে।</div>
+<div class="options">
+  <label><input type="radio" name="q44" value="true"> সত্য</label>
+  <label><input type="radio" name="q44" value="false"> মিথ্যা</label>
+</div>
+
+<div class="question">৪৫. পাকস্থলীতে প্রধানত শর্করা (কার্বোহাইড্রেট) জাতীয় খাদ্য পাচিত হয়।</div>
+<div class="options">
+  <label><input type="radio" name="q45" value="true"> সত্য</label>
+  <label><input type="radio" name="q45" value="false"> মিথ্যা</label>
+</div>
+
+<div class="question">৪৬. মানুষের নিশ্বাস বা শ্বাসত্যাগের সময় বক্ষগহ্বরের সামগ্রিক আয়তন বৃদ্ধি পায়।</div>
+<div class="options">
+  <label><input type="radio" name="q46" value="true"> সত্য</label>
+  <label><input type="radio" name="q46" value="false"> মিথ্যা</label>
+</div>
+
+<div class="question">৪৭. সাবম্যান্ডিবুলার লালাগ্রন্থিগুলি মানুষের নীচের চোয়ালের দু-পাশে অবস্থিত।</div>
+<div class="options">
+  <label><input type="radio" name="q47" value="true"> সত্য</label>
+  <label><input type="radio" name="q47" value="false"> মিথ্যা</label>
+</div>
+
+<div class="question">৪৮. অপাচিত খাদ্য মলরূপে নির্গত হওয়ার পূর্বে সাময়িকভাবে মলাশয়ে জমা থাকে।</div>
+<div class="options">
+  <label><input type="radio" name="q48" value="true"> সত্য</label>
+  <label><input type="radio" name="q48" value="false"> মিথ্যা</label>
+</div>
+
+<div class="question">৪৯. কৃন্তক বা ইন্‌সাইজার দাঁত খাদ্যবস্তু ছিঁড়তে সাহায্য করে।</div>
+<div class="options">
+  <label><input type="radio" name="q49" value="true"> সত্য</label>
+  <label><input type="radio" name="q49" value="false"> মিথ্যা</label>
+</div>
+
+<div class="question">৫০. যে শারীরবৃত্তীয় প্রক্রিয়ায় সরল খাদ্য অন্ত্রের প্রাচীর থেকে রক্ত ও লসিকায় প্রবেশ করে, তাকে শোষণ বলে।</div>
+<div class="options">
+  <label><input type="radio" name="q50" value="true"> সত্য</label>
+  <label><input type="radio" name="q50" value="false"> মিথ্যা</label>
+</div>
+  
+
+  <button type="button" class="next-btn" onclick="showNextSection('quizSection2')">পূর্ববর্তী</button>
+  <button type="submit" class="submit-btn">জমা দিন</button>
+</div>
+
+</form>
+</div>
+
+  <div id="thankYou">
+    <h2>ধন্যবাদ!</h2>
+    <p>কুইজটি সফলভাবে সম্পন্ন করার জন্য আপনাকে অভিনন্দন, <span id="finalStudentName"></span>!</p>
+    <p>আপনার কুইজের ফলাফল নিচে দেওয়া হলো:</p>
+    <p class="score-display">আপনার স্কোর: <span id="finalScoreDisplay"></span></p>
+    </div>
+
+  <script>
+    let studentName = "";
+    let studentEmail = "";
+    let currentQuizSection = 'quizSection1'; 
+    var subject = document.getElementById("subject").innerText;
+    var exam_code = document.getElementById("exam_code").innerText;
+    
+    // সঠিক উত্তরের অবজেক্ট
+    const quizAnswers = {
+    q1: "b", q2: "a", q3: "c", q4: "b", q5: "c",
+    q6: "c", q7: "c", q8: "b", q9: "b", q10: "d",
+    q11: "b", q12: "a", q13: "d", q14: "c", q15: "c",
+    q16: "b", q17: "c", q18: "d", q19: "c", q20: "b",
+    q21: "b", q22: "b", q23: "c", q24: "b", q25: "c",
+    q26: "a", q27: "b", q28: "b", q29: "b", q30: "b",
+    q31: "a", q32: "c", q33: "b", q34: "a", q35: "b",
+    q36: "b", q37: "a", q38: "b", q39: "c", q40: "b",
+    q41: "false", q42: "true", q43: "false", q44: "true", q45: "false",
+    q46: "false", q47: "true", q48: "true", q49: "false", q50: "true"
+  };
+
+    function checkLogin(event) {
+      event.preventDefault();
+      studentName = document.getElementById("studentName").value.trim();
+      studentEmail = document.getElementById("studentEmail").value.trim();
+      const errorDiv = document.getElementById("error-message");
+
+      if (!studentName || !studentEmail) {
+        errorDiv.textContent = "অনুগ্রহ করে আপনার নাম এবং ইমেইল প্রদান করুন।";
+        return;
+      }
+
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("quizArea").style.display = "block";
+      document.getElementById(currentQuizSection).classList.add('active');
+      startTimer();
+    }
+
+    let timeLeft = 30 * 60; 
+    let countdown;
+    const form = document.getElementById("quizForm");
+    const progressBar = document.getElementById("progressBar");
+
+    function startTimer() {
+      countdown = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById("timerText").textContent = `সময় বাকি: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} মিনিট`;
+        progressBar.style.width = (timeLeft / (30 * 60) * 100) + "%";
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          form.requestSubmit();
+        }
+      }, 1000);
+    }
+
+    function showNextSection(nextSectionId) {
+        document.getElementById(currentQuizSection).classList.remove('active');
+        const nextSectionElement = document.getElementById(nextSectionId);
+        nextSectionElement.classList.add('active');
+        currentQuizSection = nextSectionId;
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      clearInterval(countdown);
+
+      let totalScore = 0;
+      let totalQuestions = 0;
+      let userResponses = {};
+
+      for (let q in quizAnswers) {
+        const selected = form[q] ? form[q].value : "Not Answered";
+        userResponses[q] = selected;
+        if (selected === quizAnswers[q]) {
+            totalScore++;
+        }
+        totalQuestions++;
+      }
+
+      // ইউজার রেসপন্স গ্লোবাল করা হলো ডাউনলোডের জন্য
+      window.currentUserResponses = userResponses;
+
+      document.getElementById('finalStudentName').textContent = studentName;
+      document.getElementById('finalScoreDisplay').textContent = `${totalScore} / ${totalQuestions}`;
+
+      fetch("https://learnnova.cfd/assets/php/submit_quiz.php", {
+        method: "POST",
+        body: JSON.stringify({
+          name: studentName,
+          email: studentEmail,
+          score: totalScore,
+          total: totalQuestions,
+          subject: subject,
+          exam_code: exam_code
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      document.getElementById("quizArea").style.display = "none";
+      document.getElementById("thankYou").style.display = "block";
+      downloadAnswerScript();
+    });
+
+    // ডাইনামিক আনসার স্ক্রিপ্ট ডাউনলোড ফাংশন
+    function downloadAnswerScript() {
+    const questions = [];
+    const currentSubject = document.getElementById("subject").innerText;
+    const currentExamCode = document.getElementById("exam_code").innerText;
+    
+    // ১. প্রশ্ন এবং উত্তর সংগ্রহ (আপনার আগের কোড অনুযায়ী)
+    document.querySelectorAll('.question').forEach((qEl, index) => {
+        const qKey = "q" + (index + 1);
+        const questionText = qEl.innerText;
+        const options = {};
+        const optionsDiv = qEl.nextElementSibling;
+        
+        if (optionsDiv && optionsDiv.classList.contains('options')) {
+            optionsDiv.querySelectorAll('label').forEach(label => {
+                const radio = label.querySelector('input');
+                if(radio){
+                    options[radio.value] = label.innerText;
+                }
+            });
+        }
+
+        questions.push({
+            key: qKey,
+            question: questionText,
+            options: options,
+            userAnswer: window.currentUserResponses[qKey],
+            correctAnswer: quizAnswers[qKey]
+        });
+    });
+
+    //২.  ফর্ম ডাটা তৈরি করা (যাতে ব্যাকগ্রাউন্ডে পাঠানো যায়)
+    const formData = new FormData();
+    formData.append('email', studentEmail);
+    formData.append('full_data', JSON.stringify(questions));
+    formData.append('subject', currentSubject);
+    formData.append('exam_code', currentExamCode);
+
+    // fetch ব্যবহার করে ব্যাকগ্রাউন্ডে ডাটা পাঠানো (কোনো নতুন পেজ খুলবে না)
+    fetch('https://learnnova.cfd/assets/php/generate_answer_script.php', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // ক্রস-অরিজিন ইস্যু এড়াতে
+    }).then(() => {
+        console.log("PDF generated and saved in background.");
+    }).catch(err => console.error("PDF generation failed:", err));
+
+    // ৩. ডাটা ইনপুটগুলো যোগ করা
+    
+    // ইমেইল পাঠানো (এটি আগে মিস ছিল)
+    const inputEmail = document.createElement('input');
+    inputEmail.type = 'hidden';
+    inputEmail.name = 'email';
+    inputEmail.value = studentEmail; // loginSection থেকে পাওয়া গ্লোবাল ভেরিয়েবল
+    formExport.appendChild(inputEmail);
+
+    // প্রশ্ন-উত্তরের ডাটা
+    const inputData = document.createElement('input');
+    inputData.type = 'hidden';
+    inputData.name = 'full_data';
+    inputData.value = JSON.stringify(questions);
+    formExport.appendChild(inputData);
+    
+    // সাবজেক্ট
+    const inputSubject = document.createElement('input');
+    inputSubject.type = 'hidden';
+    inputSubject.name = 'subject';
+    inputSubject.value = currentSubject;
+    formExport.appendChild(inputSubject);
+
+    // এক্সাম কোড
+    const inputCode = document.createElement('input');
+    inputCode.type = 'hidden';
+    inputCode.name = 'exam_code';
+    inputCode.value = currentExamCode;
+    formExport.appendChild(inputCode);
+  
+    // ৪. ফর্ম সাবমিট করা
+    document.body.appendChild(formExport);
+    formExport.submit();
+    document.body.removeChild(formExport);
+}
+
+    // ইমেইল ভেরিফিকেশন লজিক
+    const urlParams = new URLSearchParams(window.location.search);
+    const validEmail = urlParams.get('email');
+
+    document.getElementById("checkEmailBtn").addEventListener("click", function () {
+      const emailInput = document.getElementById("studentEmail").value.trim();
+      if (emailInput === validEmail) {
+        document.getElementById("checkEmailBtn").style.display = "none";
+        document.getElementById("goQuiz").style.display = "inline-block";
+      } else {
+        const message = document.getElementById("message");
+        message.style.display = "block";
+        message.textContent = "Oops! That email doesn't match our records.";
+      }
+    });
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+  </script>
+</body>
+</html>
