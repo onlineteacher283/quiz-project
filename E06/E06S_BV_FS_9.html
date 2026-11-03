@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnNova - বার্ষিক পরীক্ষা ২ ০ ২ ৬  - পরিবেশ ও বিজ্ঞান</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: #f4f7f6;
+            color: #111;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .paper-container {
+            background: #fff;
+            width: 800px;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            color: #1a5276;
+            letter-spacing: 1px;
+        }
+
+        .header h2 {
+            margin: 5px 0;
+            font-size: 20px;
+            color: #34495e;
+            font-weight: 600;
+        }
+
+        .header h3 {
+            margin: 5px 0 15px 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .exam-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 16px;
+            color: #2c3e50;
+            border-top: 1px dashed #ccc;
+            padding-top: 8px;
+        }
+
+        /* Section Headings */
+        .section-header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            color: #2c3e50;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            color: #111;
+        }
+
+        .question-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .question-list li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 15px;
+            margin-top: 6px;
+            padding-left: 20px;
+            color: #333;
+        }
+
+        /* Diagram Box */
+        .diagram-box {
+            border: 1px dashed #666;
+            padding: 10px;
+            margin: 10px 0 10px 20px;
+            text-align: center;
+            background-color: #fafafa;
+            border-radius: 4px;
+            width: fit-content;
+        }
+
+        .diagram-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .lever-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-weight: bold;
+        }
+
+        .lever-bar {
+            border-top: 3px solid #333;
+            width: 150px;
+            position: relative;
+            margin-top: 15px;
+        }
+
+        /* Print Styling */
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+            .paper-container {
+                box-shadow: none;
+                border: none;
+                width: 100%;
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .print-btn:hover {
+            background-color: #219150;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn no-print" onclick="window.print()">প্রিন্ট করুন / PDF সেভ করুন</button>
+
+    <div class="paper-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>LearnNova</h1>
+            <h5>Online Or Offline Tuition Hub</h5>
+            <h2>Annual Examination 2026</h2>
+            <h3>Class: VI — Subject: Paribesh-o-Bigyan</h3>
+            <div class="exam-info">
+                <span>F.M.: 70</span>
+                <span>Time: 2 Hrs.</span>
+            </div>
+        </div>
+
+        <!-- Section A -->
+        <div class="section-header">বিভাগ - ক</div>
+        <div class="section-title">
+            <span>A. সঠিক উত্তরটি নির্বাচন করো:</span>
+            <span>১ × ১০ = ১০</span>
+        </div>
+        
+        <ul class="question-list">
+            <li>
+                ১ (১) ........... অধাতু হলেও তাপের সুপরিবাহী।
+                <div class="options-grid">
+                    <span>ক) হিরে</span>
+                    <span>খ) কাঠ</span>
+                    <span>গ) তামা</span>
+                    <span>ঘ) পিতল</span>
+                </div>
+            </li>
+            <li>
+                ১ (২) কোনটি মৌল নয়—
+                <div class="options-grid">
+                    <span>ক) অ্যামোনিয়া</span>
+                    <span>খ) তামা</span>
+                    <span>গ) কার্বন</span>
+                    <span>ঘ) সোনা</span>
+                </div>
+            </li>
+            <li>
+                ১ (৩) একটি ফুটবলকে মাঠের ওপর গড়িয়ে দিলে, তা কিছু দূর গিয়ে থেমে যায়। ঘটনাটির জন্য দায়ী—
+                <div class="options-grid">
+                    <span>ক) ঘর্ষণ বল</span>
+                    <span>খ) বলটির উপরতলের ক্ষেত্রফল</span>
+                    <span>গ) বলটির গতি</span>
+                    <span>ঘ) বলটির আকৃতি</span>
+                </div>
+            </li>
+            <li>
+                ১ (৪) 1.01 মিটার কে সেন্টিমিটারে পরিণত কর—
+                <div class="options-grid">
+                    <span>ক) 101 সেন্টিমিটার</span>
+                    <span>খ) 0.101 সেন্টিমিটার</span>
+                    <span>গ) 10.1 সেন্টিমিটার</span>
+                    <span>ঘ) 1010.01 সেন্টিমিটার</span>
+                </div>
+            </li>
+            <li>
+                ১ (৫) CGS পদ্ধতিতে বলের একক কি?
+                <div class="options-grid">
+                    <span>ক) নিউটন</span>
+                    <span>খ) পাস্কাল</span>
+                    <span>গ) আর্গ</span>
+                    <span>ঘ) ডাইন</span>
+                </div>
+            </li>
+            <li>
+                ১ (৬) মিথেন যৌগের সংকেত কি?
+                <div class="options-grid">
+                    <span>ক) CH<sub>2</sub></span>
+                    <span>খ) CH<sub>5</sub></span>
+                    <span>গ) CH<sub>3</sub></span>
+                    <span>ঘ) CH<sub>4</sub></span>
+                </div>
+            </li>
+            <li>
+                ১ (৭) কোন উক্তিটি সঠিক নয়— ঘর্ষণের ফলে:
+                <div class="options-grid">
+                    <span>ক) বস্তুর গতি বৃদ্ধি পায়</span>
+                    <span>খ) বস্তুর ক্ষয় হয়</span>
+                    <span>গ) বস্তুর উষ্ণতা বৃদ্ধি পায়</span>
+                    <span>ঘ) বস্তুর গতি কমে যায়</span>
+                </div>
+            </li>
+            <li>
+                ১ (৮) 
+                <div class="diagram-box">
+                    <div class="diagram-title">চিত্রটি পর্যবেক্ষণ করো:</div>
+                    <div class="lever-diagram">
+                        <span>আলম্ব</span>
+                        <span>← বাধা</span>
+                        <span>← বল</span>
+                    </div>
+                </div>
+                উপরের চিত্রটি কোন শ্রেণির লিভারকে প্রকাশ করে?
+                <div class="options-grid">
+                    <span>ক) দ্বিতীয় শ্রেণির</span>
+                    <span>খ) তৃতীয় শ্রেণির</span>
+                    <span>গ) চতুর্থ শ্রেণির</span>
+                    <span>ঘ) প্রথম শ্রেণির</span>
+                </div>
+            </li>
+            <li>
+                ১ (৯) 37.25 গ্রাম = ? কিলোগ্রাম
+                <div class="options-grid">
+                    <span>ক) 37250 কিলোগ্রাম</span>
+                    <span>খ) 3725 কিলোগ্রাম</span>
+                    <span>গ) 0.3725 কিলোগ্রাম</span>
+                    <span>ঘ) 0.03725 কিলোগ্রাম</span>
+                </div>
+            </li>
+            <li>
+                ১ (১০) স্থিতিশক্তি ও গতিশক্তির যোগফলকে কি বলে?
+                <div class="options-grid">
+                    <span>ক) যান্ত্রিক শক্তি</span>
+                    <span>খ) চৌম্বক শক্তি</span>
+                    <span>গ) শব্দ শক্তি</span>
+                    <span>ঘ) আলোক শক্তি</span>
+                </div>
+            </li>
+        </ul>
+
+        <!-- Section B -->
+        <div class="section-header">বিভাগ - খ</div>
+        <div class="section-title">
+            <span>B. সংক্ষিপ্ত উত্তর দাও:</span>
+            <span>২ × ১৫ = ৩০</span>
+        </div>
+
+        <ul class="question-list">
+            <li>২ (১) জৈব ভঙ্গুর বর্জ্য পদার্থ কাকে বলে? উদাহরণ দাও।</li>
+            <li>২ (২) আচরণ বিজ্ঞান কাকে বলে?</li>
+            <li>২ (৩) জটিল যন্ত্র কাকে বলে? উদাহরণ দাও।</li>
+            <li>২ (৪) স্থূলত্ব কি? এর ফলে কি অসুবিধা হয়?</li>
+            <li>২ (৫) একটি বলের ব্যাস কিভাবে নির্ণয় করবে?</li>
+            <li>২ (৬) পরমাণু কাকে বলে? উদাহরণ দাও।</li>
+            <li>২ (৭) যোজ্যতা কিভাবে নির্ণয় করা হয়?</li>
+            <li>২ (৮) বর্ষাকালে ভিজে কাপড় শুকাতে দেরি হয় কেন?</li>
+            <li>২ (৯) মৌলগুলিকে চিহ্নের সাহায্যে প্রকাশ করার প্রয়োজন কি?</li>
+            <li>২ (১০) একটি চিত্রের সাহায্যে দেখাও লোহার পেরেক তড়িৎ পরিবহন করে, কিন্তু কাঠকয়লা করে না।</li>
+            <li>২ (১১) ক) এক সৌরদিন কাকে বলে? খ) 1 ঘণ্টা কিভাবে নির্ণয় করা হয়?</li>
+            <li>২ (১২) পরিমাপে অনুমানের গুরুত্ব কি? উদাহরণের সাহায্যে ব্যাখ্যা কর।</li>
+            <li>২ (১৩) 'আর্ক অক্সানোমিটার' যন্ত্র কি কাজে লাগে? আর্ক অক্সানোমিটারের চিত্র অঙ্কন কর।</li>
+            <li>২ (১৪) চৌম্বক পদার্থ কাকে বলে? উদাহরণ দাও।</li>
+            <li>২ (১৫) "গতিশীল বস্তুর মধ্যে কাজ করার সামর্থ্য তৈরি হয়" — উদাহরণের সাহায্যে ব্যাখ্যা কর।</li>
+        </ul>
+
+        <!-- Section C -->
+        <div class="section-header">বিভাগ - গ</div>
+        <div class="section-title">
+            <span>C. নিম্নলিখিত প্রশ্নগুলির উত্তর দাও:</span>
+            <span></span>
+        </div>
+
+        <ul class="question-list">
+            <li>৩ (১) লিন্ডেম্যানের দশ শতাংশের সূত্রটি লেখ। এই সূত্র থেকে কি কি জানতে পারা যায়? <span style="float: right; font-weight: bold;">২+১</span></li>
+            <li>৩ (২) পুলি বা কপিকল কোন ভারী বস্তু তোলার কাজ সহজ করে দেয় কিভাবে? চিত্রের সাহায্যে ব্যাখ্যা কর। <span style="float: right; font-weight: bold;">৩</span></li>
+            <li>৩ (৩) নিম্নলিখিত ক্ষেত্রে কোন শক্তি, কোন শক্তিতে রূপান্তরিত হচ্ছে: <span style="float: right; font-weight: bold;">১ × ৪ = ৪</span>
+                <div style="padding-left: 20px; margin-top: 5px;">
+                    ক) ঘণ্টা বাজানো হচ্ছে হাতুড়ী দিয়ে<br>
+                    খ) বৈদ্যুতিক পাখার সুইচ 'অন' করা হল<br>
+                    গ) মোমবাতি জ্বালানো হলো<br>
+                    ঘ) সৌরকুকার চালু করা হলো
+                </div>
+            </li>
+            <li>৩ (৪) একটি নততলের চিত্র অঙ্কন কর। কি শর্তে নততলে সুবিধা হয়, লেখ। <span style="float: right; font-weight: bold;">২+১</span></li>
+            <li>৩ (৫) ব্যক্তবীজী ও গুপ্তবীজী উদ্ভিদ কাকে বলে? উদাহরণ দাও। <span style="float: right; font-weight: bold;">২</span></li>
+            <li>৩ (৬) a) জীবজগতকে কয়টি প্রধান ভাগে ভাগ করা হয়? b) প্রত্যেক ভাগের নাম লেখ। c) প্রত্যেক ভাগের একটি করে উদাহরণ দাও। <span style="float: right; font-weight: bold;">১+২+২</span></li>
+            <li>৩ (৭) পিঁপড়েদের সমাজবদ্ধতা, বুদ্ধিমত্তা এবং পরিশ্রমের কথা সংক্ষেপে আলোচনা কর। <span style="float: right; font-weight: bold;">২+২+২</span></li>
+            <li>৩ (৮) 4R পদ্ধতি কি? এই পদ্ধতি মানুষের কোন উপকারে লাগে? <span style="float: right; font-weight: bold;">২+২</span></li>
+        </ul>
+
+    </div>
+
+</body>
+</html>
