@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnNova - ৩য় মূল্যায়ন পরীক্ষা — ২ ০ ২ ৬ - ভৌতবিজ্ঞান ও পরিবেশ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: #f4f7f6;
+            color: #111;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .paper-container {
+            background: #fff;
+            width: 800px;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            color: #1a5276;
+            letter-spacing: 1px;
+        }
+
+        .header h2 {
+            margin: 5px 0;
+            font-size: 20px;
+            color: #34495e;
+            font-weight: 600;
+        }
+
+        .header h3 {
+            margin: 5px 0 15px 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .exam-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 16px;
+            color: #2c3e50;
+            border-top: 1px dashed #ccc;
+            padding-top: 8px;
+        }
+
+        /* Section Headings */
+        .section-header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            color: #2c3e50;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            color: #111;
+        }
+
+        .question-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .question-list li {
+            margin-bottom: 14px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 15px;
+            margin-top: 6px;
+            padding-left: 20px;
+            color: #333;
+        }
+
+        .marks-span {
+            float: right;
+            font-weight: bold;
+        }
+
+        /* Print Styling */
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+            .paper-container {
+                box-shadow: none;
+                border: none;
+                width: 100%;
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .print-btn:hover {
+            background-color: #219150;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn no-print" onclick="window.print()">প্রিন্ট করুন / PDF সেভ করুন</button>
+
+    <div class="paper-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>LearnNova</h1>
+            <h5>Online Or Offline Tuition Hub</h5>
+            <h2>৩য় মূল্যায়ন পরীক্ষা — ২ ০ ২ ৬</h2>
+            <h3>অষ্টম শ্রেণী - বিষয়: ভৌতবিজ্ঞান ও পরিবেশ</h3>
+            <div class="exam-info">
+                <span>পূর্ণমান: ৫০</span>
+                <span>সময়: ১ ঘণ্টা ৩০ মিনিট</span>
+            </div>
+        </div>
+
+        <!-- Section A -->
+        <div class="section-header">বিভাগ — ক: বহুনির্বাচনী প্রশ্ন (MCQ)</div>
+        <div class="section-title">
+            <span>১. সঠিক উত্তরটি নির্বাচন করো (সবকটি প্রশ্নের উত্তর দেওয়া বাধ্যতামূলক):</span>
+            <span>১ × ১০ = ১০</span>
+        </div>
+        
+        <ul class="question-list">
+            <li>
+                ১.১. পৃথিবীর সৃষ্টি হয়েছিল আজ থেকে প্রায় কত বছর আগে?
+                <div class="options-grid">
+                    <span>(ক) ৩৫০ কোটি বছর আগে</span>
+                    <span>(খ) ৪৫০ কোটি বছর আগে</span>
+                    <span>(গ) ২৫০ কোটি বছর আগে</span>
+                </div>
+            </li>
+            <li>
+                ১.২. যে প্রতিবিম্বকে পর্দায় ফেলা যায় তাকে কী বলে?
+                <div class="options-grid">
+                    <span>(ক) অসদবিম্ব</span>
+                    <span>(খ) সদবিম্ব</span>
+                    <span>(গ) ছায়া</span>
+                </div>
+            </li>
+            <li>
+                ১.৩. নিচের কোনটি একটি উভধর্মী অক্সাইড?
+                <div class="options-grid">
+                    <span>(ক) ZnO</span>
+                    <span>(খ) Na₂O</span>
+                    <span>(গ) CaO</span>
+                </div>
+            </li>
+            <li>
+                ১.৪. নিচের কোনটি সাধারণ উষ্ণতায় তরল ধাতু?
+                <div class="options-grid">
+                    <span>(ক) সোডিয়াম</span>
+                    <span>(খ) পারদ</span>
+                    <span>(গ) সোনা</span>
+                    <span>(ঘ) রূপো</span>
+                </div>
+            </li>
+            <li>
+                ১.৫. সামুদ্রিক প্রাণী যেমন শামুক ও ঝিনুকের খোলক প্রধানত কী দিয়ে তৈরি?
+                <div class="options-grid">
+                    <span>(ক) ক্যালসিয়াম কার্বনেট</span>
+                    <span>(খ) সোডিয়াম ক্লোরাইড</span>
+                    <span>(গ) ম্যাগনেসিয়াম সালফেট</span>
+                </div>
+            </li>
+            <li>
+                ১.৬. সাবমেরিনে কোন যন্ত্র ব্যবহার করে বাইরের দৃশ্য দেখা হয়?
+                <div class="options-grid">
+                    <span>(ক) ক্যালেন্ডোস্কোপ</span>
+                    <span>(খ) দূরবীন</span>
+                    <span>(গ) পেরিসকোপ</span>
+                </div>
+            </li>
+            <li>
+                ১.৭. পটাশিয়াম ক্লোরেট (KClO₃) থেকে অক্সিজেন তৈরিতে ধনাত্মক অনুঘটক হিসেবে কী ব্যবহৃত হয়?
+                <div class="options-grid">
+                    <span>(ক) ZnO</span>
+                    <span>(খ) MnO₂</span>
+                    <span>(গ) Fe₂O₃</span>
+                </div>
+            </li>
+            <li>
+                ১.৮. কোন অধাতু বিদ্যুতের সুপরিবাহী?
+                <div class="options-grid">
+                    <span>(ক) আয়োডিন</span>
+                    <span>(খ) সালফার</span>
+                    <span>(গ) গ্রাফাইট</span>
+                    <span>(ঘ) হীরা</span>
+                </div>
+            </li>
+            <li>
+                ১.৯. শুষ্ক বরফ (Dry Ice) প্রকৃতপক্ষে কী?
+                <div class="options-grid">
+                    <span>(ক) কঠিন জলীয় বরফ</span>
+                    <span>(খ) কঠিন কার্বন ডাইঅক্সাইড</span>
+                    <span>(গ) কঠিন মিথেন</span>
+                </div>
+            </li>
+            <li>
+                ১.১০. পেরিসকোপে দর্পণ দুটি পরস্পরের সাথে কীভাবে থাকে?
+                <div class="options-grid">
+                    <span>(ক) সমান্তরালে</span>
+                    <span>(খ) লম্বভাবে</span>
+                    <span>(গ) বিপ্রতীপভাবে</span>
+                </div>
+            </li>
+        </ul>
+
+        <!-- Section B -->
+        <div class="section-header">বিভাগ — খ: অতিসংক্ষিপ্ত প্রশ্ন</div>
+        <div class="section-title">
+            <span>২. একটি বাক্যে উত্তর দাও:</span>
+            <span>১ × ১০ = ১০</span>
+        </div>
+
+        <ul class="question-list">
+            <li>২.১. তরল অক্সিজেনের হিমাঙ্ক কত?</li>
+            <li>২.২. সদবিম্ব কাকে বলে?</li>
+            <li>২.৩. পরীক্ষাগারে গ্যাস তৈরির জন্য কোন দু-মুখবিশিষ্ট কাচপাত্র ব্যবহৃত হয়?</li>
+            <li>২.৪. জিংকের সঙ্গে লঘু সালফিউরিক অ্যাসিডের বিক্রিয়ায় কোন গ্যাস উৎপন্ন হয়?</li>
+            <li>২.৫. কার্বনের দুটি নিয়তাকার রূপভেদের নাম লেখো।</li>
+            <li>২.৬. সংকট কোণ কাকে বলে?</li>
+            <li>২.৭. একটি উভধর্মী অক্সাইডের উদাহরণ দাও।</li>
+            <li>২.৮. বায়োগ্যাসের প্রধান দাহ্য উপাদান কোনটি?</li>
+            <li>২.৯. ঘাতসহতা বলতে কী বোঝো?</li>
+            <li>২.১০. এলইডি (LED)-এর পুরো নাম কী?</li>
+        </ul>
+
+        <!-- Section C -->
+        <div class="section-header">বিভাগ — গ: মাঝারি প্রশ্ন</div>
+        <div class="section-title">
+            <span>৩. সংক্ষিপ্ত ব্যাখ্যাসহ উত্তর দাও:</span>
+            <span>২ × ৬ = ১২</span>
+        </div>
+
+        <ul class="question-list">
+            <li>৩.১. কার্বোজেন কী এবং চিকিৎসাক্ষেত্রে এর ব্যবহার উল্লেখ করো।</li>
+            <li>৩.২. সদবিম্ব ও অসদবিম্বের মধ্যে দুটি পার্থক্য লেখো।</li>
+            <li>৩.৩. নির্ভুলভাবে ভর মাপার জন্য রাসায়নিক তুলাযন্ত্র ব্যবহারের সময় চিমটে ব্যবহার করা হয় কেন?</li>
+            <li>৩.৪. উভধর্মী অক্সাইড কাকে বলে? উদাহরণ দাও।</li>
+            <li>৩.৫. সক্রিয় চারকোল (Activated Charcoal) কী? এর একটি গুরুত্বপূর্ণ ব্যবহার লেখো।</li>
+            <li>৩.৬. দুটি সমতল দর্পণ পরস্পরের সমান্তরাল থাকলে কয়টি প্রতিবিম্ব গঠিত হবে এবং কেন?</li>
+        </ul>
+
+        <!-- Section D -->
+        <div class="section-header">বিভাগ — ঘ: ব্যাখ্যামূলক প্রশ্ন</div>
+        <div class="section-title">
+            <span>৪. নিচের প্রশ্নগুলির উত্তর দাও:</span>
+            <span>৩ × ৬ = ১৮</span>
+        </div>
+
+        <ul class="question-list">
+            <li>৪.১. পরীক্ষাগারে পটাশিয়াম ক্লোরেট (KClO₃) থেকে অক্সিজেন প্রস্তুতির রাসায়নিক সমীকরণ ও অনুঘটকের ভূমিকা লেখো।</li>
+            <li>৪.২. মরুভূমিতে মরীচিকা কেন সৃষ্টি হয়? ব্যাখ্যা করো।</li>
+            <li>৪.৩. পরীক্ষাগারে হাইড্রোজেন প্রস্তুত করার সময় বিশুদ্ধ জিংকের পরিবর্তে অবিশুদ্ধ জিংক ব্যবহার করা হয় কেন?</li>
+            <li>৪.৪. হিরে কেন অত্যন্ত কঠিন এবং তাপের সুপরিবাহী হলেও বিদ্যুতের কুপরিবাহী?</li>
+            <li>৪.৫. পরিষ্কার চুনজলের মধ্য দিয়ে প্রথমে অল্প এবং পরে অতিরিক্ত CO₂ গ্যাস চালনা করলে কী কী পরিবর্তন ঘটে? বিক্রিয়াসহ লেখো।</li>
+            <li>৪.৬. জীবাশ্ম জ্বালানি (Fossil Fuel) ব্যবহারের তিনটি ক্ষতিকর প্রভাব সংক্ষেপে লেখো।</li>
+        </ul>
+
+    </div>
+
+</body>
+</html>
