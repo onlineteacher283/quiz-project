@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnNova - Annual Examination 2026 - Environment and Science</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #111;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .paper-container {
+            background: #fff;
+            width: 800px;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            color: #1a5276;
+            letter-spacing: 1px;
+        }
+
+        .header h2 {
+            margin: 5px 0;
+            font-size: 20px;
+            color: #34495e;
+            font-weight: 600;
+        }
+
+        .header h3 {
+            margin: 5px 0 15px 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .exam-info {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 16px;
+            color: #2c3e50;
+            border-top: 1px dashed #ccc;
+            padding-top: 8px;
+        }
+
+        /* Section Headings */
+        .section-header {
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            color: #2c3e50;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            color: #111;
+        }
+
+        .question-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .question-list li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 15px;
+            margin-top: 6px;
+            padding-left: 20px;
+            color: #333;
+        }
+
+        /* Diagram Box */
+        .diagram-box {
+            border: 1px dashed #666;
+            padding: 10px;
+            margin: 10px 0 10px 20px;
+            text-align: center;
+            background-color: #fafafa;
+            border-radius: 4px;
+            width: fit-content;
+        }
+
+        .diagram-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .lever-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-weight: bold;
+        }
+
+        /* Print Styling */
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+            .paper-container {
+                box-shadow: none;
+                border: none;
+                width: 100%;
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .print-btn:hover {
+            background-color: #219150;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn no-print" onclick="window.print()">Print / Save as PDF</button>
+
+    <div class="paper-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>LearnNova</h1>
+            <h5>Online Or Offline Tuition Hub</h5>
+            <h2>Annual Examination 2026</h2>
+            <h3>Class: VI — Subject: Environment and Science</h3>
+            <div class="exam-info">
+                <span>F.M.: 70</span>
+                <span>Time: 2 Hrs.</span>
+            </div>
+        </div>
+
+        <!-- Section A -->
+        <div class="section-header">Section - A</div>
+        <div class="section-title">
+            <span>A. Choose the correct answer:</span>
+            <span>1 × 10 = 10</span>
+        </div>
+        
+        <ul class="question-list">
+            <li>
+                1 (1) ........... is a non-metal but a good conductor of heat.
+                <div class="options-grid">
+                    <span>a) Diamond</span>
+                    <span>b) Wood</span>
+                    <span>c) Copper</span>
+                    <span>d) Brass</span>
+                </div>
+            </li>
+            <li>
+                1 (2) Which of the following is not an element—
+                <div class="options-grid">
+                    <span>a) Ammonia</span>
+                    <span>b) Copper</span>
+                    <span>c) Carbon</span>
+                    <span>d) Gold</span>
+                </div>
+            </li>
+            <li>
+                1 (3) When a football is rolled on the ground, it stops after covering some distance. This phenomenon is caused by—
+                <div class="options-grid">
+                    <span>a) Frictional force</span>
+                    <span>b) Surface area of the ball</span>
+                    <span>c) Speed of the ball</span>
+                    <span>d) Shape of the ball</span>
+                </div>
+            </li>
+            <li>
+                1 (4) Convert 1.01 meters into centimeters—
+                <div class="options-grid">
+                    <span>a) 101 centimeters</span>
+                    <span>b) 0.101 centimeters</span>
+                    <span>c) 10.1 centimeters</span>
+                    <span>d) 1010.01 centimeters</span>
+                </div>
+            </li>
+            <li>
+                1 (5) What is the unit of force in the CGS system?
+                <div class="options-grid">
+                    <span>a) Newton</span>
+                    <span>b) Pascal</span>
+                    <span>c) Erg</span>
+                    <span>d) Dyne</span>
+                </div>
+            </li>
+            <li>
+                1 (6) What is the chemical formula of methane compound?
+                <div class="options-grid">
+                    <span>a) CH<sub>2</sub></span>
+                    <span>b) CH<sub>5</sub></span>
+                    <span>c) CH<sub>3</sub></span>
+                    <span>d) CH<sub>4</sub></span>
+                </div>
+            </li>
+            <li>
+                1 (7) Which statement is not correct— As a result of friction:
+                <div class="options-grid">
+                    <span>a) Speed of the object increases</span>
+                    <span>b) Wear and tear of the object occurs</span>
+                    <span>c) Temperature of the object increases</span>
+                    <span>d) Speed of the object decreases</span>
+                </div>
+            </li>
+            <li>
+                1 (8) 
+                <div class="diagram-box">
+                    <div class="diagram-title">Observe the diagram:</div>
+                    <div class="lever-diagram">
+                        <span>Fulcrum</span>
+                        <span>← Load</span>
+                        <span>← Effort</span>
+                    </div>
+                </div>
+                The above diagram represents which class of lever?
+                <div class="options-grid">
+                    <span>a) Second class</span>
+                    <span>b) Third class</span>
+                    <span>c) Fourth class</span>
+                    <span>d) First class</span>
+                </div>
+            </li>
+            <li>
+                1 (9) 37.25 grams = ? kilograms
+                <div class="options-grid">
+                    <span>a) 37250 kilograms</span>
+                    <span>b) 3725 kilograms</span>
+                    <span>c) 0.3725 kilograms</span>
+                    <span>d) 0.03725 kilograms</span>
+                </div>
+            </li>
+            <li>
+                1 (10) What is the sum of potential energy and kinetic energy called?
+                <div class="options-grid">
+                    <span>a) Mechanical energy</span>
+                    <span>b) Magnetic energy</span>
+                    <span>c) Sound energy</span>
+                    <span>d) Light energy</span>
+                </div>
+            </li>
+        </ul>
+
+        <!-- Section B -->
+        <div class="section-header">Section - B</div>
+        <div class="section-title">
+            <span>B. Answer briefly:</span>
+            <span>2 × 15 = 30</span>
+        </div>
+
+        <ul class="question-list">
+            <li>2 (1) What are biodegradable waste materials? Give examples.</li>
+            <li>2 (2) What is ethology (behavioral science)?</li>
+            <li>2 (3) What is a complex machine? Give examples.</li>
+            <li>2 (4) What is obesity? What problems arise due to it?</li>
+            <li>2 (5) How will you determine the diameter of a ball?</li>
+            <li>2 (6) What is an atom? Give an example.</li>
+            <li>2 (7) How is valency determined?</li>
+            <li>2 (8) Why do wet clothes take longer to dry during the rainy season?</li>
+            <li>2 (9) Why is there a need to represent elements using symbols?</li>
+            <li>2 (10) Show with the help of a diagram that an iron nail conducts electricity, but charcoal does not.</li>
+            <li>2 (11) a) What is a solar day? b) How is 1 hour determined?</li>
+            <li>2 (12) What is the importance of estimation in measurement? Explain with an example.</li>
+            <li>2 (13) What is the use of the 'Arc Auxanometer' instrument? Draw a diagram of an Arc Auxanometer.</li>
+            <li>2 (14) What are magnetic substances? Give examples.</li>
+            <li>2 (15) "Capacity to do work is developed in a moving object" — Explain with an example.</li>
+        </ul>
+
+        <!-- Section C -->
+        <div class="section-header">Section - C</div>
+        <div class="section-title">
+            <span>C. Answer the following questions:</span>
+            <span></span>
+        </div>
+
+        <ul class="question-list">
+            <li>3 (1) State Lindeman's ten percent law. What information can be derived from this law? <span style="float: right; font-weight: bold;">2+1</span></li>
+            <li>3 (2) How does a pulley or block and tackle ease the work of lifting heavy objects? Explain with a diagram. <span style="float: right; font-weight: bold;">3</span></li>
+            <li>3 (3) Identify the energy conversion taking place in the following cases: <span style="float: right; font-weight: bold;">1 × 4 = 4</span>
+                <div style="padding-left: 20px; margin-top: 5px;">
+                    a) A bell is struck with a hammer<br>
+                    b) Electric fan switch is turned 'ON'<br>
+                    c) A candle is burnt<br>
+                    d) A solar cooker is operated
+                </div>
+            </li>
+            <li>3 (4) Draw a diagram of an inclined plane. Under what condition does an inclined plane provide mechanical advantage? <span style="float: right; font-weight: bold;">2+1</span></li>
+            <li>3 (5) What are gymnosperms and angiosperms? Give examples. <span style="float: right; font-weight: bold;">2</span></li>
+            <li>3 (6) a) Into how many main groups is the living world divided? b) Write the name of each group. c) Give one example of each group. <span style="float: right; font-weight: bold;">1+2+2</span></li>
+            <li>3 (7) Briefly discuss the social behavior, intelligence, and hard work of ants. <span style="float: right; font-weight: bold;">2+2+2</span></li>
+            <li>3 (8) What is the 4R methodology? How does this methodology benefit humans? <span style="float: right; font-weight: bold;">2+2</span></li>
+        </ul>
+
+    </div>
+
+</body>
+</html>
